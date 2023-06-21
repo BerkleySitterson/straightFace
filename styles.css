@@ -1,0 +1,47 @@
+body {
+    background-color: #a442f5;
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#mainTitle {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 4rem;
+}
+
+#titleParagraph {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: .08rem;
+}
+
+.buttons {
+    transition: all .5s ease;
+    background-color: #a442f5;
+    border: 2px solid white;
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    position: absolute;
+    width: 12rem;
+    height: 5rem;
+}
+
+.buttons:hover {
+    background-color: white;
+    color: #a442f5;
+}
