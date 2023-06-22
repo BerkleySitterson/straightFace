@@ -1,5 +1,5 @@
-body {
-    background-color: #a442f5;
+body, html {
+    background: linear-gradient(#a442f5, black);
     overflow: hidden;
     height: 100%;
     margin: 0;
