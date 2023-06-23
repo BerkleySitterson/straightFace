@@ -9,18 +9,65 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
 
     </head>
 
     <body> 
         
+        <div id="container">
+
         <h1 id="mainTitle">Welcome to<br>StraightFace</h1>
 
         <p id="titleParagraph">StraightFace is a video chat-roulette app where one of you must make the<br>other one laugh. Even a slight grin could give it away. Good luck and Have Fun!</p>
         
-        <button type="button" onclick="location.href='/funnyPage.html'" class="buttons" id="button1" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
-        <button type="button" onclick="location.href='/seriousPage.html'" class="buttons" id="button2" style="top: 65%; left: 52%;">Be Serious!</button>
-        
+        <button type="button" onclick= "selectRole('funny')" class="buttons" id="funny" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
+        <button type="button" onclick= "selectRole('serious')" class="buttons" id="serious" style="top: 65%; left: 52%;">Be Serious!</button>
+
+            <div class="video-chat" id="video-chat">
+                <video id="funnyVideo" autoplay></video>
+                <video id="seriousVideo" autoplay></video>
+
+                <h1 id="pairing-message"></h1>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+            function selectRole(role) {
+
+                console.log("selectRole method being executed in index.html")
+
+                var socket = io.connect("http://localhost:5000");
+                socket.emit('select_role', { role : role });
+                socket.emit('join_matchmaking');
+
+                console.log("selectRole now completed in index.html")
+
+                socket.on('join_room_complete', function() {
+                    // Redirect the client to the desired URL
+                    document.getElementById('container').style.visibility = 'hidden';    
+                    // Show the video chat interface
+                    document.getElementById('container').querySelector('.video-chat').style.visibility = 'visible';
+
+                    var videoElement = document.getElementById('funnyVideo');
+
+                    navigator.mediaDevices.getUserMedia({ video: true }) // Requesting access to user's camera
+                    .then(function (stream) {
+                        videoElement.srcObject = stream; // Set the video stream as the source for the <video> element
+                    })
+                    .catch(function (error) {
+                        console.error('Error accessing camera:', error);
+                    });
+                });
+
+                socket.on('pairing-message', function(message) {
+                    document.getElementById('pairing-message').innerHTML = message;
+                });
+            }
+
+        </script>       
 
     </body>
 

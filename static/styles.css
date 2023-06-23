@@ -6,6 +6,14 @@ body, html {
     padding: 0;
 }
 
+#container {
+    visibility: visible;
+}
+
+#container .video-chat {
+    visibility: hidden;
+}
+
 #mainTitle {
     position: absolute;
     top: 20%;
@@ -66,4 +74,18 @@ body, html {
     left: 52%;
     border: 5px solid white;
     border-radius: 8px;
+}
+
+.message {
+    width: 60rem;
+    height: 12rem;
+    position: absolute;
+    top: 70%;
+    left: 25%;
+}
+
+.submit {
+    position: absolute;
+    top: 93%;
+    left: 25%;
 }
