@@ -1,7 +1,7 @@
 import eventlet
 
-from flask import Flask, render_template, request, redirect
-from flask_socketio import SocketIO, join_room, leave_room
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, join_room, rooms, close_room
 
 eventlet.monkey_patch()
 
@@ -10,109 +10,89 @@ app.debug = True;
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 app.config['SECRET'] = "secret"
 
-users = {}  # Dictionary to store the role of each connected user
-waiting_queue = []  # Queue to store users that are waiting to be paired
+funnyQueue = [] # Queue to store funny users info
+seriousQueue = [] # Queue to store serious users info
+users = {} # Dictionary to store all connected users
 
-@app.route('/')  # Render index.html when website is visited
+
+@app.route('/')  # Render index.html when website is first visited
 def index():
     return render_template('index.html')
 
-@app.route('/chatRoom.html')  # Rendering videoChat.html
-def chatRoom():
-    return render_template('/chatRoom.html')
-
-def pair_users():
+        
+@socketio.on("user_join_funny") # User joins 'funny' team and is inserted into the waiting queue
+def handle_user_join_funny(username):
     
-    print("pair_users being executed")
-    
-    if len(waiting_queue) >= 2:
-        funny_users = [user for user in waiting_queue if user['role'] == 'funny']
-        serious_users = [user for user in waiting_queue if user['role'] == 'serious']
-
-        if funny_users and serious_users:
-            user1 = funny_users.pop(0)
-            user2 = serious_users.pop(0)
-
-            room = f"{user1['sid']}_{user2['sid']}"
-
-            users[user1['sid']] = {'room': room}
-            users[user2['sid']] = {'room': room}
-
-            socketio.emit('pairing-message', 'You are paired!')
-            socketio.emit('pairing-message', 'You are paired!')
-
-            # Clean up the waiting_queue
-            waiting_queue[:] = [
-                user for user in waiting_queue if user['sid'] != user1['sid'] and user['sid'] != user2['sid']
-            ]
-            
-            print("Users have now been paired")
-
-@socketio.on('select_role')
-def handle_role_selection(data):
-    
-    print("handle_role_selection being executed")
-    
-    role = data['role']
-    sid = request.sid
-
-    user = {'sid': sid, 'role':role}
-    waiting_queue.append(user)
-    
-    print('User now in waiting queue')
-
-    
-@socketio.on('join_matchmaking')
-def handle_join_matchmaking():
-    
-    print('handle_join_matchmaking being executed')
+    print(f"User {username} has joined the funny side!")
     
     sid = request.sid
+    users[username] = sid
+    funnyQueue.append((username, sid))
+    attempt_pairing()
+         
+    
+@socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
+def handle_user_join_serious(username):
+    
+    print(f"User {username} has joined the serious side!")
+    
+    sid = request.sid
+    users[username] = sid
+    seriousQueue.append((username, sid))  
+    attempt_pairing()
+        
+        
+def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
+    
+    if len(funnyQueue) >= 1 and len(seriousQueue) >= 1:
+        funnyUser = funnyQueue.pop(0)
+        seriousUser = seriousQueue.pop(0)
+        pair_users(funnyUser, seriousUser)
+        
 
-    # Add the user to the waiting queue if not already in it
-    if sid not in [user['sid'] for user in waiting_queue]:
-        # Check if the user is present in the users dictionary
-        if sid in users:
-            # Store the user in the waiting_queue dictionary
-            user = {'sid': sid, 'role': users[sid]['role']}
-            waiting_queue.append(user)
+def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and puts them in a room
+    
+    room = f"{funnyUser[1]}_{seriousUser[1]}_room"
+    
+    join_room(room, funnyUser[1])
+    join_room(room, seriousUser[1])
+    
+    print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
+    socketio.emit("users_paired", room=room)
+    
 
-    # Pair users if possible
-    pair_users()
+@socketio.on("disconnect_user") # User clicks 'disconnectBtn' and the room is deleted
+def handle_user_disconnect():
+    sid = request.sid
+    rooms_list = rooms(sid)
+    room = rooms_list[1]
     
     if sid in users:
-        room = users[sid]['room']
-        join_room(room)
-        print('User has joined room:', room)
-        socketio.emit('join_room_complete')
-    
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    
-    print("handle_disconnect being executed")
-    
-    sid = request.sid
-
-    # Remove the user from the waiting queue
-    waiting_queue[:] = [user for user in waiting_queue if user['sid'] != sid]
-
-    # Remove the user from their room if they are paired
-    if sid in users:
-        if users[sid]['room']:
-            room = users[sid]['room']
-            leave_room(sid, room)
-            socketio.emit('pairing-message', 'Your partner has left the room.', room=room)
-
-        # Clean up the room information from the dictionary
-        if 'room' in users[sid]:
-            del users[sid]['room']
-
-        # Remove the user from the users dictionary
         del users[sid]
+    
+    close_room(room, sid)    
+    socketio.emit("user_left")
+    print(f"User with sid {sid} has left. Room: {room} has been deleted.")
+    
+        
+        
+@socketio.on("new_message") # Recieves new message from client and emits to all users in current room
+def handle_new_message(message):
+    print(f"New Message: {message}")
+    sid = request.sid
+    rooms_list = rooms(sid)
+    room = rooms_list[1]
+    username = None
+    
+    for user in users:
+        if users[user] == request.sid:
+            username = user
+    socketio.emit("chat", {"message": message, "username": username}, room=room)
+    
 
+       
 if __name__ == '__main__':
-    socketio.run(app, host='localhost', port=5000)
+    socketio.run(app, host='localhost')
 
 
     

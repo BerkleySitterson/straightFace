@@ -6,14 +6,6 @@ body, html {
     padding: 0;
 }
 
-#container {
-    visibility: visible;
-}
-
-#container .video-chat {
-    visibility: hidden;
-}
-
 #mainTitle {
     position: absolute;
     top: 20%;
@@ -52,6 +44,16 @@ body, html {
 .buttons:hover {
     background-color: white;
     color: #a442f5;
+    cursor: pointer;
+}
+
+#username {
+    position: absolute;
+    height: 2rem;
+    width: 10rem;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 
 #funnyVideo {
@@ -76,16 +78,41 @@ body, html {
     border-radius: 8px;
 }
 
-.message {
-    width: 60rem;
-    height: 12rem;
+#disconnectBtn {
     position: absolute;
-    top: 70%;
-    left: 25%;
+    background-color: red;
+    color: white;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    font-weight: bold;
+    border: 2px solid white;
+    top: 60%;
+    left: 48.7%;
+    cursor: pointer;
 }
 
-.submit {
+#chat-messages {
     position: absolute;
-    top: 93%;
-    left: 25%;
+    height: 12rem;
+    width: 30rem;
+    top: 76%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: white;
 }
+
+#message {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 32rem;
+}
+
+
+
+
+
+
+
