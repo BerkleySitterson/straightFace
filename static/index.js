@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+
     const socket = io(); 
     let mediaStream;
 
@@ -11,12 +12,8 @@ document.addEventListener("DOMContentLoaded", function() {
         let username = document.getElementById("username").value;
         socket.emit("user_join_serious", username);                
     });
-    
-    socket.on("users_paired", (roomName) => {
-        pairing_complete(roomName);
-    });
-    
-    function pairing_complete(roomName) {
+
+    socket.on("users_paired", function() {
         document.getElementById("landingPage").style.display = "none"; // Hiding the landing page and displaying the video-chat page
         document.getElementById("video-chat").style.display = "block";
     
@@ -28,8 +25,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 .catch(function (error) {
                     console.error('Error accessing camera:', error);
                 });
-    }
-    
+    });
+           
     document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
         socket.emit("disconnect_user")
     
