@@ -23,6 +23,10 @@ document.addEventListener("DOMContentLoaded", function() {
         socket.emit("user_join_serious", username);                
     });
 
+    socket.on("change_user_count", function(connectedUsersNum) {
+        document.getElementById("onlineUsers").innerHTML = "Online Users: " + connectedUsersNum;
+    });
+
     socket.on("increment_funny_queue", function(funnyQueue) { // Updating the funny queue counter and displaying it
         document.getElementById("funnyQueueNum").innerHTML = "Funny Queue: " + funnyQueue.length;
     });

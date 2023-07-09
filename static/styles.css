@@ -73,6 +73,15 @@ body, html {
     left: 54%;
 }
 
+#onlineUsers {
+    position: absolute;
+    top: 5%;
+    left: 80%;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+}
+
 #funnyVideo {
     width: 40rem;
     height: 25rem;
