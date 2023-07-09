@@ -32,13 +32,5 @@ To run this app on your own machine, follow the steps below:
 
 5. Enjoy!
 
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request to the repository.
-
-## License
-
-N/A
-
 
 
