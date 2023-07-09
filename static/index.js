@@ -1,7 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     const socket = io(); 
-    let mediaStream;
+    let localStream;
+    let remoteStream;
+    let peerConnection;
+
+    const servers = {
+        iceServers:[
+            {
+                urls:['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+            }
+        ]
+    }
 
     document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
         let username = document.getElementById("username").value;
@@ -13,18 +23,28 @@ document.addEventListener("DOMContentLoaded", function() {
         socket.emit("user_join_serious", username);                
     });
 
+    socket.on("increment_funny_queue", function(funnyQueue) { // Updating the funny queue counter and displaying it
+        document.getElementById("funnyQueueNum").innerHTML = "Funny Queue: " + funnyQueue.length;
+    });
+
+    socket.on("increment_serious_queue", function(seriousQueue) { // Updating the serious queue counter and displaying it
+        document.getElementById("seriousQueueNum").innerHTML = "Serious Queue: " + seriousQueue.length;
+    });
+
     socket.on("users_paired", function() {
         document.getElementById("landingPage").style.display = "none"; // Hiding the landing page and displaying the video-chat page
         document.getElementById("video-chat").style.display = "block";
     
-        navigator.mediaDevices.getUserMedia({ video: true }) // Requesting access to user's camera and microphone
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false }) // Requesting access to user's camera and microphone
                 .then(function (stream) {
-                    mediaStream = stream;
-                    seriousVideo.srcObject = stream; // Set the video stream as the source for the <video> element
+                    localStream = stream;
+                    funnyVideo.srcObject = localStream; // Set the video stream as the source for the <video> element
                 })
                 .catch(function (error) {
                     console.error('Error accessing camera:', error);
                 });
+
+        createOffer();
     });
            
     document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
@@ -44,10 +64,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     
     function stopStream() { // Stopping video/audio media feed
-        if (mediaStream) {
-            const tracks = mediaStream.getTracks();
+        if (localStream) {
+            const tracks = localStream.getTracks();
             tracks.forEach(track => track.stop());
-            mediaStream = null;
+            localStream = null;
         }
     }
     
@@ -67,6 +87,34 @@ document.addEventListener("DOMContentLoaded", function() {
         ul.appendChild(li);
         ul.scrolltop = ul.scrollHeight;
     });
+
+    function createOffer() {
+        peerConnection = new RTCPeerConnection(servers);
+
+        remoteStream = new MediaStream();
+        document.getElementById("seriousVideo").srcObject = remoteStream;
+
+        localStream.getTracks().forEach((track) => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        peerConnection.ontrack = (event) => {
+            event.streams[0].getTracks().forEach((track) => {
+                remoteStream.addTrack(track); 
+            });
+        }
+
+        peerConnection.onicecandidate = async (event) => {
+            if (event.candidate) {
+                console.log('New ICE candidate: ', event.candidate);
+            }
+        }
+
+        let offer = peerConnection.createOffer();
+        peerConnection.setLocalDescription(offer);
+
+        console.log('Offer: ', offer);
+    }
 
 });
 

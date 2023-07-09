@@ -51,9 +51,26 @@ body, html {
     position: absolute;
     height: 2rem;
     width: 10rem;
-    top: 80%;
+    top: 85%;
     left: 50%;
     transform: translate(-50%,-50%);
+}
+
+.queueCounters {
+    position: absolute;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+#funnyQueueNum {
+    top: 74%;
+    left: 40%;
+}
+
+#seriousQueueNum {
+    top: 74%;
+    left: 54%;
 }
 
 #funnyVideo {
@@ -65,6 +82,7 @@ body, html {
     left: 14%;
     border: 5px solid white;
     border-radius: 8px;
+    background-color: #ddd;
 }
 
 #seriousVideo {
@@ -76,6 +94,7 @@ body, html {
     left: 52%;
     border: 5px solid white;
     border-radius: 8px;
+    background-color: #ddd;
 }
 
 #disconnectBtn {

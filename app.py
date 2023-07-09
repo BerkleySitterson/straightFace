@@ -19,6 +19,11 @@ users = {} # Dictionary to store all connected users
 def index():
     return render_template('index.html')
 
+@socketio.on('connect') # Display current queue numbers
+def on_connect():
+    socketio.emit("increment_funny_queue", funnyQueue)
+    socketio.emit("increment_serious_queue", seriousQueue)
+
         
 @socketio.on("user_join_funny") # User joins 'funny' team and is inserted into the waiting queue
 def handle_user_join_funny(username):
@@ -29,7 +34,8 @@ def handle_user_join_funny(username):
     users[username] = sid
     funnyQueue.append((username, sid))
     attempt_pairing()
-         
+    socketio.emit("increment_funny_queue", funnyQueue)
+    socketio.emit("increment_serious_queue", seriousQueue)         
     
 @socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
 def handle_user_join_serious(username):
@@ -38,9 +44,10 @@ def handle_user_join_serious(username):
     
     sid = request.sid
     users[username] = sid
-    seriousQueue.append((username, sid))  
+    seriousQueue.append((username, sid))
     attempt_pairing()
-        
+    socketio.emit("increment_funny_queue", funnyQueue)
+    socketio.emit("increment_serious_queue", seriousQueue)        
         
 def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
     
@@ -71,7 +78,7 @@ def handle_user_disconnect():
         del users[sid]
     
     close_room(room, sid)    
-    socketio.emit("user_left")
+    socketio.emit("user_left", room=room)
     print(f"User with sid {sid} has left. Room: {room} has been deleted.")
     
         
@@ -89,6 +96,20 @@ def handle_new_message(message):
             username = user
     socketio.emit("chat", {"message": message, "username": username}, room=room)
     
+
+@socketio.on("offer")
+def handle_offer(data):
+    socketio.emit('offer', data, room=data['room'])
+    
+
+@socketio.on("answer")
+def handle_answer(data):
+    socketio.emit('answer', data, room=data['room'])
+    
+    
+@socketio.on("ice_candidate")
+def handle_ice_candidate(data):
+    socketio.emit('ice_candidate', data, room=data['room'])
 
        
 if __name__ == '__main__':
