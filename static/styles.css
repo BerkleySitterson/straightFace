@@ -129,7 +129,23 @@ body, html {
     width: 32rem;
 }
 
+#funnyUsername {
+    position: absolute;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    top: 7%;
+    left: 27%;
+}
 
+#seriousUsername {
+    position: absolute;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    top: 7%;
+    left: 67%;
+}
 
 
 

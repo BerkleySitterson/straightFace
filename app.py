@@ -66,6 +66,8 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     
     print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
     socketio.emit("users_paired", room=room)
+    socketio.emit("display_funny_username", { "username" : funnyUser[0] }, room=room)
+    socketio.emit("display_serious_username", { "username" : seriousUser[0] }, room=room)
     
 
 @socketio.on("disconnect_user") # User clicks 'disconnectBtn' and the room is deleted

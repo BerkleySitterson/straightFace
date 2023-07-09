@@ -46,6 +46,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
         createOffer();
     });
+
+    socket.on("display_funny_username", function(data) { // Displaying the funny username
+        document.getElementById("funnyUsername").innerHTML = data["username"];
+    });
+
+    socket.on("display_serious_username", function(data) { // Displaying the serious username
+        document.getElementById("seriousUsername").innerHTML = data["username"];
+    });
            
     document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
         socket.emit("disconnect_user")
