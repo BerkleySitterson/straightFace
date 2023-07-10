@@ -106,22 +106,17 @@ def handle_disconnect():
     global connectedUsersNum
     connectedUsersNum -= 1
     socketio.emit("change_user_count", connectedUsersNum)
-
-
-
-@socketio.on("offer")
-def handle_offer(data):
-    socketio.emit('offer', data, room=data['room'])
     
-
-@socketio.on("answer")
-def handle_answer(data):
-    socketio.emit('answer', data, room=data['room'])
+    sid = request.sid
+    rooms_list = rooms(sid)
+    room = rooms_list[1]
     
+    if sid in activeUsers:
+        del activeUsers[sid]
     
-@socketio.on("ice_candidate")
-def handle_ice_candidate(data):
-    socketio.emit('ice_candidate', data, room=data['room'])
+    close_room(room, sid)    
+    socketio.emit("user_left", room=room)
+    print(f"User with sid {sid} has left. Room: {room} has been deleted.")
 
        
 if __name__ == '__main__':

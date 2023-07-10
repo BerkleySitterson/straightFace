@@ -82,6 +82,16 @@ body, html {
     font-size: 2rem;
 }
 
+#greenCircle {
+    position: absolute;
+    top: 9.5%;
+    left: 78.5%;
+    background-color: lightgreen;
+    border-radius: 50%;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
 #funnyVideo {
     width: 40rem;
     height: 25rem;

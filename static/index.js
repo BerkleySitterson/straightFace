@@ -5,14 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
     let remoteStream;
     let peerConnection;
 
-    const servers = {
-        iceServers:[
-            {
-                urls:['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
-            }
-        ]
-    }
-
     document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
         let username = document.getElementById("username").value;
         socket.emit("user_join_funny", username);
@@ -47,8 +39,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 .catch(function (error) {
                     console.error('Error accessing camera:', error);
                 });
-
-        createOffer();
     });
 
     socket.on("display_funny_username", function(data) { // Displaying the funny username
@@ -99,34 +89,6 @@ document.addEventListener("DOMContentLoaded", function() {
         ul.appendChild(li);
         ul.scrolltop = ul.scrollHeight;
     });
-
-    function createOffer() {
-        peerConnection = new RTCPeerConnection(servers);
-
-        remoteStream = new MediaStream();
-        document.getElementById("seriousVideo").srcObject = remoteStream;
-
-        localStream.getTracks().forEach((track) => {
-            peerConnection.addTrack(track, localStream);
-        });
-
-        peerConnection.ontrack = (event) => {
-            event.streams[0].getTracks().forEach((track) => {
-                remoteStream.addTrack(track); 
-            });
-        }
-
-        peerConnection.onicecandidate = async (event) => {
-            if (event.candidate) {
-                console.log('New ICE candidate: ', event.candidate);
-            }
-        }
-
-        let offer = peerConnection.createOffer();
-        peerConnection.setLocalDescription(offer);
-
-        console.log('Offer: ', offer);
-    }
 
 });
 
