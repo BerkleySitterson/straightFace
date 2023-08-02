@@ -1,30 +1,111 @@
 body, html {
-    background: linear-gradient(#a442f5, black);
+    background:linear-gradient(to bottom, #4B0082, #440066); 
     overflow: hidden;
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'Lato', sans-serif;
 }
+
+.home_page-header {
+    display: flex;
+}
+
+#header_title {
+    position: relative;
+    color: white;
+    font-size: 30px;
+    left: 2rem;
+}
+
+#username_display {
+    position: relative;
+    color: white;
+    top: .7rem;
+    font-size: 1.5rem;
+    left: 90rem;
+}
+
+#register_title, #login_title {
+    position: relative;
+    color: white;
+    left: 50rem;
+    top: 10rem;
+}
+
+.form-group {
+    position: relative;
+    left: 50rem;
+    top: 15rem;
+    padding: 5px;
+    color: white;
+}
+
+#register_button, #login_button {
+    position: relative;
+    left: 58rem;
+    top: 15rem;
+}
+
+#index_login, #index_register {
+    position: relative;
+    left: 95rem;
+    height: 3rem;
+    width: 8rem;
+    top: 2rem;
+    transition: all .5s ease;
+    background-color: #4B0082;
+    border: 2px solid white;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+#index_login {
+    margin-right: 2rem;
+}
+
+#index_login:hover, #index_register:hover {
+    background-color: white;
+    color: #4B0082;
+    cursor: pointer;
+}
+
+.horizontal-line {
+    position: relative;
+    border-top: 2px solid white;
+    top: 7rem;
+}
+
+.horizontal-line::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+}
+
 
 #mainTitle {
     position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 25%;
+    left: 15%;
     color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 4rem;
+    font-size: 3.5rem;
+    letter-spacing: .15rem;
+    line-height: 4.3rem;
+    font-weight: 550;
 }
 
 #titleParagraph {
     position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 48%;
+    left: 15%;
     color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 1.2rem;
-    letter-spacing: .08rem;
+    font-size: 1.4rem;
+    letter-spacing: .06rem;
 }
 
 .buttons {
@@ -47,15 +128,6 @@ body, html {
     cursor: pointer;
 }
 
-#username {
-    position: absolute;
-    height: 2rem;
-    width: 10rem;
-    top: 85%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-}
-
 .queueCounters {
     position: absolute;
     color: white;
@@ -71,25 +143,6 @@ body, html {
 #seriousQueueNum {
     top: 74%;
     left: 54%;
-}
-
-#onlineUsers {
-    position: absolute;
-    top: 5%;
-    left: 80%;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 2rem;
-}
-
-#greenCircle {
-    position: absolute;
-    top: 9.5%;
-    left: 78.5%;
-    background-color: lightgreen;
-    border-radius: 50%;
-    width: 1.2rem;
-    height: 1.2rem;
 }
 
 #funnyVideo {
