@@ -1,10 +1,11 @@
 body, html {
-    background:linear-gradient(to bottom, #4B0082, #440066); 
+    background: linear-gradient(to bottom right, #855BDA, #4B0082);
     overflow: hidden;
     height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
+    z-index: -1;
 }
 
 .home_page-header {
@@ -21,9 +22,9 @@ body, html {
 #username_display {
     position: relative;
     color: white;
-    top: .7rem;
+    top: 1rem;
     font-size: 1.5rem;
-    left: 90rem;
+    left: 83rem;
 }
 
 #register_title, #login_title {
@@ -75,7 +76,7 @@ body, html {
 .horizontal-line {
     position: relative;
     border-top: 2px solid white;
-    top: 7rem;
+    top: 4rem;
 }
 
 .horizontal-line::before {
@@ -91,7 +92,8 @@ body, html {
 #mainTitle {
     position: absolute;
     top: 25%;
-    left: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: white;
     font-size: 3.5rem;
     letter-spacing: .15rem;
@@ -101,11 +103,48 @@ body, html {
 
 #titleParagraph {
     position: absolute;
-    top: 48%;
-    left: 15%;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: white;
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     letter-spacing: .06rem;
+}
+
+#logout_button {
+    position: relative;
+    left: 85rem;
+    height: 3rem;
+    width: 8rem;
+    top: 2rem;
+    transition: all .5s ease;
+    background-color: #4B0082;
+    border: 2px solid white;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+#logout_button:hover {
+    background-color: white;
+    color: #4B0082;
+    cursor: pointer;
+}
+
+.horizontal-line-home {
+    position: relative;
+    border-top: 2px solid white;
+    top: 1.1rem;
+}
+
+.horizontal-line-home::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
 }
 
 .buttons {
@@ -115,7 +154,6 @@ body, html {
     color: white;
     padding: 1.5rem;
     text-align: center;
-    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     position: absolute;
     width: 12rem;
@@ -131,7 +169,6 @@ body, html {
 .queueCounters {
     position: absolute;
     color: white;
-    font-family: 'Inter', sans-serif;
     font-size: 1rem;
 }
 
@@ -154,7 +191,7 @@ body, html {
     left: 14%;
     border: 5px solid white;
     border-radius: 8px;
-    background-color: #ddd;
+    z-index: 10;
 }
 
 #seriousVideo {
@@ -166,7 +203,7 @@ body, html {
     left: 52%;
     border: 5px solid white;
     border-radius: 8px;
-    background-color: #ddd;
+    z-index: 10;
 }
 
 #disconnectBtn {
@@ -204,7 +241,6 @@ body, html {
 #funnyUsername {
     position: absolute;
     color: white;
-    font-family: 'Inter', sans-serif;
     font-size: 2rem;
     top: 7%;
     left: 27%;
@@ -213,7 +249,6 @@ body, html {
 #seriousUsername {
     position: absolute;
     color: white;
-    font-family: 'Inter', sans-serif;
     font-size: 2rem;
     top: 7%;
     left: 67%;

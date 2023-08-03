@@ -55,6 +55,9 @@ class Database:
         self.cursor.execute("SELECT * FROM users")
         return self.cursor.fetchall()
     
+
+        
+    
     def get_password_hash_by_username(self, username: str):
         """
         Gets the password hash of a user from the database.

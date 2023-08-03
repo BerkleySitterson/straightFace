@@ -4,27 +4,24 @@
 
     <body> 
         
-        <div class="home_page"> 
-            <div class="home_page-content">
-   
-                <div class="home_page-header">
-                    <h3 id="header_title">StraightFace</h3>
-                    <p id="username_display">{{ username }}</p>
-                    <form action="/logout" method="post">
-                        <button type="submit">Log Out</button>
-                    </form> 
-                </div>
-
-                <h1 id="mainTitle">Welcome to<br>StraightFace</h1>
-                    <p id="titleParagraph">StraightFace is a video chat-roulette app where one of you must make the<br>other one laugh. Even a slight grin could give it away. 
-                    Good luck and Have Fun!</p>
-
-                <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
-                <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
-                <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
-                <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
-            </div>
+        <div class="home_page-header">
+            <h3 id="header_title">StraightFace</h3>
+            <p id="username_display">{{ username }}</p>
+            <form action="/logout" method="post">
+                <button type="submit" id="logout_button">Log Out</button>
+            </form> 
         </div>
+        <div class="horizontal-line-home"></div>
+
+                
+        <h1 id="mainTitle">StraightFace</h1>
+        <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
+        <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
+        <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
+        <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
+                
+
+         
 
     </body>
 

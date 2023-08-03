@@ -1,23 +1,14 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     const socket = io(); 
-    let localStream;
-    let remoteStream;
-    let peerConnection;
 
-    document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
-        let username = document.getElementById("username").value;
-        socket.emit("user_join_funny", username);
-    });
+    function handleRoleSelection(event) {
+        const selectedRole = event.target.id === "funnyBtn" ? "funny" : "serious";
+        socket.emit("user_join_" + selectedRole);
+    }
     
-    document.getElementById("seriousBtn").addEventListener("click", function() { // Once User has chosen serious role, add them to seriousUsers Queue
-        let username = document.getElementById("username").value;
-        socket.emit("user_join_serious", username);                
-    });
-
-    socket.on("change_user_count", function(connectedUsersNum) {
-        document.getElementById("onlineUsers").innerHTML = "Online Users: " + connectedUsersNum;
-    });
+    document.getElementById("funnyBtn").addEventListener("click", handleRoleSelection);
+    document.getElementById("seriousBtn").addEventListener("click", handleRoleSelection);
 
     socket.on("increment_funny_queue", function(funnyQueue) { // Updating the funny queue counter and displaying it
         document.getElementById("funnyQueueNum").innerHTML = "Funny Queue: " + funnyQueue.length;
@@ -28,50 +19,33 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     socket.on("users_paired", function() {
-        document.getElementById("landingPage").style.display = "none"; // Hiding the landing page and displaying the video-chat page
-        document.getElementById("video-chat").style.display = "block";
+        console.log("users_paired being executed now.");
     
         navigator.mediaDevices.getUserMedia({ video: true, audio: false }) // Requesting access to user's camera and microphone
                 .then(function (stream) {
                     localStream = stream;
                     funnyVideo.srcObject = localStream; // Set the video stream as the source for the <video> element
+                    console.log("stream has been created");
                 })
                 .catch(function (error) {
                     console.error('Error accessing camera:', error);
+                    console.log("error is getting stream");
                 });
+
+        window.location.href = '/videoChat';
+        console.log("users_paired no completed.");
     });
 
-    socket.on("display_funny_username", function(data) { // Displaying the funny username
-        document.getElementById("funnyUsername").innerHTML = data["username"];
-    });
-
-    socket.on("display_serious_username", function(data) { // Displaying the serious username
-        document.getElementById("seriousUsername").innerHTML = data["username"];
-    });
-           
     document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
         socket.emit("disconnect_user")
     
-        document.getElementById("landingPage").style.display = "block";
-        document.getElementById("video-chat").style.display = "none";
-    
-        stopStream(); 
     });
     
     socket.on("user_left", function() { // When partner has left, diplay landing page and stop video/audio
         document.getElementById("landingPage").style.display = "block";
         document.getElementById("video-chat").style.display = "none";
     
-        stopStream();
     });
-    
-    function stopStream() { // Stopping video/audio media feed
-        if (localStream) {
-            const tracks = localStream.getTracks();
-            tracks.forEach(track => track.stop());
-            localStream = null;
-        }
-    }
     
     document.getElementById("message").addEventListener("keyup", function(event) { // When user clicks 'enter' key, their message is sent to flask server and then returned to null
         if (event.key == "Enter") {
@@ -89,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function() {
         ul.appendChild(li);
         ul.scrolltop = ul.scrollHeight;
     });
-
 });
 
 
