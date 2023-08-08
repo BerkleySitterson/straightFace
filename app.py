@@ -12,7 +12,7 @@ HOST, PORT = 'localhost', 5000
 global username, db, logged_in
 username = 'default'
 db = Database('database/straightface.db')
-app.debug = True;
+app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 app.config['SECRET'] = "secret"
 
