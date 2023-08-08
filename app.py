@@ -147,8 +147,7 @@ def handle_user_join_funny():
     print(f"User {username} has joined the funny side!")
     
     sid = request.sid
-    activeUsers[username] = sid
-    funnyQueue.append((username, sid))
+    db.add_funny_user(username, sid)
     attempt_pairing()
     emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
     emit("increment_serious_queue", seriousQueue) 
@@ -159,8 +158,7 @@ def handle_user_join_serious():
     print(f"User {username} has joined the serious side!")
     
     sid = request.sid
-    activeUsers[username] = sid
-    seriousQueue.append((username, sid))
+    db.add_funny_user(username, sid)
     attempt_pairing()
     emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
     emit("increment_serious_queue", seriousQueue)        

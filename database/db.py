@@ -250,5 +250,6 @@ class Database:
         returns:
             - A list of all user information in the funnyUsers database.
         """
-        self.cursor.execute("SELECT * FROM funnyUsers")
-        return self.cursor.fetchall()
+        self.cursor.execute("SELECT COUNT(*) FROM funnyUsers")
+        count = self.cursor.fetchone()[0]
+        return count
