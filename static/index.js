@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const socket = io(); 
 
     function handleRoleSelection(event) {
+        console.log("handleRoleSelection now being called.");
         const selectedRole = event.target.id === "funnyBtn" ? "funny" : "serious";
         socket.emit("user_join_" + selectedRole);
     }
