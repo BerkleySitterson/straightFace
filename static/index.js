@@ -2,20 +2,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const socket = io(); 
 
-    function handleRoleSelection(event) {
-        const selectedRole = event.target.id === "funnyBtn" ? "funny" : "serious";
-        socket.emit("user_join_" + selectedRole);
-    }
-    
-    document.getElementById("funnyBtn").addEventListener("click", handleRoleSelection);
-    document.getElementById("seriousBtn").addEventListener("click", handleRoleSelection);
-
-    socket.on("increment_funny_queue", function(funnyQueue) { // Updating the funny queue counter and displaying it
-        document.getElementById("funnyQueueNum").innerHTML = "Funny Queue: " + funnyQueue.length;
+    document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
+        socket.emit("user_join_funny");
     });
-
-    socket.on("increment_serious_queue", function(seriousQueue) { // Updating the serious queue counter and displaying it
-        document.getElementById("seriousQueueNum").innerHTML = "Serious Queue: " + seriousQueue.length;
+    
+    document.getElementById("seriousBtn").addEventListener("click", function() { // Once User has chosen serious role, add them to seriousUsers Queue
+        socket.emit("user_join_serious");                
     });
 
     socket.on("users_paired", function() {
@@ -63,8 +55,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ul.appendChild(li);
         ul.scrolltop = ul.scrollHeight;
     });
-});
 
+});
 
 
 
