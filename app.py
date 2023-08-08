@@ -184,13 +184,4 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     socketio.emit("users_paired", room=room)
        
 if __name__ == '__main__':
-    socketio.run(app, host='localhost')
-
-
-    
-
-    
-
-
-
-    
+    socketio.run(app, host='localhost') 
