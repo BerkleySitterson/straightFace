@@ -1,23 +1,110 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
+<head>
+    <title>StraightFace</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script src="../static/index.js"></script>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
+</head>
 
-    <body> 
-        <div id="landingPage"> 
-            <div class="index_content">
-                <button onclick="window.location.href='/login'" class="account_buttons" id="index_login">Log In</button>
-                <button onclick="window.location.href='/register'" class="account_buttons" id="index_register">Sign Up</button>
-                <div class="horizontal-line"></div>
+<body>
+    <div class="content">
+        {% block content %}
 
-                <div class="box-background">
-                    <h1 id="mainTitle">Welcome to<br>StraightFace</h1>
-                    <p id="titleParagraph">StraightFace is a video-chat roulette app where<br>the goal is to, you guessed it, keep a straight face.</p>
+        <!-- Landing Page -->
+            <div id="landing_page" style="visibility: visible;"> 
+                <div class="index_content">
+                    <button class="account_buttons" id="index_login">Log In</button>
+                    <button class="account_buttons" id="index_register">Sign Up</button>
+                    <div class="horizontal-line"></div>   
+                    <div class="box-background">
+                        <h1 id="mainTitle">Welcome to<br>StraightFace</h1>
+                        <p id="titleParagraph">StraightFace is a video-chat roulette app where<br>the goal is to, you guessed it, keep a straight face.</p>
+                    </div>               
                 </div>
-            
             </div>
-        </div>
 
-    </body>
+        <!-- Login Page -->
+            <div id="login_page" style="visibility: hidden;">
+                <h1 id="login_title">Welcome back</h1>
+                <div class="form-group" id="info_form_group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="login_username" name="username" placeholder="Enter username">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for= "password">Password</label>
+                    <input type="password" class="form-control" id="login_password" name="password" placeholder="Password">
+                </div>
+                <button type="submit" id="login_button">Login</button>
+                <p id="login_error_message"></p>
+            </div> 
 
-{% endblock %}
+        <!-- Register Page -->
+            <div id="register_page" style="visibility: hidden;">
+                <h2 id="register_title">Create a new account</h3>
+                <div class="form-group" id="info_form_group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="register_username" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="register_password" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="register_email" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" id="register_first_name" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" id="register_last_name" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary" id="register_button">Register</button>
+                <p id="register_error_message"></p>
+            </div>
+
+        <!-- Home Page -->
+            <div id="home_page" style="visibility: hidden;">
+
+                <div class="home_page-header">
+                    <h3 id="header_title">StraightFace</h3>
+                    <p id="username_display"></p>
+                    <button type="submit" id="logout_button">Log Out</button>
+                </div>
+
+                <div class="horizontal-line-home"></div>
+                <h1 id="mainTitle">StraightFace</h1>
+
+                <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
+                <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
+                <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
+                <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
+            </div>
+
+        <!-- Video-Chat Page -->
+            <div id="video_chat_page" style="visibility: hidden;">
+                <h1 id="funnyUsername"></h1>
+                <h1 id="seriousUsername"></h1>
+
+                <video id="funnyVideo" autoplay></video>
+                <video id="seriousVideo" autoplay></video>
+
+                <button type="button" id="disconnectBtn">X</button>
+
+                <ul id="chat-messages"></ul>
+                <input type="text" id="message" placeholder="Enter a Message">
+            </div>
+
+        {% endblock %}
+    </div>
+</body>    
 

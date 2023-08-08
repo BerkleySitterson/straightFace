@@ -9,177 +9,96 @@ eventlet.monkey_patch()
 
 app = Flask(__name__, static_folder='static')
 HOST, PORT = 'localhost', 5000
-global username, db, logged_in
+global db, logged_in
 username = 'default'
 db = Database('database/straightface.db')
 app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 app.config['SECRET'] = "secret"
 
-funnyQueue = [] # Queue to store funny users info
-seriousQueue = [] # Queue to store serious users info
-activeUsers = {} # Dictionary to store all active users and their corresponding sid
-
 @app.route('/')  # Render index.html when website is first visited
 def index():
     return render_template('index.html')
 
 
-@app.route('/login')
-def login_page():
-    """
-    Renders the login page when the user is at the `/login` endpoint.
+@socketio.on('login')
+def login(username, password):
 
-    args:
-        - None
-
-    returns:
-        - None
-    """
-    return render_template('login.html')
-
-
-@app.route('/home', methods=['POST'])
-def login():
-    """
-    Renders the home page when the user is at the `/home` endpoint with a POST request.
-
-    args:
-        - None
-
-    returns:
-        - None
-
-    modifies:
-        - sessions: adds a new session to the sessions object
-
-    """
-    global username;
-    username = request.form['username']
-    password = request.form['password']
     if login_pipeline(username, password):
-        logged_session()
-        return render_template('home.html', username=username)
+        global logged_in
+        logged_in = True
+        print(f"Login Successful for { username }")
+        emit("login_successful")
+        emit("increment_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
+        emit("increment_serious_queue", db.get_seriousUsers_length()) 
     else:
         print(f"Incorrect username ({username}) or password ({password}).")
-        return render_template('index.html', errorMessage="Invalid username or password.")
-    
-
-def logged_session():
-    global logged_in 
-    logged_in = True
+        emit("login_failed")
 
 
-@app.route('/register')
-def register_page():
-    """
-    Renders the register page when the user is at the `/register` endpoint.
+@socketio.on('register')
+def register(username, password, email, first_name, last_name):
 
-    args:
-        - None
-
-    returns:
-        - None
-    """
-    return render_template('register.html')
-
-
-@app.route('/register', methods=['POST'])
-def register():
-    """
-    Renders the index page when the user is at the `/register` endpoint with a POST request.
-
-    args:
-        - None
-
-    returns:
-        - None
-
-    modifies:
-        - passwords.txt: adds a new username and password combination to the file
-        - database/straightface.db: adds a new user to the database
-    """
-    username = request.form['username']
-    password = request.form['password']
-    email = request.form['email']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    
     if username == "" or password == "" or email == "" or first_name == "" or last_name == "":
-        return render_template('register.html', errorMessage="Please fill in all required fields.")
+        emit("register_failed")
     else:      
         salt, key = hash_password(password)
         update_passwords(username, key, salt)
         db.add_new_user(username, key, email, first_name, last_name)
-        return redirect(url_for('index'))
-    
-@app.route('/videoChat')
-def videoChat():
-    """
-    Renders the register page when the user is at the `/register` endpoint.
+        emit("register_successful")
 
-    args:
-        - None
-
-    returns:
-        - None
-    """
-    return render_template('videoChat.html')
-    
-    
-
-@app.route('/logout', methods=['POST'])
-def logout():
-    """
-    Renders the index page when the user clicks 'Logout' button.
-
-    args:
-        - None
-
-    returns:
-        - None
-    """
-    return redirect(url_for('index'))
 
 @socketio.on("user_join_funny") # User joins 'funny' team and is inserted into the waiting queue
-def handle_user_join_funny():
+def handle_user_join_funny(username):
     
     print(f"User {username} has joined the funny side!")
     
     sid = request.sid
     db.add_funny_user(username, sid)
     attempt_pairing()
-    emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
-    emit("increment_serious_queue", seriousQueue) 
+    emit("increment_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
+    emit("increment_serious_queue", db.get_seriousUsers_length()) 
     
 @socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
-def handle_user_join_serious():
+def handle_user_join_serious(username):
     
     print(f"User {username} has joined the serious side!")
     
     sid = request.sid
-    db.add_funny_user(username, sid)
+    db.add_serious_user(username, sid)
     attempt_pairing()
-    emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
-    emit("increment_serious_queue", seriousQueue)        
+    emit("increment_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
+    emit("increment_serious_queue", db.get_seriousUsers_length())
         
 def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
     
-    if len(funnyQueue) >= 1 and len(seriousQueue) >= 1:
-        funnyUser = funnyQueue.pop(0)
-        seriousUser = seriousQueue.pop(0)
+    print(f"attempt_pairing executing")
+
+    if db.get_funnyUsers_length() >= 1 and db.get_seriousUsers_length() >= 1:
+        funnyUser = db.get_and_remove_first_funnyUser()
+        seriousUser = db.get_and_remove_first_seriousUser()
+        print(f"{funnyUser} and {seriousUser}")
         pair_users(funnyUser, seriousUser)
+        print(f"attempt_pairing completed successfully")
         
 
 def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and puts them in a room
     
     room = f"{funnyUser[1]}_{seriousUser[1]}_room"
+    print(f"{funnyUser[1]}_{seriousUser[1]}_room")
     
     join_room(room, funnyUser[1])
     join_room(room, seriousUser[1])
     
-    print(f"Paired {username} with {username} in room: {room}")
+    print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
     emit("users_paired", room=room)
+    
+@socketio.on("disconnect")
+def handle_disconnect():
+    
+    print(f"Handle_disconnect being called")
+    
+    db.remove_user_from_queues(username)
        
 if __name__ == '__main__':
     socketio.run(app, host='localhost') 
