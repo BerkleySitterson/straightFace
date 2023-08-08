@@ -12,7 +12,7 @@ HOST, PORT = 'localhost', 5000
 global username, db, logged_in
 username = 'default'
 db = Database('database/straightface.db')
-app.debug = True;
+app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 app.config['SECRET'] = "secret"
 
@@ -181,7 +181,7 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     join_room(room, seriousUser[1])
     
     print(f"Paired {username} with {username} in room: {room}")
-    socketio.emit("users_paired", room=room)
+    emit("users_paired", room=room)
        
 if __name__ == '__main__':
     socketio.run(app, host='localhost') 
