@@ -54,7 +54,7 @@ def login():
         - sessions: adds a new session to the sessions object
 
     """
-    global username;
+    global username
     username = request.form['username']
     password = request.form['password']
     if login_pipeline(username, password):
@@ -150,8 +150,8 @@ def handle_user_join_funny():
     activeUsers[username] = sid
     funnyQueue.append((username, sid))
     attempt_pairing()
-    emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
-    emit("increment_serious_queue", seriousQueue) 
+    # emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
+    # emit("increment_serious_queue", seriousQueue) 
     
 @socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
 def handle_user_join_serious():
@@ -162,8 +162,8 @@ def handle_user_join_serious():
     activeUsers[username] = sid
     seriousQueue.append((username, sid))
     attempt_pairing()
-    emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
-    emit("increment_serious_queue", seriousQueue)        
+    # emit("increment_funny_queue", funnyQueue) # Only used for testing purposes
+    # emit("increment_serious_queue", seriousQueue)        
         
 def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
     
@@ -171,6 +171,7 @@ def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serio
         funnyUser = funnyQueue.pop(0)
         seriousUser = seriousQueue.pop(0)
         pair_users(funnyUser, seriousUser)
+        print('Users ready in queue...')
         
 
 def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and puts them in a room
