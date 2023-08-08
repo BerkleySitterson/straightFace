@@ -2,16 +2,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const socket = io(); 
 
-    document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
-        socket.emit("user_join_funny");
-    });
+    if (window.location.href.includes("http://localhost:5000/home")) {
+        document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
+            socket.emit("user_join_funny");
+        });
     
-    document.getElementById("seriousBtn").addEventListener("click", function() { // Once User has chosen serious role, add them to seriousUsers Queue
-        socket.emit("user_join_serious");                
-    });
-
+        document.getElementById("seriousBtn").addEventListener("click", function() { // Once User has chosen serious role, add them to seriousUsers Queue
+            socket.emit("user_join_serious");                
+        });
+    }
     socket.on("users_paired", function() {
         console.log("users_paired being executed now.");
+        window.location.href = '/videoChat';
     
         navigator.mediaDevices.getUserMedia({ video: true, audio: false }) // Requesting access to user's camera and microphone
                 .then(function (stream) {
@@ -24,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.log("error is getting stream");
                 });
 
-        window.location.href = '/videoChat';
         console.log("users_paired no completed.");
     });
 
