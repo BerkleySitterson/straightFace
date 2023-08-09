@@ -21,62 +21,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
-
-
-@app.route('/home', methods=['POST'])
-def login():
-    global username;
-    username = request.form['username']
-    password = request.form['password']
-    if login_pipeline(username, password):
-        logged_session()
-        return render_template('home.html', username=username)
-    else:
-        print(f"Incorrect username ({username}) or password ({password}).")
-        return render_template('index.html', errorMessage="Invalid username or password.")
-    
-
-def logged_session():
-    global logged_in 
-    logged_in = True
-
-
-@app.route('/register')
-def register_page():
-    return render_template('register.html')
-
-
-@app.route('/register', methods=['POST'])
-def register(): 
-    username = request.form['username']
-    password = request.form['password']
-    email = request.form['email']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    
-    if username == "" or password == "" or email == "" or first_name == "" or last_name == "":
-        return render_template('register.html', errorMessage="Please fill in all required fields.")
-    else:      
-        salt, key = hash_password(password)
-        update_passwords(username, key, salt)
-        db.add_new_user(username, key, email, first_name, last_name)
-        return redirect(url_for('index'))
-    
-@app.route('/room')
-def videoChat():
-    return render_template('room.html')
-    
-    
-
-@app.route('/logout', methods=['POST'])
-def logout():
-    return redirect(url_for('index'))
-
-
-
 @socketio.on('login')
 def login(username, password):
 
@@ -155,24 +99,6 @@ def handle_disconnect():
     print(f"Handle_disconnect being called")
     
     db.remove_user_from_queues(username)
-    
-@socketio.on("offer")
-def handle_offer(offer, room):
-    # Broadcast the offer to the other user in the room
-    print("handle_offer executing")
-    emit("offer", offer, room=room)
-
-@socketio.on("answer")
-def handle_answer(answer, room):
-    # Broadcast the answer to the other user in the room
-    print("handle_answer executing")
-    emit("answer", answer, room=room)
-
-@socketio.on("ice-candidate")
-def handle_ice_candidate(candidate, room):
-    # Broadcast the ICE candidate to the other user in the room
-    print("handle_ice_candidate executing")
-    emit("ice-candidate", candidate, room=room)
        
 if __name__ == '__main__':
     socketio.run(app, host='localhost') 
