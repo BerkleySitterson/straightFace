@@ -9,9 +9,9 @@ CREATE TABLE users (
 CREATE TABLE funnyUsers (
     username VARCHAR(255) PRIMARY KEY NOT NULL,
     sessionID VARCHAR(255) NOT NULL
-)
+);
 
 CREATE TABLE seriousUsers (
     username VARCHAR(255) PRIMARY KEY NOT NULL,
     sessionID VARCHAR(255) NOT NULL
-)
+);
