@@ -182,7 +182,7 @@ body, html {
     left: 54%;
 }
 
-#funnyVideo {
+#localVideo {
     width: 40rem;
     height: 25rem;
     object-fit: cover;
@@ -194,7 +194,7 @@ body, html {
     z-index: 10;
 }
 
-#seriousVideo {
+#remoteVideo {
     width: 40rem;
     height: 25rem;
     object-fit: cover;
