@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         function createPeerConnection() {
-            const peerConnection = new RTCPeerConnection(PC_CONFIG);
+            peerConnection = new RTCPeerConnection(PC_CONFIG);
         
             peerConnection.onicecandidate = (event) => {
                 handleICECandidateEvent(event, peerConnection);
@@ -199,13 +199,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 handleNegotiationNeededEvent(peerConnection);
             };
         
+            console.log('PeerConnection being returned: ' + peerConnection);
             return peerConnection;
         }
 
         function handleNegotiationNeededEvent(peerConnection) { // Change parameter name to pc
             peerConnection.createOffer()
                 .then((offer) => {
-                    peerConnection.setLocalDescription(offer);
+                    return peerConnection.setLocalDescription(offer);
                 })
                 .then(() => {
                     console.log(`sending offer to <${peerID}> ...`);
@@ -230,27 +231,27 @@ document.addEventListener("DOMContentLoaded", function() {
             createPeerConnection(peer_id);
             let desc = new RTCSessionDescription(msg['sdp']);
             console.log('Description: ' + desc.toString());
-            console.log('Peer Conenction: ');
+            console.log('Peer Conenction: ' + peerConnection.toString());
             peerConnection.setRemoteDescription(desc)
             .then(()=>{
                 if (role == "funny") {
                     let local_stream = funnyVideo.srcObject;
-                    local_stream.getTracks().forEach((track)=>{peer_id.addTrack(track, local_stream);});                   
+                    local_stream.getTracks().forEach((track)=>{peerConnection.addTrack(track, local_stream);});                   
                 } 
                 else if (role == "serious") {
                     let local_stream = seriousVideo.srcObject;
-                    local_stream.getTracks().forEach((track)=>{peer_id.addTrack(track, local_stream);});            
+                    local_stream.getTracks().forEach((track)=>{peerConnection.addTrack(track, local_stream);});            
                 }
             })
-            .then(()=>{return peer_id.createAnswer();})
-            .then((answer)=>{return peer_id.setLocalDescription(answer);})
+            .then(()=>{return peerConnection.createAnswer();})
+            .then((answer)=>{return peerConnection.setLocalDescription(answer);})
             .then(()=>{
                 console.log(`sending answer to <${peer_id}> ...`);
                 sendViaServer({
                     "sender_id": myID,
                     "target_id": peer_id,
                     "type": "answer",
-                    "sdp": peer_id.localDescription
+                    "sdp": peerConnection.localDescription
                 });
             })
             .catch(log_error);
@@ -293,16 +294,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 getVideoObj(peerID).srcObject = event.streams[0];
             }
         }
-
-
-
-
-
-
-
-
-
-
 
     
         document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
