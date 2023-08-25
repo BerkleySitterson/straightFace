@@ -1,7 +1,14 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-        const socket = io(); 
-        var username;
+    var userID;
+    var peerID;
+    var role;
+    var peerConnection;
+    
+    
+    var protocol = window.location.protocol;
+    var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
+    var username;
         
         // ----- Landing Page functions ----- // 
     
@@ -57,10 +64,12 @@ document.addEventListener("DOMContentLoaded", function() {
     
         document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
             socket.emit("user_join_funny", username);
+            role = "funny";
         });
         
         document.getElementById("seriousBtn").addEventListener("click", function() { // Once User has chosen serious role, add them to seriousUsers Queue
-            socket.emit("user_join_serious", username);                
+            socket.emit("user_join_serious", username);
+            role = "serious";          
         });
     
         socket.on("increment_funny_queue", function(num) {
@@ -73,27 +82,228 @@ document.addEventListener("DOMContentLoaded", function() {
         
     
         // ----- Video Chat functions ----- //
-    
-        socket.on("users_paired", function() {
-            console.log("users_paired being executed now.");
+
+        socket.on("videoRedirect", function() {
+            console.log("videoRedirect being executed now.");
+
             document.getElementById("home_page").style.visibility = "hidden";
             document.getElementById("video_chat_page").style.visibility = "visible";
+            startCamera();
+
+            console.log("videoRedirect now complete.");
+        });
     
-            funnyVideo = document.getElementById("localVideo");
-        
-            navigator.mediaDevices.getUserMedia({ video: true, audio: false }) // Requesting access to user's camera and microphone
-                    .then(function (stream) {
-                        localStream = stream;
-                        funnyVideo.srcObject = localStream; // Set the video stream as the source for the <video> element
-                        console.log("stream has been created");
-                    })
-                    .catch(function (error) {
-                        console.error('Error accessing camera:', error);
-                        console.log("error is getting stream");
-                    });
-    
+        socket.on("users_paired", function(data) {
+            console.log("users_paired being executed now.");
+
+            userID = data["userID"];
+            peerID = data["peerID"];
+
+            invite(peerID);
+
             console.log("users_paired now completed.");
         });
+
+        var camera_allowed=false; 
+        var mediaConstraints = {
+            audio: false,
+            video: true
+        };
+
+
+        function startCamera() 
+        {           
+            let funnyVideo = document.getElementById("funnyVideo");
+            let seriousVideo = document.getElementById("seriousVideo");
+
+            navigator.mediaDevices.getUserMedia(mediaConstraints)
+            .then((stream)=>{
+
+                if (role == "funny") {
+                    funnyVideo.srcObject = stream;
+                    camera_allowed = true;
+                    socket.connect();
+                } 
+                else if (role == "serious") {
+                    seriousVideo.srcObject = stream;
+                    camera_allowed = true;
+                    socket.connect();
+                }
+            })
+            .catch((e)=>{
+                console.log("getUserMedia Error! ", e);
+            });
+        }
+
+        var PC_CONFIG = {
+            iceServers: [
+                {
+                    urls: ['stun:stun.l.google.com:19302', 
+                            'stun:stun1.l.google.com:19302',
+                            'stun:stun2.l.google.com:19302',
+                            'stun:stun3.l.google.com:19302',
+                            'stun:stun4.l.google.com:19302'
+                        ]
+                },
+            ]
+        };
+
+        function log_error(e){console.log("[ERROR] ", e);}
+        function sendViaServer(data){socket.emit("data", data);}
+
+        socket.on("data", (msg)=>{
+            switch(msg["type"])
+            {
+                case "offer":
+                    handleOfferMsg(msg);
+                    break;
+                case "answer":
+                    handleAnswerMsg(msg);
+                    break;
+                case "new-ice-candidate":
+                    handleNewICECandidateMsg(msg);
+                    break;
+            }
+        });
+
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        async function invite(peerID) {
+            console.log(`Creating peer connection for <${peerID}> ...`);
+            peerConnection = createPeerConnection(); // Assign to the global peerConnection variable
+            await sleep(10000);
+        
+            if (role == "funny") {
+                let local_stream = funnyVideo.srcObject;
+                local_stream.getTracks().forEach((track) => {
+                    peerConnection.addTrack(track, local_stream);
+                });
+            } else if (role == "serious") {
+                let local_stream = seriousVideo.srcObject;
+                local_stream.getTracks().forEach((track) => {
+                    peerConnection.addTrack(track, local_stream);
+                });
+            }
+        }
+
+        function createPeerConnection() {
+            const peerConnection = new RTCPeerConnection(PC_CONFIG);
+        
+            peerConnection.onicecandidate = (event) => {
+                handleICECandidateEvent(event, peerConnection);
+            };
+            peerConnection.ontrack = (event) => {
+                handleTrackEvent(event, peerConnection);
+            };
+            peerConnection.onnegotiationneeded = () => {
+                handleNegotiationNeededEvent(peerConnection);
+            };
+        
+            return peerConnection;
+        }
+
+        function handleNegotiationNeededEvent(peerConnection) { // Change parameter name to pc
+            peerConnection.createOffer()
+                .then((offer) => {
+                    peerConnection.setLocalDescription(offer);
+                })
+                .then(() => {
+                    console.log(`sending offer to <${peerID}> ...`);
+                    sendViaServer({
+                        "sender_id": userID,
+                        "target_id": peerID,
+                        "type": "offer",
+                        "sdp": peerConnection.localDescription // Use pc.localDescription here
+                    });
+                })
+                .catch(log_error);
+        }
+
+        function handleOfferMsg(msg)
+        {   
+            
+
+            let peer_id = msg['sender_id'];
+
+            console.log(`offer recieved from <${peer_id}>`);
+            
+            createPeerConnection(peer_id);
+            let desc = new RTCSessionDescription(msg['sdp']);
+            console.log('Description: ' + desc.toString());
+            console.log('Peer Conenction: ');
+            peerConnection.setRemoteDescription(desc)
+            .then(()=>{
+                if (role == "funny") {
+                    let local_stream = funnyVideo.srcObject;
+                    local_stream.getTracks().forEach((track)=>{peer_id.addTrack(track, local_stream);});                   
+                } 
+                else if (role == "serious") {
+                    let local_stream = seriousVideo.srcObject;
+                    local_stream.getTracks().forEach((track)=>{peer_id.addTrack(track, local_stream);});            
+                }
+            })
+            .then(()=>{return peer_id.createAnswer();})
+            .then((answer)=>{return peer_id.setLocalDescription(answer);})
+            .then(()=>{
+                console.log(`sending answer to <${peer_id}> ...`);
+                sendViaServer({
+                    "sender_id": myID,
+                    "target_id": peer_id,
+                    "type": "answer",
+                    "sdp": peer_id.localDescription
+                });
+            })
+            .catch(log_error);
+        }
+
+        function handleAnswerMsg(msg)
+        {
+            peerID = msg['sender_id'];
+            console.log(`answer recieved from <${peerID}>`);
+            let desc = new RTCSessionDescription(msg['sdp']);
+            peerConnection.setRemoteDescription(desc)
+        }
+
+        function handleICECandidateEvent(event, peerID)
+        {
+            if(event.candidate){
+                sendViaServer({
+                    "sender_id": userID,
+                    "target_id": peerID,
+                    "type": "new-ice-candidate",
+                    "candidate": event.candidate
+                });
+            }
+        }
+
+        function handleNewICECandidateMsg(msg) {
+            // Use peerConnection instead of peerID here
+            console.log(`ICE candidate received from <${msg['sender_id']}>`);
+            var candidate = new RTCIceCandidate(msg.candidate);
+            peerConnection.addIceCandidate(candidate) // Use peerConnection
+                .catch(log_error);
+        }
+
+        function handleTrackEvent(event, peerID)
+        {
+            console.log(`Track event recieved from <${peerID}>`);
+            
+            if(event.streams)
+            {
+                getVideoObj(peerID).srcObject = event.streams[0];
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
     
         document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
             socket.emit("disconnect_user")

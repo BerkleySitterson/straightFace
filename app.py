@@ -56,8 +56,7 @@ def handle_user_join_funny(username):
     sid = request.sid
     db.add_funny_user(username, sid)
     attempt_pairing()
-    emit("increment_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
-    emit("increment_serious_queue", db.get_seriousUsers_length()) 
+    emit("increment_funny_queue", db.get_funnyUsers_length(), broadcast=True) # Only used for testing purposes
     
 @socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
 def handle_user_join_serious(username):
@@ -67,8 +66,7 @@ def handle_user_join_serious(username):
     sid = request.sid
     db.add_serious_user(username, sid)
     attempt_pairing()
-    emit("increment_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
-    emit("increment_serious_queue", db.get_seriousUsers_length())
+    emit("increment_serious_queue", db.get_seriousUsers_length(), broadcast=True) # Only used for testing purposes
         
 def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
     
@@ -90,8 +88,35 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     join_room(room, funnyUser[1])
     join_room(room, seriousUser[1])
     
+    if funnyUser[1] == request.sid:
+        peerID = seriousUser[1]
+    else:
+        peerID = funnyUser[1]
+    
     print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
-    emit("users_paired", room=room)
+    emit("videoRedirect", room=room)
+    emit("users_paired", {"userID": request.sid, "peerID": peerID})
+    print(f"UserID: {request.sid} || PeerID: {peerID}")
+    
+    
+@socketio.on("data")
+def on_data(data):
+    sender_sid = data['sender_id']
+    target_sid = data['target_id']
+    if sender_sid != request.sid:
+        print("Error: sender_sid and user_id mistmatch")
+        
+    if data["type"] != "new-ice-candidate":
+        print('{} message from {} to {}'.format(
+            data["type"], sender_sid, target_sid
+        ))
+    emit('data', data, room=target_sid)
+    
+    
+    
+    
+    
+    
     
 @socketio.on("disconnect")
 def handle_disconnect():
