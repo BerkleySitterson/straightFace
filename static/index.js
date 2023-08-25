@@ -224,11 +224,11 @@ document.addEventListener("DOMContentLoaded", function() {
         {   
             
 
-            let peer_id = msg['sender_id'];
+            let peerID = msg['sender_id'];
 
-            console.log(`offer recieved from <${peer_id}>`);
+            console.log(`offer recieved from <${peerID}>`);
             
-            peerConnection = createPeerConnection(peer_id);
+            peerConnection = createPeerConnection(peerID);
             let desc = new RTCSessionDescription(msg['sdp']);
             console.log('Description: ' + desc.toString());
             console.log('Peer Conenction: ' + peerConnection.toString());
@@ -246,10 +246,10 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(()=>{return peerConnection.createAnswer();})
             .then((answer)=>{return peerConnection.setLocalDescription(answer);})
             .then(()=>{
-                console.log(`sending answer to <${peer_id}> ...`);
+                console.log(`sending answer to <${peerID}> ...`);
                 sendViaServer({
                     "sender_id": userID,
-                    "target_id": peer_id,
+                    "target_id": peerID,
                     "type": "answer",
                     "sdp": peerConnection.localDescription
                 });
@@ -259,10 +259,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         function handleAnswerMsg(msg)
         {
-            peerID = msg['sender_id'];
+            console.log('handleAnswerMsg being executed.');
+            console.log('PeerID: ' + peerID);
             console.log(`answer recieved from <${peerID}>`);
             let desc = new RTCSessionDescription(msg['sdp']);
             peerConnection.setRemoteDescription(desc)
+            console.log('handleAnswerMsg finished.');
         }
 
         function handleICECandidateEvent(event, peerID)
