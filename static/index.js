@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         function createPeerConnection() {
-            peerConnection = new RTCPeerConnection(PC_CONFIG);
+            const peerConnection = new RTCPeerConnection(PC_CONFIG);
         
             peerConnection.onicecandidate = (event) => {
                 handleICECandidateEvent(event, peerConnection);
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             console.log(`offer recieved from <${peer_id}>`);
             
-            createPeerConnection(peer_id);
+            peerConnection = createPeerConnection(peer_id);
             let desc = new RTCSessionDescription(msg['sdp']);
             console.log('Description: ' + desc.toString());
             console.log('Peer Conenction: ' + peerConnection.toString());
@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(()=>{
                 console.log(`sending answer to <${peer_id}> ...`);
                 sendViaServer({
-                    "sender_id": myID,
+                    "sender_id": userID,
                     "target_id": peer_id,
                     "type": "answer",
                     "sdp": peerConnection.localDescription
