@@ -288,10 +288,20 @@ document.addEventListener("DOMContentLoaded", function() {
         function handleTrackEvent(event, peerID)
         {
             console.log(`Track event recieved from <${peerID}>`);
-            
+            let funnyVideo = document.getElementById("funnyVideo");
+            let seriousVideo = document.getElementById("seriousVideo");
+            console.log('293');
+
             if(event.streams)
             {
-                getVideoObj(peerID).srcObject = event.streams[0];
+                if (role == "funny") {
+                    seriousVideo.srcObject = event.streams[0];
+                    console.log('Serious Video being populated.');
+                } 
+                else if (role == "serious") {
+                    funnyVideo.srcObject = event.streams[0];
+                    console.log('303');
+                }
             }
         }
 
