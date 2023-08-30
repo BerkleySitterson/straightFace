@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
               localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
             })
-
+            
             console.log("users_paired now completed.");
         });
 
@@ -134,8 +134,22 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             myPeerConnection.onicecandidate = handleICECandidateEvent;
-            myPeerConnection.ontrack = handleTrackEvent;
+            // myPeerConnection.ontrack = handleTrackEvent;
             myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
+
+            myPeerConnection.addEventListener('track', async (event) => {
+                const [remoteStream] = event.streams;
+    
+                if (role == "funny") {
+                    document.getElementById("seriousVideo").srcObject = remoteStream;
+                    console.log("Serious Video being populated.");
+                } else {
+                    document.getElementById("funnyVideo").srcObject = remoteStream;
+                    console.log("Funny Video being populated.");
+                }
+            });
+    
+            
         }
 
         function handleNegotiationNeededEvent() {
@@ -164,14 +178,19 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        function handleTrackEvent(event) {
-            console.log('handleTrackEvent being executed.');
-            if (role == "funny") {
-                document.getElementById("seriousVideo").srcObject = event.streams[0];
-            } else {
-                document.getElementById("funnyVideo").srcObject = event.streams[0];
-            }
-        }
+        // function handleTrackEvent(event) {
+        //     console.log('handleTrackEvent being executed.');
+        //     console.log("Event: " + event);
+        //     console.log("Stream: " + event.streams[0]);
+        //     console.log("Stream Length: " + event.streams.length);
+        //     if (role == "funny") {
+        //         document.getElementById("seriousVideo").srcObject = event.streams[0];
+        //         console.log("Serious Video being populated.");
+        //     } else {
+        //         document.getElementById("funnyVideo").srcObject = event.streams[0];
+        //         console.log("Funny Video being populated.");
+        //     }
+        // }
 
         socket.on("handleVideoOfferMsg", function(msg) {
             console.log('Handle Video Offer being executed.');
@@ -195,11 +214,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     document.getElementById("funnyVideo").srcObject = localStream;
                 } else {
                     document.getElementById("seriousVideo").srcObject = localStream;
-                }
-          
-                localStream
-                  .getTracks()
-                  .forEach((track) => myPeerConnection.addTrack(track, localStream));
+                }   
+                localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
               })
               .then(() => myPeerConnection.createAnswer())
               .then((answer) => myPeerConnection.setLocalDescription(answer))
@@ -211,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     sdp: myPeerConnection.localDescription,
                   });
               })
+
               console.log('handleVideoOfferMsg now complete');
         });
 
@@ -228,9 +245,6 @@ document.addEventListener("DOMContentLoaded", function() {
             myPeerConnection.setRemoteDescription(desc)
         });
 
-
-
-        
     
         document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
             socket.emit("disconnect_user")
