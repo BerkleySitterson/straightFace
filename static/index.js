@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
             myID = data['myID'];
             targetID = data['targetID'];
 
-            createPeerConnection();
+            console.log(createPeerConnection());
 
             navigator.mediaDevices.getUserMedia(mediaConstraints)
             .then((localStream) => {
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
     
-            
+            return myPeerConnection.connectionState;
         }
 
         function handleNegotiationNeededEvent() {
@@ -205,8 +205,8 @@ document.addEventListener("DOMContentLoaded", function() {
             myID = msg.target;
             console.log("TargetID: " + targetID);
             console.log("MyID: " + myID);
-            createPeerConnection();
-          
+            console.log(createPeerConnection());
+
             const desc = new RTCSessionDescription(msg.sdp);
             console.log(msg.sdp);
           
@@ -236,18 +236,19 @@ document.addEventListener("DOMContentLoaded", function() {
               console.log('handleVideoOfferMsg now complete');
         });
 
-        socket.on("handleNewICECandidateMsg", function(msg) {
+        socket.on("handleNewIceCandidateMsg", function(msg) {
             console.log('New Ice Candidate Received');
             const candidate = new RTCIceCandidate(msg.candidate);
           
             myPeerConnection.addIceCandidate(candidate);
+            console.log('MyPeerConnection State: ' + myPeerConnection.connectionState);
         });
 
         socket.on("handleVideoAnswerMsg", function(msg) {
             targetID = msg.name;
             console.log(`answer recieved from ` + msg.name);
             let desc = new RTCSessionDescription(msg.sdp);
-            myPeerConnection.setRemoteDescription(desc)
+            myPeerConnection.setRemoteDescription(desc);
         });
 
     
