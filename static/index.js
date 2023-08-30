@@ -178,11 +178,13 @@ document.addEventListener("DOMContentLoaded", function() {
             let localStream = null;
           
             targetID = msg.name;
-            console.log(JSON.stringify(msg.name));
+            myID = msg.target;
+            console.log("TargetID: " + targetID);
+            console.log("MyID: " + myID);
             createPeerConnection();
           
             const desc = new RTCSessionDescription(msg.sdp);
-            console.log(JSON.stringify(msg.sdp));
+            console.log(msg.sdp);
           
             myPeerConnection
               .setRemoteDescription(desc)
@@ -202,14 +204,12 @@ document.addEventListener("DOMContentLoaded", function() {
               .then(() => myPeerConnection.createAnswer())
               .then((answer) => myPeerConnection.setLocalDescription(answer))
               .then(() => {
-                const msg = {
-                  name: myID,
-                  target: targetID,
-                  type: "video-answer",
-                  sdp: myPeerConnection.localDescription,
-                };
-          
-                sendToServer(msg);
+                sendToServer({
+                    name: myID,
+                    target: targetID,
+                    type: "video-answer",
+                    sdp: myPeerConnection.localDescription,
+                  });
               })
               console.log('handleVideoOfferMsg now complete');
         });
@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         socket.on("handleVideoAnswerMsg", function(msg) {
             targetID = msg.name;
-            console.log(`answer recieved from <${targetID}>`);
+            console.log(`answer recieved from ` + msg.name);
             let desc = new RTCSessionDescription(msg.sdp);
             myPeerConnection.setRemoteDescription(desc)
         });
