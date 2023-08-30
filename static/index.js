@@ -123,12 +123,14 @@ document.addEventListener("DOMContentLoaded", function() {
             myPeerConnection = new RTCPeerConnection({
                 iceServers: [
                     {
-                        urls: ['stun:stun.l.google.com:19302', 
-                                'stun:stun1.l.google.com:19302',
-                                'stun:stun2.l.google.com:19302',
-                                'stun:stun3.l.google.com:19302',
-                                'stun:stun4.l.google.com:19302'
-                            ]
+                        urls: [
+                            "turn:us-turn8.xirsys.com:80?transport=udp",
+                            "turn:us-turn8.xirsys.com:3478?transport=udp",
+                            "turn:us-turn8.xirsys.com:80?transport=tcp",
+                            "turn:us-turn8.xirsys.com:3478?transport=tcp",
+                            "turns:us-turn8.xirsys.com:443?transport=tcp",
+                            "turns:us-turn8.xirsys.com:5349?transport=tcp"
+                        ]
                     },
                 ],
             });
