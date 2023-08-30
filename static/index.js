@@ -89,23 +89,12 @@ document.addEventListener("DOMContentLoaded", function() {
         socket.on("redirect_to_video", function() {
             document.getElementById("home_page").style.visibility = "hidden";
             document.getElementById("video_chat_page").style.visibility = "visible";
-
-            navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then((localStream) => {
-                if (role == "funny") {
-                    document.getElementById("funnyVideo").srcObject = localStream;
-                } else {
-                    document.getElementById("seriousVideo").srcObject = localStream;
-                }
-              localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
-            })
         });
 
         function sendToServer(msg) {
             console.log('sendToServer being executed now.');
-            const msgJSON = JSON.stringify(msg);
 
-            socket.emit("data", msgJSON);
+            socket.emit("data", msg);
         }
     
         socket.on("users_paired", function(data) {
@@ -189,9 +178,11 @@ document.addEventListener("DOMContentLoaded", function() {
             let localStream = null;
           
             targetID = msg.name;
+            console.log(JSON.stringify(msg.name));
             createPeerConnection();
           
             const desc = new RTCSessionDescription(msg.sdp);
+            console.log(JSON.stringify(msg.sdp));
           
             myPeerConnection
               .setRemoteDescription(desc)
@@ -212,8 +203,8 @@ document.addEventListener("DOMContentLoaded", function() {
               .then((answer) => myPeerConnection.setLocalDescription(answer))
               .then(() => {
                 const msg = {
-                  name: myUsername,
-                  target: targetUsername,
+                  name: myID,
+                  target: targetID,
                   type: "video-answer",
                   sdp: myPeerConnection.localDescription,
                 };

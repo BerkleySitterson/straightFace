@@ -100,17 +100,21 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     print(f"UserID: {request.sid} || PeerID: {targetID}")
     
 @socketio.on("data") 
-def handleSignaling(msgJSON):
-    msg = json.loads(msgJSON)
-    msg_type = msg.get("type")
-    target = msg.get("target")
+def handleSignaling(msg):
+
+    msg_type = msg["type"]
+    target = msg["target"]
+    
+    print(f"Message: {msg}")
+    print(f"Message Type: {msg_type}")
+    print(f"Target ID: {target}")
     
     if msg_type == "video-offer":
-        emit("handleVideoOfferMsg", msgJSON, to=target)
+        emit("handleVideoOfferMsg", msg, to=target)
     elif msg_type == "new-ice-candidate":
-        emit("handleNewIceCandidateMsg", msgJSON, to=target)
+        emit("handleNewIceCandidateMsg", msg, to=target)
     elif msg_type == "video-answer":
-        emit("handleVideoAnswerMsg", msgJSON, to=target)   
+        emit("handleVideoAnswerMsg", msg, to=target)   
     
 @socketio.on("disconnect")
 def handle_disconnect():
