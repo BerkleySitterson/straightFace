@@ -1,4 +1,5 @@
 import eventlet
+import json
 
 from flask import Flask, redirect, render_template, request, url_for
 from flask_socketio import SocketIO, join_room, rooms, close_room, emit
@@ -89,34 +90,27 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     join_room(room, seriousUser[1])
     
     if funnyUser[1] == request.sid:
-        peerID = seriousUser[1]
+        targetID = seriousUser[1]
     else:
-        peerID = funnyUser[1]
+        targetID = funnyUser[1]
     
     print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
-    emit("videoRedirect", room=room)
-    emit("users_paired", {"userID": request.sid, "peerID": peerID})
-    print(f"UserID: {request.sid} || PeerID: {peerID}")
+    emit("redirect_to_video", room=room)
+    emit("users_paired", {"myID": request.sid, "targetID": targetID})
+    print(f"UserID: {request.sid} || PeerID: {targetID}")
     
+@socketio.on("data") 
+def handleSignaling(msgJSON):
+    msg = json.loads(msgJSON)
+    msg_type = msg.get("type")
+    target = msg.get("target")
     
-@socketio.on("data")
-def on_data(data):
-    sender_sid = data['sender_id']
-    target_sid = data['target_id']
-    if sender_sid != request.sid:
-        print("Error: sender_sid and user_id mistmatch")
-        
-    if data["type"] != "new-ice-candidate":
-        print('{} message from {} to {}'.format(
-            data["type"], sender_sid, target_sid
-        ))
-    emit('data', data, room=target_sid)
-    
-    
-    
-    
-    
-    
+    if msg_type == "video-offer":
+        emit("handleVideoOfferMsg", msgJSON, to=target)
+    elif msg_type == "new-ice-candidate":
+        emit("handleNewIceCandidateMsg", msgJSON, to=target)
+    elif msg_type == "video-answer":
+        emit("handleVideoAnswerMsg", msgJSON, to=target)   
     
 @socketio.on("disconnect")
 def handle_disconnect():

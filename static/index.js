@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    var userID;
-    var peerID;
+    var myID;
+    var targetID;
     var role;
-    var peerConnection;
-    
-    
+
+    var mediaConstraints = {
+        audio: false,
+        video: true
+    };
+     
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
     var username;
@@ -83,230 +86,160 @@ document.addEventListener("DOMContentLoaded", function() {
     
         // ----- Video Chat functions ----- //
 
-        socket.on("videoRedirect", function() {
-            console.log("videoRedirect being executed now.");
-
+        socket.on("redirect_to_video", function() {
             document.getElementById("home_page").style.visibility = "hidden";
             document.getElementById("video_chat_page").style.visibility = "visible";
-            startCamera();
 
-            console.log("videoRedirect now complete.");
+            navigator.mediaDevices.getUserMedia(mediaConstraints)
+            .then((localStream) => {
+                if (role == "funny") {
+                    document.getElementById("funnyVideo").srcObject = localStream;
+                } else {
+                    document.getElementById("seriousVideo").srcObject = localStream;
+                }
+              localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
+            })
         });
+
+        function sendToServer(msg) {
+            console.log('sendToServer being executed now.');
+            const msgJSON = JSON.stringify(msg);
+
+            socket.emit("data", msgJSON);
+        }
     
         socket.on("users_paired", function(data) {
             console.log("users_paired being executed now.");
 
-            userID = data["userID"];
-            peerID = data["peerID"];
+            myID = data['myID'];
+            targetID = data['targetID'];
 
-            invite(peerID);
+            createPeerConnection();
+
+            navigator.mediaDevices.getUserMedia(mediaConstraints)
+            .then((localStream) => {
+                if (role == "funny") {
+                    document.getElementById("funnyVideo").srcObject = localStream;
+                } else {
+                    document.getElementById("seriousVideo").srcObject = localStream;
+                }
+              localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
+            })
 
             console.log("users_paired now completed.");
         });
 
-        var camera_allowed=false; 
-        var mediaConstraints = {
-            audio: false,
-            video: true
-        };
-
-
-        function startCamera() 
-        {           
-            let funnyVideo = document.getElementById("funnyVideo");
-            let seriousVideo = document.getElementById("seriousVideo");
-
-            navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then((stream)=>{
-
-                if (role == "funny") {
-                    funnyVideo.srcObject = stream;
-                    camera_allowed = true;
-                    socket.connect();
-                } 
-                else if (role == "serious") {
-                    seriousVideo.srcObject = stream;
-                    camera_allowed = true;
-                    socket.connect();
-                }
-            })
-            .catch((e)=>{
-                console.log("getUserMedia Error! ", e);
-            });
-        }
-
-        var PC_CONFIG = {
-            iceServers: [
-                {
-                    urls: ['stun:stun.l.google.com:19302', 
-                            'stun:stun1.l.google.com:19302',
-                            'stun:stun2.l.google.com:19302',
-                            'stun:stun3.l.google.com:19302',
-                            'stun:stun4.l.google.com:19302'
-                        ]
-                },
-            ]
-        };
-
-        function log_error(e){console.log("[ERROR] ", e);}
-        function sendViaServer(data){socket.emit("data", data);}
-
-        socket.on("data", (msg)=>{
-            switch(msg["type"])
-            {
-                case "offer":
-                    handleOfferMsg(msg);
-                    break;
-                case "answer":
-                    handleAnswerMsg(msg);
-                    break;
-                case "new-ice-candidate":
-                    handleNewICECandidateMsg(msg);
-                    break;
-            }
-        });
-
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-        async function invite(peerID) {
-            console.log(`Creating peer connection for <${peerID}> ...`);
-            peerConnection = createPeerConnection(); // Assign to the global peerConnection variable
-            await sleep(10000);
-        
-            if (role == "funny") {
-                let local_stream = funnyVideo.srcObject;
-                local_stream.getTracks().forEach((track) => {
-                    peerConnection.addTrack(track, local_stream);
-                });
-            } else if (role == "serious") {
-                let local_stream = seriousVideo.srcObject;
-                local_stream.getTracks().forEach((track) => {
-                    peerConnection.addTrack(track, local_stream);
-                });
-            }
-        }
-
         function createPeerConnection() {
-            const peerConnection = new RTCPeerConnection(PC_CONFIG);
-        
-            peerConnection.onicecandidate = (event) => {
-                handleICECandidateEvent(event, peerConnection);
-            };
-            peerConnection.ontrack = (event) => {
-                handleTrackEvent(event, peerConnection);
-            };
-            peerConnection.onnegotiationneeded = () => {
-                handleNegotiationNeededEvent(peerConnection);
-            };
-        
-            console.log('PeerConnection being returned: ' + peerConnection);
-            return peerConnection;
+            console.log('createPeerConnection being executed now.');
+            myPeerConnection = new RTCPeerConnection({
+                iceServers: [
+                    {
+                        urls: ['stun:stun.l.google.com:19302', 
+                                'stun:stun1.l.google.com:19302',
+                                'stun:stun2.l.google.com:19302',
+                                'stun:stun3.l.google.com:19302',
+                                'stun:stun4.l.google.com:19302'
+                            ]
+                    },
+                ],
+            });
+
+            myPeerConnection.onicecandidate = handleICECandidateEvent;
+            myPeerConnection.ontrack = handleTrackEvent;
+            myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
         }
 
-        function handleNegotiationNeededEvent(peerConnection) { // Change parameter name to pc
-            peerConnection.createOffer()
-                .then((offer) => {
-                    return peerConnection.setLocalDescription(offer);
-                })
+        function handleNegotiationNeededEvent() {
+            console.log('handleNegotiationNeededEvent being executed now.');
+            myPeerConnection
+                .createOffer()
+                .then((offer) => myPeerConnection.setLocalDescription(offer))
                 .then(() => {
-                    console.log(`sending offer to <${peerID}> ...`);
-                    sendViaServer({
-                        "sender_id": userID,
-                        "target_id": peerID,
-                        "type": "offer",
-                        "sdp": peerConnection.localDescription // Use pc.localDescription here
+                    sendToServer({
+                      name: myID,
+                      target: targetID,
+                      type: "video-offer",
+                      sdp: myPeerConnection.localDescription,
                     });
                 })
-                .catch(log_error);
         }
 
-        function handleOfferMsg(msg)
-        {   
-            
-
-            let peerID = msg['sender_id'];
-
-            console.log(`offer recieved from <${peerID}>`);
-            
-            peerConnection = createPeerConnection(peerID);
-            let desc = new RTCSessionDescription(msg['sdp']);
-            console.log('Description: ' + desc.toString());
-            console.log('Peer Conenction: ' + peerConnection.toString());
-            peerConnection.setRemoteDescription(desc)
-            .then(()=>{
-                if (role == "funny") {
-                    let local_stream = funnyVideo.srcObject;
-                    local_stream.getTracks().forEach((track)=>{peerConnection.addTrack(track, local_stream);});                   
-                } 
-                else if (role == "serious") {
-                    let local_stream = seriousVideo.srcObject;
-                    local_stream.getTracks().forEach((track)=>{peerConnection.addTrack(track, local_stream);});            
-                }
-            })
-            .then(()=>{return peerConnection.createAnswer();})
-            .then((answer)=>{return peerConnection.setLocalDescription(answer);})
-            .then(()=>{
-                console.log(`sending answer to <${peerID}> ...`);
-                sendViaServer({
-                    "sender_id": userID,
-                    "target_id": peerID,
-                    "type": "answer",
-                    "sdp": peerConnection.localDescription
-                });
-            })
-            .catch(log_error);
-        }
-
-        function handleAnswerMsg(msg)
-        {
-            console.log('handleAnswerMsg being executed.');
-            console.log('PeerID: ' + peerID);
-            console.log(`answer recieved from <${peerID}>`);
-            let desc = new RTCSessionDescription(msg['sdp']);
-            peerConnection.setRemoteDescription(desc)
-            console.log('handleAnswerMsg finished.');
-        }
-
-        function handleICECandidateEvent(event, peerID)
-        {
-            if(event.candidate){
-                sendViaServer({
-                    "sender_id": userID,
-                    "target_id": peerID,
-                    "type": "new-ice-candidate",
-                    "candidate": event.candidate
-                });
+        function handleICECandidateEvent(event) {
+            console.log('handleIceCandidateEvent being executed.');
+            if (event.candidate) {
+              sendToServer({
+                type: "new-ice-candidate",
+                target: targetID,
+                candidate: event.candidate,
+              });
             }
         }
 
-        function handleNewICECandidateMsg(msg) {
-            // Use peerConnection instead of peerID here
-            console.log(`ICE candidate received from <${msg['sender_id']}>`);
-            var candidate = new RTCIceCandidate(msg.candidate);
-            peerConnection.addIceCandidate(candidate) // Use peerConnection
-                .catch(log_error);
-        }
-
-        function handleTrackEvent(event, peerID)
-        {
-            console.log(`Track event recieved from <${peerID}>`);
-            let funnyVideo = document.getElementById("funnyVideo");
-            let seriousVideo = document.getElementById("seriousVideo");
-            console.log('293');
-
-            if(event.streams)
-            {
-                if (role == "funny") {
-                    seriousVideo.srcObject = event.streams[0];
-                    console.log('Serious Video being populated.');
-                } 
-                else if (role == "serious") {
-                    funnyVideo.srcObject = event.streams[0];
-                    console.log('303');
-                }
+        function handleTrackEvent(event) {
+            console.log('handleTrackEvent being executed.');
+            if (role == "funny") {
+                document.getElementById("seriousVideo").srcObject = event.streams[0];
+            } else {
+                document.getElementById("funnyVideo").srcObject = event.streams[0];
             }
         }
 
+        socket.on("handleVideoOfferMsg", function(msg) {
+            console.log('Handle Video Offer being executed.');
+            let localStream = null;
+          
+            targetID = msg.name;
+            createPeerConnection();
+          
+            const desc = new RTCSessionDescription(msg.sdp);
+          
+            myPeerConnection
+              .setRemoteDescription(desc)
+              .then(() => navigator.mediaDevices.getUserMedia(mediaConstraints))
+              .then((stream) => {
+                localStream = stream;
+                if (role == "funny") {
+                    document.getElementById("funnyVideo").srcObject = localStream;
+                } else {
+                    document.getElementById("seriousVideo").srcObject = localStream;
+                }
+          
+                localStream
+                  .getTracks()
+                  .forEach((track) => myPeerConnection.addTrack(track, localStream));
+              })
+              .then(() => myPeerConnection.createAnswer())
+              .then((answer) => myPeerConnection.setLocalDescription(answer))
+              .then(() => {
+                const msg = {
+                  name: myUsername,
+                  target: targetUsername,
+                  type: "video-answer",
+                  sdp: myPeerConnection.localDescription,
+                };
+          
+                sendToServer(msg);
+              })
+              console.log('handleVideoOfferMsg now complete');
+        });
+
+        socket.on("handleNewICECandidateMsg", function(msg) {
+            console.log('New Ice Candidate Received');
+            const candidate = new RTCIceCandidate(msg.candidate);
+          
+            myPeerConnection.addIceCandidate(candidate);
+        });
+
+        socket.on("handleVideoAnswerMsg", function(msg) {
+            targetID = msg.name;
+            console.log(`answer recieved from <${targetID}>`);
+            let desc = new RTCSessionDescription(msg.sdp);
+            myPeerConnection.setRemoteDescription(desc)
+        });
+
+
+
+        
     
         document.getElementById("disconnectBtn").addEventListener("click", function() { // When 'disconnectBtn' is clicked, it lets the server know, displays the landing-page, and stops the video stream
             socket.emit("disconnect_user")
