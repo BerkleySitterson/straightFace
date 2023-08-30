@@ -9,7 +9,7 @@ from authentication.auth_tools import login_pipeline, update_passwords, hash_pas
 eventlet.monkey_patch()
 
 app = Flask(__name__, static_folder='static')
-HOST, PORT = 'localhost', 5000
+HOST, PORT = '0.0.0.0', 5000
 global db, logged_in
 username = 'default'
 db = Database('database/straightface.db')
@@ -124,4 +124,4 @@ def handle_disconnect():
     db.remove_user_from_queues(username)
        
 if __name__ == '__main__':
-    socketio.run(app, host='localhost') 
+    socketio.run(app, host='0.0.0.0', port=5000)

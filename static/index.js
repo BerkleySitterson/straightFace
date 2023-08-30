@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         socket.on("handleVideoAnswerMsg", function(msg) {
             targetID = msg.name;
-            console.log(`answer recieved from ` + msg.name);
+            console.log(`Answer recieved from ` + msg.name);
             let desc = new RTCSessionDescription(msg.sdp);
             myPeerConnection.setRemoteDescription(desc);
         });
