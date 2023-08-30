@@ -121,17 +121,20 @@ document.addEventListener("DOMContentLoaded", function() {
         function createPeerConnection() {
             console.log('createPeerConnection being executed now.');
             myPeerConnection = new RTCPeerConnection({
-                iceServers: [
-                    {
-                        urls: [
-                            "turn:us-turn8.xirsys.com:80?transport=udp",
-                            "turn:us-turn8.xirsys.com:3478?transport=udp",
-                            "turn:us-turn8.xirsys.com:80?transport=tcp",
-                            "turn:us-turn8.xirsys.com:3478?transport=tcp",
-                            "turns:us-turn8.xirsys.com:443?transport=tcp",
-                            "turns:us-turn8.xirsys.com:5349?transport=tcp"
-                        ]
-                    },
+                iceServers: [{
+                    urls: [ "stun:us-turn8.xirsys.com" ]
+                 }, {
+                    username: "VcPom22kSQlvPJ1FRMjb5qXw8-sSdYPFdhiLq3NMGzc-imBAUGSNLKmGhYnbKf_eAAAAAGTbqk9FcGlwaG9uZTE5OTY=",
+                    credential: "565fb534-3b8a-11ee-a7b9-0242ac140004",
+                    urls: [
+                        "turn:us-turn8.xirsys.com:80?transport=udp",
+                        "turn:us-turn8.xirsys.com:3478?transport=udp",
+                        "turn:us-turn8.xirsys.com:80?transport=tcp",
+                        "turn:us-turn8.xirsys.com:3478?transport=tcp",
+                        "turns:us-turn8.xirsys.com:443?transport=tcp",
+                        "turns:us-turn8.xirsys.com:5349?transport=tcp"
+                    ]
+                 }
                 ],
             });
 
