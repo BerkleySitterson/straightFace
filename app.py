@@ -58,7 +58,8 @@ def handle_user_join_funny(username):
     db.add_funny_user(username, sid)
     attempt_pairing()
     emit("increment_funny_queue", db.get_funnyUsers_length(), broadcast=True) # Only used for testing purposes
-    
+
+  
 @socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
 def handle_user_join_serious(username):
     
@@ -68,6 +69,7 @@ def handle_user_join_serious(username):
     db.add_serious_user(username, sid)
     attempt_pairing()
     emit("increment_serious_queue", db.get_seriousUsers_length(), broadcast=True) # Only used for testing purposes
+
         
 def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
     
@@ -89,6 +91,9 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     join_room(room, funnyUser[1])
     join_room(room, seriousUser[1])
     
+    db.remove_user_from_queues(funnyUser[0])
+    db.remove_user_from_queues(seriousUser[0])
+    
     if funnyUser[1] == request.sid:
         targetID = seriousUser[1]
     else:
@@ -96,8 +101,9 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     
     print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
     emit("redirect_to_video", room=room)
-    emit("users_paired", {"myID": request.sid, "targetID": targetID})
+    emit("users_paired", {"myID": request.sid, "targetID": targetID, "room": room})
     print(f"UserID: {request.sid} || PeerID: {targetID}")
+    
     
 @socketio.on("data") 
 def handleSignaling(msg):
@@ -116,12 +122,17 @@ def handleSignaling(msg):
     elif msg_type == "video-answer":
         emit("handleVideoAnswerMsg", msg, to=target)   
     
+
+@socketio.on("disconnect_user")
+def handle_user_disconnect(room):
+    emit("user_left", room=room)
+    
 @socketio.on("disconnect")
 def handle_disconnect():
     
     print(f"Handle_disconnect being called")
-    
-    db.remove_user_from_queues(username)
+    # emit("user_left", to=?(peerID))
+       
        
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
