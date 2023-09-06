@@ -183,27 +183,21 @@ body, html {
 }
 
 #funnyVideo {
-    width: 40rem;
-    height: 25rem;
     object-fit: cover;
     position: absolute;
     top: 15%;
     left: 14%;
     border: 5px solid white;
     border-radius: 8px;
-    z-index: 10;
 }
 
 #seriousVideo {
-    width: 40rem;
-    height: 25rem;
     object-fit: cover;
     position: absolute;
     top: 15%;
     left: 52%;
     border: 5px solid white;
     border-radius: 8px;
-    z-index: 10;
 }
 
 #disconnectBtn {

@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async () => {
 
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
@@ -151,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("seriousVideo").srcObject = remoteStream;
             } else {
                 document.getElementById("funnyVideo").srcObject = remoteStream;
+                detectSmile();
             }
         });
     }
@@ -264,6 +265,46 @@ document.addEventListener("DOMContentLoaded", function() {
         ul.appendChild(li);
         ul.scrolltop = ul.scrollHeight;
     });
+
+    // ******************************************************** //
+    // ************  Smile Detection Functions  *************** //
+    // ******************************************************** //
+
+    function detectSmile() {
+
+        console.log('detectSmile() executing...');
+        
+        const videoElement = document.getElementById('seriousVideo');
+
+        Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
+            faceapi.nets.faceLandmark68Net.loadFromUri('../static/models'),
+            faceapi.nets.faceRecognitionNet.loadFromUri('../static/models'),
+            faceapi.nets.faceExpressionNet.loadFromUri('../static/models'),
+        ])
+
+        console.log('Models Loaded');
+
+        const canvas = faceapi.createCanvasFromMedia(videoElement);
+        document.body.append(canvas);
+        const displaySize = { width: videoElement.width, height: videoElement.height };
+        faceapi.matchDimensions(canvas, displaySize);
+
+        setInterval(async () => {
+            const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+            console.log(detections);
+
+            const resizedDetections = faceapi.resizeResults(detections, displaySize)
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+            faceapi.draw.drawDetections(canvas, resizedDetections)
+            faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+            faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+        }, 100)
+        
+
+    }
+
+
 });
 
 

@@ -4,7 +4,8 @@
 <head>
     <title>StraightFace</title>
     <link rel="stylesheet" href="../static/styles.css">
-    <script src="../static/index.js"></script>
+    <script defer src="../static/face-api.min.js"></script>
+    <script defer src="../static/index.js"></script>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +13,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            top: 16%;
+            left: 52%;
+        }
+    </style>
 </head>
 
 <body>
@@ -93,8 +101,8 @@
                 <h1 id="funnyUsername"></h1>
                 <h1 id="seriousUsername"></h1>
 
-                <video id="funnyVideo" autoplay></video>
-                <video id="seriousVideo" autoplay></video>
+                <video id="funnyVideo" width="650" height="400" autoplay></video>
+                <video id="seriousVideo" width="650" height="400" autoplay></video>
 
                 <button type="button" id="disconnectBtn">X</button>
 
