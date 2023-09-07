@@ -283,30 +283,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
             console.log('Models Loaded');
 
             const canvas = await faceapi.createCanvasFromMedia(videoElement);
+            
             document.body.append(canvas);
 
             const displaySize = { width: videoElement.width, height: videoElement.height };
             await faceapi.matchDimensions(canvas, displaySize);
-
+            const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 320 , scoreThreshold: 0.15})
+            const canvasContext = canvas.getContext('2d', { willReadFrequently: true })
             setInterval(async () => {
-                const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-                console.log(detections);
+                try {
+                    const detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
+                    const resizedDetections = await faceapi.resizeResults(detections, displaySize);
+                    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+                    faceapi.draw.drawDetections(canvas, resizedDetections);
+                    faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
-                const resizedDetections = faceapi.resizeResults(detections, displaySize)
-                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-
-                faceapi.draw.drawDetections(canvas, resizedDetections)
-                faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-                faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-
-                if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
-                    console.log('Happy Emotion Detected');
-                    socket.emit("userSmiled", room);
+                    if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
+                        console.log('Happy Emotion Detected');
+                        //socket.emit("userSmiled", room);
+                    }
                 }
+                catch (Exception) {
+                    console.log('Detection Error!:' + Exception.toString())
+                }                
             }, 80)
         }
         catch {
-            console.log('Face Detection Error!');
+            console.log('Canvas Error!');
         }
     }
 
