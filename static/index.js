@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ************  Smile Detection Functions  *************** //
     // ******************************************************** //
 
-    function detectSmile() {
+    async function detectSmile() {
 
         console.log('detectSmile() executing...');
         
@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         console.log('Models Loaded');
 
-        const canvas = faceapi.createCanvasFromMedia(videoElement);
+        const canvas = await faceapi.createCanvasFromMedia(videoElement);
         document.body.append(canvas);
         const displaySize = { width: videoElement.width, height: videoElement.height };
         faceapi.matchDimensions(canvas, displaySize);
