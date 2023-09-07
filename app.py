@@ -1,7 +1,6 @@
 import eventlet
-import json
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, join_room, rooms, close_room, emit
 from database.db import Database
 from authentication.auth_tools import login_pipeline, update_passwords, hash_password
@@ -122,6 +121,9 @@ def handleSignaling(msg):
     elif msg_type == "video-answer":
         emit("handleVideoAnswerMsg", msg, to=target)   
     
+@socketio.on("userSmiled")
+def handleUserSmile(room):
+    emit("endRound", room=room)
 
 @socketio.on("disconnect_user")
 def handle_user_disconnect(room):

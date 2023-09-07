@@ -299,10 +299,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             faceapi.draw.drawDetections(canvas, resizedDetections)
             faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
             faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-        }, 100)
-        
 
+            if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
+                console.log('Happy Emotion Detected');
+                socket.emit("userSmiled", room);
+            }
+        }, 80)
     }
+
+    socket.on('endRound', function() {
+        const funnyStream = document.getElementById("funnyVideo").srcObject;
+        const seriousStream = document.getElementById("seriousVideo").srcObject;       
+        const funnyTracks = funnyStream.getTracks();
+        const seriousTracks = seriousStream.getTracks();
+
+        funnyTracks[0].stop();
+        seriousTracks[0].stop();
+    });
 
 
 });
