@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", (event) => {
 
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
@@ -273,59 +273,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function detectSmile() {
 
         console.log('detectSmile() executing...');
-        
-        const videoElement = document.getElementById('seriousVideo');
+        try {
+            const videoElement = document.getElementById('seriousVideo');
 
-        Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
-            faceapi.nets.faceLandmark68Net.loadFromUri('../static/models'),
-            faceapi.nets.faceRecognitionNet.loadFromUri('../static/models'),
-            faceapi.nets.faceExpressionNet.loadFromUri('../static/models'),
-        ]).then(() => {
-            const canvas = faceapi.createCanvasFromMedia(videoElement);
+            await faceapi.nets.tinyFaceDetector.loadFromUri('../static/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('../static/models');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('../static/models');
+            await faceapi.nets.faceExpressionNet.loadFromUri('../static/models');
+            console.log('Models Loaded');
+
+            const canvas = await faceapi.createCanvasFromMedia(videoElement);
             document.body.append(canvas);
+
             const displaySize = { width: videoElement.width, height: videoElement.height };
-            faceapi.matchDimensions(canvas, displaySize);
+            await faceapi.matchDimensions(canvas, displaySize);
 
             setInterval(async () => {
                 const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
                 console.log(detections);
-    
+
                 const resizedDetections = faceapi.resizeResults(detections, displaySize)
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+
                 faceapi.draw.drawDetections(canvas, resizedDetections)
                 faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
                 faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-    
+
                 if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
                     console.log('Happy Emotion Detected');
                     socket.emit("userSmiled", room);
                 }
             }, 80)
-        })
-
-        console.log('Models Loaded');
-
-        // const canvas = await faceapi.createCanvasFromMedia(videoElement);
-        // document.body.append(canvas);
-        // const displaySize = { width: videoElement.width, height: videoElement.height };
-        // faceapi.matchDimensions(canvas, displaySize);
-
-        // setInterval(async () => {
-        //     const detections = await faceapi.detectAllFaces(videoElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-        //     console.log(detections);
-
-        //     const resizedDetections = faceapi.resizeResults(detections, displaySize)
-        //     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-        //     faceapi.draw.drawDetections(canvas, resizedDetections)
-        //     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-        //     faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
-
-        //     if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
-        //         console.log('Happy Emotion Detected');
-        //         socket.emit("userSmiled", room);
-        //     }
-        // }, 80)
+        }
+        catch {
+            console.log('Face Detection Error!');
+        }
     }
 
     socket.on('endRound', function() {
@@ -338,8 +320,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         seriousTracks[0].stop();
     });
 
-
 });
-
-
-

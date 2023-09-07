@@ -20,7 +20,6 @@ app.config['SECRET'] = "secret"
 def index():
     return render_template('index.html')
 
-
 @socketio.on('login')
 def login(username, password):
 
@@ -130,11 +129,9 @@ def handle_user_disconnect(room):
     emit("user_left", room=room)
     
 @socketio.on("disconnect")
-def handle_disconnect():
-    
+def handle_disconnect():    
     print(f"Handle_disconnect being called")
     # emit("user_left", to=?(peerID))
-       
-       
+
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
