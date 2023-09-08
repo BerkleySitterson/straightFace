@@ -29,6 +29,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         socket.emit("login", username, password);
     });
 
+    document.getElementById("logout_button").addEventListener("click", function() {
+        socket.emit("logout", username);
+    });
+
     socket.on("login_successful", function() {
         document.getElementById("login_page").style.visibility = "hidden";
         document.getElementById("home_page").style.visibility = "visible";
@@ -37,6 +41,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     socket.on("login_failed", function() {
         document.getElementById("login_error_message").value = "Login Failed, check your username and password.";
+    });
+
+    socket.on("logout_successful", async function() {
+        document.getElementById("home_page").style.visibility = "hidden";
+        setTimeout(() => {
+            document.getElementById("login_page").style.visibility = "visible";
+        }, 1000);         
+        username = '';
     });
 
     // ******************************************************** //
@@ -75,11 +87,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
         role = "serious";          
     });
 
-    socket.on("increment_funny_queue", function(num) {
+    socket.on("get_funny_queue", function(num) {
         document.getElementById("funnyQueueNum").textContent = "Funny Queue: " + num;
     });
 
-    socket.on("increment_serious_queue", function(num) {
+    socket.on("get_serious_queue", function(num) {
         document.getElementById("seriousQueueNum").textContent = "Serious Queue: " + num;
     });
     
