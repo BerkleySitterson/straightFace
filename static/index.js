@@ -288,15 +288,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             const displaySize = { width: videoElement.width, height: videoElement.height };
             await faceapi.matchDimensions(canvas, displaySize);
-            const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 320 , scoreThreshold: 0.15})
+            const options = new faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.15})
             const canvasContext = canvas.getContext('2d', { willReadFrequently: true })
             setInterval(async () => {
                 try {
                     const detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
                     const resizedDetections = await faceapi.resizeResults(detections, displaySize);
-                    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-                    faceapi.draw.drawDetections(canvas, resizedDetections);
-                    faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
+                    await canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+                    await faceapi.draw.drawDetections(canvas, resizedDetections);
+                    await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
                     if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
                         console.log('Happy Emotion Detected');
