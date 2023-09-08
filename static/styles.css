@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
     background: linear-gradient(to bottom right, #855BDA, #4B0082);
     overflow: hidden;
     height: 100%;
@@ -27,7 +28,8 @@ body, html {
     left: 83rem;
 }
 
-#register_title, #login_title {
+#register_title,
+#login_title {
     position: relative;
     color: white;
     left: 50rem;
@@ -42,13 +44,15 @@ body, html {
     color: white;
 }
 
-#register_button, #login_button {
+#register_button,
+#login_button {
     position: relative;
     left: 58rem;
     top: 15rem;
 }
 
-#index_login, #index_register {
+#index_login,
+#index_register {
     position: relative;
     left: 95rem;
     height: 3rem;
@@ -67,7 +71,8 @@ body, html {
     margin-right: 2rem;
 }
 
-#index_login:hover, #index_register:hover {
+#index_login:hover,
+#index_register:hover {
     background-color: white;
     color: #4B0082;
     cursor: pointer;
@@ -99,6 +104,8 @@ body, html {
     letter-spacing: .15rem;
     line-height: 4.3rem;
     font-weight: 550;
+    text-align: center;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 #titleParagraph {
@@ -107,8 +114,10 @@ body, html {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 1.8rem;
-    letter-spacing: .06rem;
+    font-size: 1.3rem;
+    letter-spacing: .02rem;
+    text-align: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 #logout_button {
@@ -220,7 +229,7 @@ body, html {
     width: 30rem;
     top: 76%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     background-color: white;
 }
 
@@ -228,7 +237,7 @@ body, html {
     position: absolute;
     top: 90%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     width: 32rem;
 }
 
@@ -247,8 +256,3 @@ body, html {
     top: 7%;
     left: 67%;
 }
-
-
-
-
-

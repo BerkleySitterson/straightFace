@@ -276,10 +276,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         try {
             const videoElement = document.getElementById('seriousVideo');
 
-            await faceapi.nets.tinyFaceDetector.loadFromUri('../static/models');
-            await faceapi.nets.faceLandmark68Net.loadFromUri('../static/models');
+            //await faceapi.nets.tinyFaceDetector.loadFromUri('../static/models');
             await faceapi.nets.faceRecognitionNet.loadFromUri('../static/models');
             await faceapi.nets.faceExpressionNet.loadFromUri('../static/models');
+            await faceapi.nets.ssdMobilenetv1.loadFromUri('../static/models');
             console.log('Models Loaded');
 
             const canvas = await faceapi.createCanvasFromMedia(videoElement);
@@ -288,12 +288,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             const displaySize = { width: videoElement.width, height: videoElement.height };
             await faceapi.matchDimensions(canvas, displaySize);
-            const options = new faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.15})
+            //const options = new faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.15})
+            const options = new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
             const canvasContext = canvas.getContext('2d', { willReadFrequently: true })
+            console.log('Commencing Face Detection');
             setInterval(async () => {
                 try {
-                    const detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
-                    const resizedDetections = await faceapi.resizeResults(detections, displaySize);
+                    let detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
+                    let resizedDetections = await faceapi.resizeResults(detections, displaySize);
                     await canvasContext.clearRect(0, 0, canvas.width, canvas.height);
                     await faceapi.draw.drawDetections(canvas, resizedDetections);
                     await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
@@ -308,8 +310,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 }                
             }, 80)
         }
-        catch {
-            console.log('Canvas Error!');
+        catch (Exception) {
+            console.log('Canvas Error!:' + Exception.toString());
         }
     }
 
