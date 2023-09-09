@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("index_login").addEventListener("click", function() {
         document.getElementById("landing_page").style.visibility = "hidden";
         document.getElementById("login_page").style.visibility = "visible";
-    });
+    }); 
 
     document.getElementById("index_register").addEventListener("click", function() {
         document.getElementById("landing_page").style.visibility = "hidden";
