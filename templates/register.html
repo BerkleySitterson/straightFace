@@ -5,11 +5,11 @@
     <title>StraightFace</title>
     <link rel="stylesheet" href="../static/styles.css">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
 
 <body>
@@ -38,7 +38,7 @@
                 <input type="text" name="last_name" id="register_last_name" class="form-control">
             </div>
             <button type="submit" class="btn btn-primary" id="register_button">Register</button>
-            <p id="register_error_message">{{ errMsg }}</p>
+            <p class="err_msg">{{ errMsg }}</p>
     </form>
 
 

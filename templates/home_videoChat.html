@@ -7,10 +7,10 @@
     <script defer src="../static/face-api.min.js"></script>
     <script defer src="../static/home_videoChat.js"></script>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
     <style>
@@ -28,14 +28,14 @@
                 <div class="home_page-header">
                     <h3 id="header_title">StraightFace</h3>
                     <p id="username">{{ username }}</p>
-                    <button type="submit" id="logout_button">Log Out</button>
+                    <a href="/" class="account_btn" id="logout_button" style="top: 5%; right: 5%;">Log Out</a>
                 </div>
 
                 <div class="horizontal-line-home"></div>
                 <h1 id="mainTitle">StraightFace</h1>
                 
-                <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
-                <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
+                <button type="button" class="queue_btn" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
+                <button type="button" class="queue_btn" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
                 <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
                 <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
 
@@ -44,13 +44,7 @@
                 <h1 id="funnyUsername"></h1>
                 <h1 id="seriousUsername"></h1>
 
-                <div class="container">
-                    <div class="circular-progress">
-                        <span class="progress-value">0%</span>
-                    </div>
-            
-                    <span class="text">HTML & CSS</span>
-                </div>
+                <p id="timer">30</p>
 
                 <video id="funnyVideo" width="650" height="400" autoplay></video>
                 <video id="seriousVideo" width="650" height="400" autoplay></video>

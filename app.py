@@ -70,7 +70,7 @@ def register():
 
 
 
-@socketio.on('logout')
+@socketio.on("logout")
 def logout(username):
 
     if username_exists(username):

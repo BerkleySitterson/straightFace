@@ -8,6 +8,30 @@ body, html {
     z-index: -1;
 }
 
+.account_btn {
+    transition: all .5s ease;
+    background-color: #a442f5;
+    border: 2px solid white;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    position: absolute;
+    padding: 10px 20px;
+    border-radius: 1rem;
+    text-decoration: none;
+}
+
+.account_btn:hover {
+    background-color: white;
+    color: #a442f5;
+    cursor: pointer;
+}
+
+.header {
+    border-bottom: 3px solid white;
+}
+
 .home_page-header {
     display: flex;
 }
@@ -22,7 +46,7 @@ body, html {
 #username {
     position: relative;
     color: white;
-    top: 1rem;
+    top: 1.8rem;
     font-size: 1.5rem;
     left: 83rem;
 }
@@ -73,6 +97,21 @@ body, html {
     cursor: pointer;
 }
 
+.err_msg {
+    position: absolute;
+    color: white;
+    left: 42%;
+    top: 65%;
+}
+
+#timer {
+    position: absolute;
+    color: white;
+    left: 49%;
+    top: 4%;
+    font-size: 2rem;
+}
+
 .horizontal-line {
     position: relative;
     border-top: 2px solid white;
@@ -111,27 +150,6 @@ body, html {
     letter-spacing: .06rem;
 }
 
-#logout_button {
-    position: relative;
-    left: 85rem;
-    height: 3rem;
-    width: 8rem;
-    top: 2rem;
-    transition: all .5s ease;
-    background-color: #4B0082;
-    border: 2px solid white;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 10px;
-}
-
-#logout_button:hover {
-    background-color: white;
-    color: #4B0082;
-    cursor: pointer;
-}
-
 .horizontal-line-home {
     position: relative;
     border-top: 2px solid white;
@@ -147,20 +165,21 @@ body, html {
     transform: translateY(-50%);
 }
 
-.buttons {
+.queue_btn {
     transition: all .5s ease;
     background-color: #a442f5;
     border: 2px solid white;
     color: white;
-    padding: 1.5rem;
-    text-align: center;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: center;
     font-size: 1rem;
     position: absolute;
-    width: 12rem;
-    height: 5rem;
+    text-decoration: none;
+    border-radius: 1rem;
 }
 
-.buttons:hover {
+.queue_btn:hover {
     background-color: white;
     color: #a442f5;
     cursor: pointer;
@@ -246,6 +265,10 @@ body, html {
     font-size: 2rem;
     top: 7%;
     left: 67%;
+}
+
+.font-sm {
+    font-size: .8rem;
 }
 
 /* Circular Progress Bar */

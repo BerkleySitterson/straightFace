@@ -276,5 +276,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
     }
 
+    async function startTimer() {
+        console.log('Starting Timer');
+
+        let secondsRemaining = 30;
+        const timerElement = document.getElementById('timer');
+
+        let interval = setInterval(function() {
+            timerElement.textContent = secondsRemaining;
+
+            if (secondsRemaining === 0) {
+                clearInterval(interval);
+                timerElement.textContent = "Time's Up!";
+            }
+
+            secondsRemaining--;
+        }, 1000)
+    }
+
 
 });
