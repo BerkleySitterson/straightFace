@@ -21,30 +21,54 @@ def index():
     return render_template('index.html')
 
 @app.route('/login')
-def login():
+def login_page():
     return render_template('login.html')
 
-@app.route('/register')
-def register():
-    return render_template('register.html')
-
-@app.route('/home_videoChat')
-def home_videoChat():
-    return render_template('home_videoChat.html')
-
-@socketio.on('login')
-def login(username, password):
-
+@app.route('/home', methods=['POST'])
+def login():
+    
+    username = request.form['username']
+    password = request.form['password']
+    
     if login_pipeline(username, password):
         global logged_in
         logged_in = True
-        print(f"Login Successful for { username }")
-        emit("login_successful")
-        emit("get_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
-        emit("get_serious_queue", db.get_seriousUsers_length()) 
+        print(f"Login Successful for { username }")     
+        return render_template('home_videoChat.html', username=username, funnyQueue=db.get_seriousUsers_length(), seriousQueue=db.get_seriousUsers_length())
     else:
-        print(f"Incorrect username ({username}) or password ({password}).")
-        emit("login_failed")
+        print(f"Incorrect Username ({username}) or Password ({password}).")
+        return render_template('login.html', errMsg="Invalid Username or Password")
+
+
+@app.route('/register')
+def register_page():
+    return render_template('register.html')
+
+@app.route('/register', methods=['POST'])
+def register():
+    
+    username = request.form['username']
+    password = request.form['password']
+    email = request.form['email']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+
+    if username == "" or password == "" or email == "" or first_name == "" or last_name == "":
+        return render_template('register.html', errMsg="Please make sure all fields are complete.")
+    else:
+        salt, key = hash_password(password)
+        update_passwords(username, key, salt)
+        db.add_new_user(username, key, email, first_name, last_name)
+        if login_pipeline(username, password):
+            global logged_in
+            logged_in = True
+            print(f"Logged in as user: {username}")
+            return render_template('home.html', username=username, funnyQueue=db.get_seriousUsers_length(), seriousQueue=db.get_seriousUsers_length())
+        else:
+            print(f"Unable to log in at this time.")
+            return render_template('index.html')
+
+
 
 @socketio.on('logout')
 def logout(username):
@@ -55,17 +79,6 @@ def logout(username):
         emit("logout_successful")
         emit("get_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
         emit("get_serious_queue", db.get_seriousUsers_length())
-
-@socketio.on('register')
-def register(username, password, email, first_name, last_name):
-
-    if username == "" or password == "" or email == "" or first_name == "" or last_name == "":
-        emit("register_failed")
-    else:      
-        salt, key = hash_password(password)
-        update_passwords(username, key, salt)
-        db.add_new_user(username, key, email, first_name, last_name)
-        emit("register_successful")
 
 
 @socketio.on("user_join_funny") # User joins 'funny' team and is inserted into the waiting queue

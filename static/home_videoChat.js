@@ -25,6 +25,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
         document.getElementById("seriousQueueNum").textContent = "Serious Queue: " + num;
     });
 
+    document.getElementById("logout_button").addEventListener("click", function() {
+        socket.emit("logout", username);
+    });
+
+    socket.on("logout_successful", async function() {
+        document.getElementById("home_page").style.visibility = "hidden";
+        setTimeout(() => {
+            document.getElementById("login_page").style.visibility = "visible";
+        }, 1000);         
+        username = '';
+    });
+
     // ---------- Web-RTC ---------- //
 
     var myID;

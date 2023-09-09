@@ -4,8 +4,6 @@
 <head>
     <title>StraightFace</title>
     <link rel="stylesheet" href="../static/styles.css">
-    <script defer src="../static/face-api.min.js"></script>
-    <script defer src="../static/index.js"></script>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,19 +14,21 @@
 </head>
 
 <body>
-            <div id="login_page" style="visibility: hidden;">
-                <h1 id="login_title">Welcome back</h1>
-                <div class="form-group" id="info_form_group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="login_username" name="username" placeholder="Enter username">
-                </div>
-                <div class="form-group" id="info_form_group">
-                    <label for= "password">Password</label>
-                    <input type="password" class="form-control" id="login_password" name="password" placeholder="Password">
-                </div>
-                <button type="submit" id="login_button">Login</button>
-                <p id="login_error_message"></p>
-            </div> 
+
+    <h1 id="login_title">Welcome back</h1>
+
+    <form action="/home" method="post" id="login_form">
+            <div class="form-group" id="info_form_group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+            </div>
+            <div class="form-group" id="info_form_group">
+                <label for=" password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            </div>
+            <button type="submit" id="login_button">Login</button>
+            <p id="login_error_message">{{ errMsg }}</p>
+    </form>
 
 </body>    
    
