@@ -24,16 +24,26 @@
 
 <body>
         <!-- Home View -->
-            <div id="home_page" style="visibility: hidden;">
-
+        <div id="home_page" style="visibility: visible;">
                 <div class="home_page-header">
                     <h3 id="header_title">StraightFace</h3>
-                    <p id="username_display">{{ username }}</p>
+                    <p id="username">{{ username }}</p>
                     <button type="submit" id="logout_button">Log Out</button>
                 </div>
 
                 <div class="horizontal-line-home"></div>
                 <h1 id="mainTitle">StraightFace</h1>
+                
+                <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
+                <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
+                <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
+                <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
+
+        <!-- Video-Chat View -->
+            <div id="video_chat_page" style="visibility: hidden;">
+                <h1 id="funnyUsername"></h1>
+                <h1 id="seriousUsername"></h1>
+
                 <div class="container">
                     <div class="circular-progress">
                         <span class="progress-value">0%</span>
@@ -41,16 +51,6 @@
             
                     <span class="text">HTML & CSS</span>
                 </div>
-                <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
-                <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
-                <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
-                <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
-            </div>
-
-        <!-- Video-Chat View -->
-            <div id="video_chat_page" style="visibility: hidden;">
-                <h1 id="funnyUsername"></h1>
-                <h1 id="seriousUsername"></h1>
 
                 <video id="funnyVideo" width="650" height="400" autoplay></video>
                 <video id="seriousVideo" width="650" height="400" autoplay></video>

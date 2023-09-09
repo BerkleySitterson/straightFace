@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
-    var username;
+    var username = document.getElementById('username').textContent;
     var role;
 
     // ---------- Home ---------- //
