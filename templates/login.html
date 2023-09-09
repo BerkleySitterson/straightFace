@@ -16,17 +16,20 @@
 </head>
 
 <body>
-            <div id="landing_page" style="visibility: visible;"> 
-                <div class="index_content">
-                    <button class="account_buttons" id="index_login">Log In</button>
-                    <button class="account_buttons" id="index_register">Sign Up</button>
-                    <div class="horizontal-line"></div>   
-                    <div class="box-background">
-                        <h1 id="mainTitle">Welcome to<br>StraightFace<br>:( :| :)</h1>
-                        <p id="titleParagraph">StraightFace is a video-chat roulette app where<br>the goal is to, you guessed it, keep a straight face.</p>
-                    </div>               
+            <div id="login_page" style="visibility: hidden;">
+                <h1 id="login_title">Welcome back</h1>
+                <div class="form-group" id="info_form_group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="login_username" name="username" placeholder="Enter username">
                 </div>
-            </div>
+                <div class="form-group" id="info_form_group">
+                    <label for= "password">Password</label>
+                    <input type="password" class="form-control" id="login_password" name="password" placeholder="Password">
+                </div>
+                <button type="submit" id="login_button">Login</button>
+                <p id="login_error_message"></p>
+            </div> 
+
 </body>    
    
 

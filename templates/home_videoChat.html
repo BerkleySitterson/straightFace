@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>StraightFace</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script defer src="../static/face-api.min.js"></script>
+    <script defer src="../static/home_videoChat.js"></script>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            top: 15%;
+            left: 52%;
+        }
+    </style>
+</head>
+
+<body>
+        <!-- Home View -->
+            <div id="home_page" style="visibility: hidden;">
+
+                <div class="home_page-header">
+                    <h3 id="header_title">StraightFace</h3>
+                    <p id="username_display"></p>
+                    <button type="submit" id="logout_button">Log Out</button>
+                </div>
+
+                <div class="horizontal-line-home"></div>
+                <h1 id="mainTitle">StraightFace</h1>
+
+                <button type="button" class="buttons" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</button>
+                <button type="button" class="buttons" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</button>
+                <p id="funnyQueueNum" class="queueCounters">Funny Queue: 0</p>
+                <p id="seriousQueueNum" class="queueCounters">Serious Queue: 0</p>
+            </div>
+
+        <!-- Video-Chat View -->
+            <div id="video_chat_page" style="visibility: hidden;">
+                <h1 id="funnyUsername"></h1>
+                <h1 id="seriousUsername"></h1>
+
+                <video id="funnyVideo" width="650" height="400" autoplay></video>
+                <video id="seriousVideo" width="650" height="400" autoplay></video>
+
+                <button type="button" id="disconnectBtn">X</button>
+
+                <ul id="chat-messages"></ul>
+                <input type="text" id="message" placeholder="Enter a Message">
+            </div>
+</body>    

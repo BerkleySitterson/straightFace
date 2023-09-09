@@ -20,6 +20,18 @@ app.config['SECRET'] = "secret"
 def index():
     return render_template('index.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/home_videoChat')
+def home_videoChat():
+    return render_template('home_videoChat.html')
+
 @socketio.on('login')
 def login(username, password):
 
