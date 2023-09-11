@@ -237,10 +237,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
         try {
             const videoElement = document.getElementById('seriousVideo');
 
-            //await faceapi.nets.tinyFaceDetector.loadFromUri('../static/models');
-            await faceapi.nets.faceRecognitionNet.loadFromUri('../static/models');
-            await faceapi.nets.faceExpressionNet.loadFromUri('../static/models');
-            await faceapi.nets.ssdMobilenetv1.loadFromUri('../static/models');
+            await Promise.all([
+                //faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
+                //faceapi.nets.faceRecognitionNet.loadFromUri('../static/models'),
+                faceapi.nets.faceExpressionNet.loadFromUri('../static/models'),
+                faceapi.nets.ssdMobilenetv1.loadFromUri('../static/models')
+            ]);
+            
             console.log('Models Loaded');
 
             const canvas = await faceapi.createCanvasFromMedia(videoElement);
@@ -249,9 +252,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             const displaySize = { width: videoElement.width, height: videoElement.height };
             await faceapi.matchDimensions(canvas, displaySize);
-            //const options = new faceapi.TinyFaceDetectorOptions({scoreThreshold: 0.15})
-            const options = new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
-            const canvasContext = canvas.getContext('2d', { willReadFrequently: true })
+            /*Options for face detectors: input for tiny face must be a multiple of 32*/
+            //const options = await new faceapi.TinyFaceDetectorOptions({inputSize: 160, scoreThreshold: 0.10})            
+            const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
+            const canvasContext = await canvas.getContext('2d', { willReadFrequently: true })
             console.log('Commencing Face Detection');
             socket.emit('startTimer', room);
             setInterval(async () => {
