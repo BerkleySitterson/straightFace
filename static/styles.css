@@ -58,26 +58,12 @@ body, html {
     top: 10rem;
 }
 
-.form-group {
-    position: relative;
-    left: 50rem;
-    top: 15rem;
-    padding: 5px;
-    color: white;
-}
-
-#register_button, #login_button {
-    position: relative;
-    left: 58rem;
-    top: 15rem;
-}
-
-#index_login, #index_register {
-    position: relative;
-    left: 95rem;
+.login_form, .register_form {
+    position: absolute;
+    left: 50%;
     height: 3rem;
     width: 8rem;
-    top: 2rem;
+    top: 50%;
     transition: all .5s ease;
     background-color: #4B0082;
     border: 2px solid white;

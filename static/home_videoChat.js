@@ -253,6 +253,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const options = new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
             const canvasContext = canvas.getContext('2d', { willReadFrequently: true })
             console.log('Commencing Face Detection');
+            socket.emit('startTimer', room);
             setInterval(async () => {
                 try {
                     let detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
@@ -261,10 +262,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     await faceapi.draw.drawDetections(canvas, resizedDetections);
                     await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
-                    if (detections && detections[0] && detections[0].expressions.happy > 0.99) {
+                    if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                         console.log('Happy Emotion Detected');
                         //socket.emit("userSmiled", room);
-                    }
+                    }           
                 }
                 catch (Exception) {
                     console.log('Detection Error!:' + Exception.toString())
@@ -276,7 +277,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
     }
 
-    async function startTimer() {
+    socket.on('startingTimer', function () {
         console.log('Starting Timer');
 
         let secondsRemaining = 30;
@@ -292,7 +293,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             secondsRemaining--;
         }, 1000)
-    }
-
+    }) ;
 
 });

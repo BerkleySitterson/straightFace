@@ -153,6 +153,11 @@ def handleSignaling(msg):
         emit("handleNewIceCandidateMsg", msg, to=target)
     elif msg_type == "video-answer":
         emit("handleVideoAnswerMsg", msg, to=target)   
+        
+@socketio.on("startTimer")
+def handleStartTimer(room):
+    print("starting Timer for room: " + room)
+    emit("startingTimer", room=room)
     
 @socketio.on("userSmiled")
 def handleUserSmile(room):
