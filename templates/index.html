@@ -15,15 +15,20 @@
 <body>
 
     <header class="header">
-        <a href="/login" class="account_btn" style="top: 5%; right: 12%;">Log In</a>
-        <a href="/register" class="account_btn" style="top: 5%; right: 5%;">Sign Up</a>
+        <div class="header_container">
+            <a href="/login" class="account_btn">Log In</a>
+            <a href="/register" class="account_btn">Sign Up</a>
+        </div>
     </header>
 
     <main>
+        <img id='homeIcon' src="static/images/nuetral-face.png">
         <h1 id="mainTitle">Welcome to<br>StraightFace</h1>
-        <p id="titleParagraph">StraightFace is a video-chat roulette app where<br>the goal is to, you guessed it, keep a straight face.</p>
-        <a href="/login" class="queue_btn" id="funnyBtn" style="top: 65%; left: 38%;">Make Someone Laugh!</a>
-        <a href="/login" class="queue_btn" id="seriousBtn" style="top: 65%; left: 52%;">Be Serious!</a>
+        <p id="titleParagraph">StraightFace is a video-chat roulette app where<br>the goal is... you guessed it! Keep a straight face!</p>
+        <div id = "queue_btn_container">
+            <a href="/login" class="queue_btn" id="funnyBtn">Make Someone Laugh!</a>
+            <a href="/login" class="queue_btn" id="seriousBtn">Be Serious!</a>
+        </div>        
     </main>
 
     <footer>
