@@ -36,6 +36,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }, 1000);         
         username = '';
     });
+    
+    document.getElementById("body").addEventListener('mousemove', eyeball);
+
+    function eyeball(event) {
+      var eye = document.querySelectorAll('.eye');
+      eye.forEach(function(eye) {
+        let x = (eye.getBoundingClientRect().left) + (eye.clientWidth / 2);
+        let y = (eye.getBoundingClientRect().top) + (eye.clientHeight / 2);
+        let radian = Math.atan2(event.clientX - x, event.clientY - y);
+        let rot = (radian * (180 / Math.PI) * -1) + 270;
+        eye.style.transform = "rotate(" + rot + "deg)";
+      });
+    }
 
     // ---------- Web-RTC ---------- //
 
@@ -94,6 +107,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         myPeerConnection.onicecandidate = handleICECandidateEvent;
         myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
+        myPeerConnection.ondatachannel = handleDataChannelEvent;
 
         myPeerConnection.addEventListener('track', async (event) => {
             const [remoteStream] = event.streams;
@@ -105,6 +119,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 detectSmile();
             }
         });
+    }
+
+    function handleDataChannelEvent (event) {
+        const dataChannel = event.channel;
+        dataChannel.onmessage = (event) => {
+            const receivedData = JSON.parse(event.data);
+            console.log(receivedData);
+
+            if (receivedData.emotion === 'happy') {
+                console.log("Received a Happy Emotion");
+            }
+        };
     }
 
     function handleNegotiationNeededEvent() {
@@ -219,16 +245,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         ul.scrolltop = ul.scrollHeight;
     });
 
-    socket.on('endRound', function() {
-        const funnyStream = document.getElementById("funnyVideo").srcObject;
-        const seriousStream = document.getElementById("seriousVideo").srcObject;       
-        const funnyTracks = funnyStream.getTracks();
-        const seriousTracks = seriousStream.getTracks();
-
-        funnyTracks[0].stop();
-        seriousTracks[0].stop();
-    });
-
     // ---------- Smile-Detection ---------- //
 
     async function detectSmile() {
@@ -238,10 +254,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const videoElement = document.getElementById('seriousVideo');
 
             await Promise.all([
-                //faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
-                //faceapi.nets.faceRecognitionNet.loadFromUri('../static/models'),
-                faceapi.nets.faceExpressionNet.loadFromUri('../static/models'),
-                faceapi.nets.ssdMobilenetv1.loadFromUri('../static/models')
+                faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
+                faceapi.nets.faceExpressionNet.loadFromUri('../static/models')
             ]);
             
             console.log('Models Loaded');
@@ -253,12 +267,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const displaySize = { width: videoElement.width, height: videoElement.height };
             await faceapi.matchDimensions(canvas, displaySize);
             /*Options for face detectors: input for tiny face must be a multiple of 32*/
-            //const options = await new faceapi.TinyFaceDetectorOptions({inputSize: 160, scoreThreshold: 0.10})            
-            const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
+            const options = await new faceapi.TinyFaceDetectorOptions({inputSize: 160, scoreThreshold: 0.10})            
+            //const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
             const canvasContext = await canvas.getContext('2d', { willReadFrequently: true })
+            const dataChannel = myPeerConnection.createDataChannel('emotion-channel');
             console.log('Commencing Face Detection');
             socket.emit('startTimer', room);
-            setInterval(async () => {
+            const detectionInterval = setInterval(async () => {
                 try {
                     let detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
                     let resizedDetections = await faceapi.resizeResults(detections, displaySize);
@@ -266,10 +281,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     await faceapi.draw.drawDetections(canvas, resizedDetections);
                     await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
-                    if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
+                    if (detections && detections[0] && detections[0].expressions.happy >= 0.90) {
                         console.log('Happy Emotion Detected');
-                        //socket.emit("userSmiled", room);
-                    }           
+                        socket.emit("userSmiled", room);
+                        clearInterval(detectionInterval);
+                    }
+                    const maxEmotion = Object.keys(detections[0].expressions).reduce((a, b) => detections[0].expressions[a] > detections[0].expressions[b] ? a : b);
+                    const maxScore = detections[0].expressions[maxEmotion];
+                    const emotionData = { emotion: maxEmotion, score: maxScore };
+                    dataChannel.onopen = (event) => {
+                        dataChannel.send(JSON.stringify(emotionData));
+                    }
                 }
                 catch (Exception) {
                     console.log('Detection Error!:' + Exception.toString())
@@ -297,6 +319,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             secondsRemaining--;
         }, 1000)
-    }) ;
+    });
+
+    socket.on('endRound', function () {
+        const funnyStream = document.getElementById("funnyVideo").srcObject;
+        const seriousStream = document.getElementById("seriousVideo").srcObject;       
+        const funnyTracks = funnyStream.getTracks();
+        const seriousTracks = seriousStream.getTracks();
+
+        funnyTracks[0].stop();
+        seriousTracks[0].stop();
+
+        myPeerConnection.close();
+    });
 
 });
