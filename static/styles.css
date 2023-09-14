@@ -17,9 +17,10 @@ body, html {
     align-items: center;
     font-size: 1rem;
     position: flex;
-    padding: 10px 20px;
+    padding: 1vh 2vw;
     border-radius: 1rem;
     text-decoration: none;
+    margin-right: 1vw;
 }
 
 .account_btn:hover {
@@ -29,19 +30,21 @@ body, html {
 }
 
 .header {
-    position: absolute;
-    height: 7%;
+    position: fixed;
+    display: flex;
+    height: 7vh;
     width: 100%;
     border-bottom: 3px solid white;
+    justify-content: flex-end;
     align-items: center;
-    justify-content: center;
 }
 
 .header_container {
-    padding-top: 2rem;
-    padding-right: 1rem;
-    position: flex;
+    display: flex;
+    height: fit-content;
+    width: fit-content;
     float: right;
+
 }
 
 .home_page-header {
