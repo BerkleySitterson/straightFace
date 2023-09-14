@@ -16,10 +16,11 @@ body, html {
     justify-content: center;
     align-items: center;
     font-size: 1rem;
-    position: absolute;
-    padding: 10px 20px;
+    position: flex;
+    padding: 1vh 2vw;
     border-radius: 1rem;
     text-decoration: none;
+    margin-right: 1vw;
 }
 
 .account_btn:hover {
@@ -29,7 +30,21 @@ body, html {
 }
 
 .header {
+    position: fixed;
+    display: flex;
+    height: 7vh;
+    width: 100%;
     border-bottom: 3px solid white;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.header_container {
+    display: flex;
+    height: fit-content;
+    width: fit-content;
+    float: right;
+
 }
 
 .home_page-header {
@@ -113,10 +128,17 @@ body, html {
     transform: translateY(-50%);
 }
 
+#homeIcon {
+    position: absolute;
+    top: 18.5%;
+    left: 49.6%;
+    translate: -50% -50%;
+    scale: .1;
+}
 
 #mainTitle {
     position: absolute;
-    top: 25%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
@@ -124,16 +146,18 @@ body, html {
     letter-spacing: .15rem;
     line-height: 4.3rem;
     font-weight: 550;
+    text-align: center;
 }
 
 #titleParagraph {
     position: absolute;
-    top: 45%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
     font-size: 1.8rem;
     letter-spacing: .06rem;
+    text-align: center;
 }
 
 .horizontal-line-home {
@@ -160,9 +184,17 @@ body, html {
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    position: absolute;
+    position: relative;
     text-decoration: none;
     border-radius: 1rem;
+}
+
+#queue_btn_container {    
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 .queue_btn:hover {
@@ -311,4 +343,17 @@ body, html {
   height: 1.5rem;
   background: black;
   border-radius: 50%;
+}
+.text{
+    font-size: 30px;
+    font-weight: 500;
+    color: #606060;
+}
+
+footer {
+    position: fixed;
+    bottom: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
 }

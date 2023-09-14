@@ -107,7 +107,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         myPeerConnection.onicecandidate = handleICECandidateEvent;
         myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
-        myPeerConnection.ondatachannel = handleDataChannelEvent;
 
         myPeerConnection.addEventListener('track', async (event) => {
             const [remoteStream] = event.streams;
@@ -119,18 +118,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 detectSmile();
             }
         });
-    }
-
-    function handleDataChannelEvent (event) {
-        const dataChannel = event.channel;
-        dataChannel.onmessage = (event) => {
-            const receivedData = JSON.parse(event.data);
-            console.log(receivedData);
-
-            if (receivedData.emotion === 'happy') {
-                console.log("Received a Happy Emotion");
-            }
-        };
     }
 
     function handleNegotiationNeededEvent() {
@@ -270,7 +257,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const options = await new faceapi.TinyFaceDetectorOptions({inputSize: 160, scoreThreshold: 0.10})            
             //const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
             const canvasContext = await canvas.getContext('2d', { willReadFrequently: true })
-            const dataChannel = myPeerConnection.createDataChannel('emotion-channel');
             console.log('Commencing Face Detection');
             socket.emit('startTimer', room);
             const detectionInterval = setInterval(async () => {
@@ -285,12 +271,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
                         console.log('Happy Emotion Detected');
                         socket.emit("userSmiled", room);
                         clearInterval(detectionInterval);
-                    }
-                    const maxEmotion = Object.keys(detections[0].expressions).reduce((a, b) => detections[0].expressions[a] > detections[0].expressions[b] ? a : b);
-                    const maxScore = detections[0].expressions[maxEmotion];
-                    const emotionData = { emotion: maxEmotion, score: maxScore };
-                    dataChannel.onopen = (event) => {
-                        dataChannel.send(JSON.stringify(emotionData));
                     }
                 }
                 catch (Exception) {
