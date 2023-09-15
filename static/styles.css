@@ -8,6 +8,15 @@ body, html {
     z-index: -1;
 }
 
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+}
+
 .account_btn {
     transition: all .5s ease;
     background-color: #a442f5;
@@ -129,11 +138,8 @@ body, html {
 }
 
 #homeIcon {
-    position: absolute;
-    top: 18.5%;
-    left: 49.6%;
-    translate: -50% -50%;
-    scale: .1;
+    width: 15vw;
+    opacity: .9;
 }
 
 #header_icon {
@@ -145,27 +151,22 @@ body, html {
 }
 
 #mainTitle {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     color: white;
     font-size: 3.5rem;
     letter-spacing: .15rem;
     line-height: 4.3rem;
     font-weight: 550;
     text-align: center;
+    margin-top: 0vh;
+    margin-bottom: 0vh;
 }
 
 #titleParagraph {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     color: white;
     font-size: 1.8rem;
     letter-spacing: .06rem;
     text-align: center;
+    margin-bottom: 10vh;
 }
 
 .horizontal-line-home {
@@ -189,20 +190,13 @@ body, html {
     border: 2px solid white;
     color: white;
     padding: 10px 20px;
-    align-items: center;
-    justify-content: center;
     font-size: 1rem;
-    position: relative;
+    font-weight: bold;
     text-decoration: none;
-    border-radius: 1rem;
-}
-
-#queue_btn_container {    
-    position: absolute;
-    top: 70%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    border-radius: 2rem;
+    margin: 10px;
+    width: 10vw;
+    text-align: center;
 }
 
 .queue_btn:hover {
@@ -215,6 +209,11 @@ body, html {
     position: absolute;
     color: white;
     font-size: 1rem;
+}
+
+#queue_btn_container {
+    margin-top: 5vh;
+    display: flex;
 }
 
 #funnyQueueNum {
@@ -298,8 +297,6 @@ body, html {
 .font-sm {
     font-size: .8rem;
 }
-
-
 
 .face {
   position: absolute;
