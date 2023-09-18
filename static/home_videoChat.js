@@ -254,9 +254,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const displaySize = { width: videoElement.width, height: videoElement.height };
             await faceapi.matchDimensions(canvas, displaySize);
             /*Options for face detectors: input for tiny face must be a multiple of 32*/
-            const options = await new faceapi.TinyFaceDetectorOptions({inputSize: 160, scoreThreshold: 0.10})            
+            const options = await new faceapi.TinyFaceDetectorOptions();            
             //const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
-            const canvasContext = await canvas.getContext('2d', { willReadFrequently: true })
+            const canvasContext = await canvas.getContext('2d', { willReadFrequently: true });
             console.log('Commencing Face Detection');
             socket.emit('startTimer', room);
             const detectionInterval = setInterval(async () => {
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     await faceapi.draw.drawDetections(canvas, resizedDetections);
                     await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
-                    if (detections && detections[0] && detections[0].expressions.happy >= 0.90) {
+                    if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                         console.log('Happy Emotion Detected');
                         socket.emit("userSmiled", room);
                         clearInterval(detectionInterval);
