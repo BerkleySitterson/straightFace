@@ -13,7 +13,7 @@ main {
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 100vh;
+    height: auto;
     flex-direction: column;
 }
 
@@ -38,24 +38,11 @@ main {
 }
 
 .header {
-    position: fixed;
-    display: flex;
     height: 7vh;
     width: 100%;
     border-bottom: 3px solid white;
     justify-content: flex-end;
     align-items: center;
-}
-
-.header_container {
-    display: flex;
-    height: fit-content;
-    width: fit-content;
-    float: right;
-
-}
-
-.home_page-header {
     display: flex;
 }
 
@@ -145,15 +132,23 @@ main {
     width: 15vw;
 }
 
+#home_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 70vh;
+    width: 100%;
+}
+
 #header_icon {
-    position: absolute;
-    top: 4.8%;
-    left: 5%;
+    top: 2vw;
     translate: -50% -50%;
     scale: .045;
 }
 
 #mainTitle {
+    position: relative;
     color: white;
     font-size: 3.5rem;
     letter-spacing: .15rem;
@@ -209,24 +204,21 @@ main {
 }
 
 .queueCounters {
-    position: absolute;
     color: white;
     font-size: 1rem;
+    margin: 2vh 2vw;
+}
+
+.btn_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    width: fit-content;
 }
 
 #queue_btn_container {
-    margin-top: 5vh;
     display: flex;
-}
-
-#funnyQueueNum {
-    top: 74%;
-    left: 40%;
-}
-
-#seriousQueueNum {
-    top: 74%;
-    left: 54%;
 }
 
 #funnyVideo {
