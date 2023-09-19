@@ -17,7 +17,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 app.config['SECRET_KEY'] = 'secret_key'
 app.secret_key = 'secret_key'
 
-@app.route('/')  # Render index.html when website is first visited
+@app.route('/')
 def index():
     return render_template('index.html')
 
