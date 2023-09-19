@@ -113,6 +113,13 @@ main {
     font-size: 2rem;
 }
 
+#startSearchBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .horizontal-line {
     position: relative;
     border-top: 2px solid white;

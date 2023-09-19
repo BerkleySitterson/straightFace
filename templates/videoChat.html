@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>StraightFace - VideoChat</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script defer src="../static/face-api.min.js"></script>
+    <script defer src="../static/videoChat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
+    <link rel="icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
+    <style>
+        canvas {
+            position: absolute;
+            top: 15%;
+            left: 56%;
+            border: 3px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <h1 id="funnyUsername"></h1>
+    <h1 id="seriousUsername"></h1>
+
+    <p id="timer">30</p>
+
+    <video id="funnyVideo" width="650" height="400" autoplay playsinline></video>
+    <video id="seriousVideo" width="650" height="400" autoplay playsinline></video>
+
+    <button type="submit" id="findNewPlayerBtn">Find New Player</button>
+   
+    <button type="button" id="disconnectBtn">X</button>
+
+    <ul id="chat-messages"></ul>
+    <input type="text" id="message" placeholder="Enter a Message">
+
+</body>

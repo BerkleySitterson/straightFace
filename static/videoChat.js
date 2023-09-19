@@ -2,53 +2,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
-    var username = document.getElementById('username').textContent;
+    var username;
     var role;
 
-    // ---------- Home ---------- //
-
-    document.getElementById("funnyBtn").addEventListener("click", function() { // Once User has chosen funny role, add them to funnyUsers Queue
-        socket.emit("user_join_funny", username);
-        role = "funny";
+    document.getElementById("findNewPlayerBtn").addEventListener("click", (event) => {
+        socket.emit("find_new_player");
     });
-    
-    document.getElementById("seriousBtn").addEventListener("click", function() { // Once User has chosen serious role, add them to seriousUsers Queue
-        socket.emit("user_join_serious", username);
-        role = "serious";          
-    });
-
-    socket.on("get_funny_queue", function(num) {
-        document.getElementById("funnyQueueNum").textContent = "Funny Queue: " + num;
-    });
-
-    socket.on("get_serious_queue", function(num) {
-        document.getElementById("seriousQueueNum").textContent = "Serious Queue: " + num;
-    });
-
-    document.getElementById("logout_button").addEventListener("click", function() {
-        socket.emit("logout", username);
-    });
-
-    socket.on("logout_successful", async function() {
-        document.getElementById("home_page").style.visibility = "hidden";
-        setTimeout(() => {
-            document.getElementById("login_page").style.visibility = "visible";
-        }, 1000);         
-        username = '';
-    });
-    
-    document.getElementById("body").addEventListener('mousemove', eyeball);
-
-    function eyeball(event) {
-      var eye = document.querySelectorAll('.eye');
-      eye.forEach(function(eye) {
-        let x = (eye.getBoundingClientRect().left) + (eye.clientWidth / 2);
-        let y = (eye.getBoundingClientRect().top) + (eye.clientHeight / 2);
-        let radian = Math.atan2(event.clientX - x, event.clientY - y);
-        let rot = (radian * (180 / Math.PI) * -1) + 270;
-        eye.style.transform = "rotate(" + rot + "deg)";
-      });
-    }
+ 
 
     // ---------- Web-RTC ---------- //
 
@@ -56,11 +16,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     var targetID;
     var room;
     var mediaConstraints = { audio: false, video: true };
-
-    socket.on("redirect_to_video", function() {
-        document.getElementById("home_page").style.visibility = "hidden";
-        document.getElementById("video_chat_page").style.visibility = "visible";
-    });
 
     function sendToServer(msg) {
         socket.emit("data", msg);

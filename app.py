@@ -1,6 +1,6 @@
 import eventlet
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, join_room, rooms, close_room, emit
 from database.db import Database
 from authentication.auth_tools import login_pipeline, update_passwords, hash_password, username_exists
@@ -14,7 +14,8 @@ username = 'default'
 db = Database('database/straightface.db')
 app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
-app.config['SECRET'] = "secret"
+app.config['SECRET_KEY'] = 'secret_key'
+app.secret_key = 'secret_key'
 
 @app.route('/')  # Render index.html when website is first visited
 def index():
@@ -33,8 +34,9 @@ def login():
     if login_pipeline(username, password):
         global logged_in
         logged_in = True
+        session['username'] = username
         print(f"Login Successful for { username }")     
-        return render_template('home_videoChat.html', username=username, funnyQueue=db.get_seriousUsers_length(), seriousQueue=db.get_seriousUsers_length())
+        return render_template('home.html', username=username)
     else:
         print(f"Incorrect Username ({username}) or Password ({password}).")
         return render_template('login.html', errMsg="Invalid Username or Password")
@@ -63,44 +65,50 @@ def register():
             global logged_in
             logged_in = True
             print(f"Logged in as user: {username}")
-            return render_template('home.html', username=username, funnyQueue=db.get_seriousUsers_length(), seriousQueue=db.get_seriousUsers_length())
+            return render_template('home.html', username=username)
         else:
             print(f"Unable to log in at this time.")
             return render_template('index.html')
+        
+@app.route('/videoChat_funny')
+def videoChatFunny():
+    session['role'] = 'funny'
+    
+    return render_template('videoChat.html')
+
+@app.route('/videoChat_serious')
+def videoChatSerious():
+    session['role'] = 'serious'
+    
+    return render_template('videoChat.html')
 
 
 
-@socketio.on("logout")
-def logout(username):
+@app.route('/logout')
+def logout():
+    username = session['username']
 
     if username_exists(username):
         print(f"Logout Successful for { username }")
         db.remove_user_from_queues(username)
-        emit("logout_successful")
-        emit("get_funny_queue", db.get_funnyUsers_length()) # Only used for testing purposes
-        emit("get_serious_queue", db.get_seriousUsers_length())
-
-
-@socketio.on("user_join_funny") # User joins 'funny' team and is inserted into the waiting queue
-def handle_user_join_funny(username):
+        session.pop('username', None)
+        session.pop('role', None)
+        return render_template('index.html')
     
-    print(f"User {username} has joined the funny side!")
-    
+@socketio.on("find_new_player")
+def findNewPlayer():
+    username = session['username']
+    role = session['role']
     sid = request.sid
-    db.add_funny_user(username, sid)
-    attempt_pairing()
-    emit("get_funny_queue", db.get_funnyUsers_length(), broadcast=True) # Only used for testing purposes
-
-  
-@socketio.on("user_join_serious") # User joins 'serious' team and is inserted into the waiting queue
-def handle_user_join_serious(username):
     
-    print(f"User {username} has joined the serious side!")
-    
-    sid = request.sid
-    db.add_serious_user(username, sid)
-    attempt_pairing()
-    emit("get_serious_queue", db.get_seriousUsers_length(), broadcast=True) # Only used for testing purposes
+    if role == 'funny':
+        print(f"User {username} has joined the funny side!")
+        db.add_funny_user(username, sid)
+        attempt_pairing()
+    elif role == 'serious':
+        print(f"User {username} has joined the serious side!")
+        db.add_serious_user(username, sid)
+        attempt_pairing()
 
         
 def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
@@ -132,7 +140,6 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
         targetID = funnyUser[1]
     
     print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
-    emit("redirect_to_video", room=room)
     emit("users_paired", {"myID": request.sid, "targetID": targetID, "room": room})
     print(f"UserID: {request.sid} || PeerID: {targetID}")
     
