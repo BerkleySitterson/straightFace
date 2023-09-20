@@ -1,4 +1,5 @@
 import eventlet
+import time
 
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, join_room, rooms, close_room, emit
@@ -9,12 +10,13 @@ eventlet.monkey_patch()
 
 app = Flask(__name__, static_folder='static')
 HOST, PORT = '0.0.0.0', 5000
-global db, logged_in
-username = 'default'
+global db
 db = Database('database/straightface.db')
 app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 app.config['SECRET_KEY'] = 'secret_key'
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_PERMANENT'] = False
 app.secret_key = 'secret_key'
 
 @app.route('/')
@@ -31,11 +33,9 @@ def login():
     username = request.form['username']
     password = request.form['password']
     
-    if login_pipeline(username, password):
-        global logged_in
-        logged_in = True
+    if login_pipeline(username, password):     
         session['username'] = username
-        print(f"Login Successful for { username }")     
+        print(f"Login Successful for { username }")
         return render_template('home.html', username=username)
     else:
         print(f"Incorrect Username ({username}) or Password ({password}).")
@@ -61,9 +61,8 @@ def register():
         salt, key = hash_password(password)
         update_passwords(username, key, salt)
         db.add_new_user(username, key, email, first_name, last_name)
-        if login_pipeline(username, password):
-            global logged_in
-            logged_in = True
+        if login_pipeline(username, password):    
+            session['username'] = username
             print(f"Logged in as user: {username}")
             return render_template('home.html', username=username)
         else:
@@ -73,14 +72,16 @@ def register():
 @app.route('/videoChat_funny')
 def videoChatFunny():
     session['role'] = 'funny'
+    print("Role is " + session['role'] + " and username is " + session['username'])
     
-    return render_template('videoChat.html')
+    return render_template('videoChat.html', funnyUsername=session['username'])
 
 @app.route('/videoChat_serious')
 def videoChatSerious():
     session['role'] = 'serious'
+    print("Role is " + session['role'] + " and username is " + session['username'])
     
-    return render_template('videoChat.html')
+    return render_template('videoChat.html', seriousUsername=session['username'])
 
 
 
@@ -104,10 +105,12 @@ def findNewPlayer():
     if role == 'funny':
         print(f"User {username} has joined the funny side!")
         db.add_funny_user(username, sid)
+        emit("setRole", {"role": "funny"})
         attempt_pairing()
     elif role == 'serious':
         print(f"User {username} has joined the serious side!")
         db.add_serious_user(username, sid)
+        emit("setRole", {"role": "serious"})
         attempt_pairing()
 
         
@@ -135,11 +138,15 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     db.remove_user_from_queues(seriousUser[0])
     
     if funnyUser[1] == request.sid:
-        targetID = seriousUser[1]
+        targetID = seriousUser[1]    
     else:
         targetID = funnyUser[1]
+        
+    funnyUsername = funnyUser[0]
+    seriousUsername = seriousUser[0]
     
     print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
+    emit("set_username", {"funnyUsername": funnyUsername, "seriousUsername": seriousUsername}, room=room)
     emit("users_paired", {"myID": request.sid, "targetID": targetID, "room": room})
     print(f"UserID: {request.sid} || PeerID: {targetID}")
     
@@ -161,10 +168,15 @@ def handleSignaling(msg):
     elif msg_type == "video-answer":
         emit("handleVideoAnswerMsg", msg, to=target)   
         
-@socketio.on("startTimer")
-def handleStartTimer(room):
-    print("starting Timer for room: " + room)
-    emit("startingTimer", room=room)
+@socketio.on("startCountdown")
+def handleStartCountdown(room):
+    print("Starting Countdown for Room: " + room)
+    
+    for i in range(3, -1, -1):
+        emit("updateCountdown", {"countdown": i}, room=room)
+        time.sleep(1)
+    
+    emit("startRound", room=room)
     
 @socketio.on("userSmiled")
 def handleUserSmile(room):

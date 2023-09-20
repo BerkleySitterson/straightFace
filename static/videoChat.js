@@ -8,7 +8,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("findNewPlayerBtn").addEventListener("click", (event) => {
         socket.emit("find_new_player");
     });
- 
+
+    socket.on("setRole", (data) => {
+        role = data['role'];
+    });
+
+    socket.on("set_username", (data) => {
+        if (role === "funny") {
+            console.log("Role is " + role + " and remote username is " + data['seriousUsername']);
+            document.getElementById("seriousUsername").textContent = data['seriousUsername'];
+        } else {
+            console.log("Role is " + role + " and remote username is " + data['funnyUsername']);
+            document.getElementById("funnyUsername").textContent = data['funnyUsername'];
+        }
+    });
 
     // ---------- Web-RTC ---------- //
 
@@ -23,11 +36,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     socket.on("users_paired", function(data) {
 
+        Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
+            faceapi.nets.faceExpressionNet.loadFromUri('../static/models')
+        ]);
+
         myID = data['myID'];
         targetID = data['targetID'];
         room = data['room'];
-
-        createPeerConnection();
 
         navigator.mediaDevices.getUserMedia(mediaConstraints)
         .then((localStream) => {
@@ -36,6 +52,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             } else {
                 document.getElementById("seriousVideo").srcObject = localStream;
             }
+            createPeerConnection();
             localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
         })
     });
@@ -70,7 +87,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 document.getElementById("seriousVideo").srcObject = remoteStream;
             } else {
                 document.getElementById("funnyVideo").srcObject = remoteStream;
-                detectSmile();
+                socket.emit("startCountdown", room);
             }
         });
     }
@@ -166,8 +183,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         myPeerConnection.close();
 
-        document.getElementById("home_page").style.visibility = "visible";
-        document.getElementById("video_chat_page").style.visibility = "hidden";
     });
     
     document.getElementById("message").addEventListener("keyup", function(event) {
@@ -194,11 +209,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         console.log('detectSmile() executing...');
         try {
             const videoElement = document.getElementById('seriousVideo');
-
-            await Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
-                faceapi.nets.faceExpressionNet.loadFromUri('../static/models')
-            ]);
             
             console.log('Models Loaded');
 
@@ -213,7 +223,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             //const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
             const canvasContext = await canvas.getContext('2d', { willReadFrequently: true });
             console.log('Commencing Face Detection');
-            socket.emit('startTimer', room);
             const detectionInterval = setInterval(async () => {
                 try {
                     let detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
@@ -238,22 +247,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
     }
 
-    socket.on('startingTimer', function () {
-        console.log('Starting Timer');
+    socket.on('updateCountdown', (data) => {
+        console.log('Starting Countdown');
 
-        let secondsRemaining = 30;
+        const countdown = data.countdown;
         const timerElement = document.getElementById('timer');
 
-        let interval = setInterval(function() {
-            timerElement.textContent = secondsRemaining;
+        if (countdown === 0) {
+            timerElement.textContent = 'Start!';
+        } else {
+            timerElement.textContent = countdown;
+        }
+       
+    });
 
-            if (secondsRemaining === 0) {
-                clearInterval(interval);
-                timerElement.textContent = "Time's Up!";
-            }
+    socket.on('startRound', () => {
+        console.log('Starting Round');
+        console.log("Role: " + role);
 
-            secondsRemaining--;
-        }, 1000)
+        if (role === "funny") {
+            document.getElementById("funnyVideo").play();
+            document.getElementById("seriousVideo").play();
+        } else {
+            document.getElementById("funnyVideo").play();
+            document.getElementById("seriousVideo").play();
+            detectSmile();
+        }
+        
     });
 
     socket.on('endRound', function () {

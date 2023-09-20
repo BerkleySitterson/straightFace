@@ -20,7 +20,6 @@
             position: absolute;
             top: 15%;
             left: 56%;
-            border: 3px solid black;
         }
     </style>
 </head>
@@ -30,10 +29,13 @@
     <h1 id="funnyUsername"></h1>
     <h1 id="seriousUsername"></h1>
 
-    <p id="timer">30</p>
+    <p id="timer"></p>
 
-    <video id="funnyVideo" width="650" height="400" autoplay playsinline></video>
-    <video id="seriousVideo" width="650" height="400" autoplay playsinline></video>
+    <p id="funnyUsername">{{ funnyUsername }}</p>
+    <video id="funnyVideo" width="650" height="400" playsinline></video>
+
+    <p id="seriousUsername">{{ seriousUsername }}</p>
+    <video id="seriousVideo" width="650" height="400" playsinline></video>
 
     <button type="submit" id="findNewPlayerBtn">Find New Player</button>
    
