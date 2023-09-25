@@ -2,10 +2,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
-    var username;
     var role;
+    var myID;
+    var targetID;
+    var room;
+    var mediaConstraints = { audio: false, video: true };
 
-    document.getElementById("findNewPlayerBtn").addEventListener("click", (event) => {
+    document.getElementById("findNewPlayerBtn").addEventListener("click", () => {
         socket.emit("find_new_player");
     });
 
@@ -13,7 +16,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         role = data['role'];
     });
 
-    socket.on("set_username", (data) => {
+    socket.on("set_round_data", (data) => {
         if (role === "funny") {
             console.log("Role is " + role + " and remote username is " + data['seriousUsername']);
             document.getElementById("seriousUsername").textContent = data['seriousUsername'];
@@ -21,14 +24,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
             console.log("Role is " + role + " and remote username is " + data['funnyUsername']);
             document.getElementById("funnyUsername").textContent = data['funnyUsername'];
         }
+        room = data['room'];
     });
 
     // ---------- Web-RTC ---------- //
-
-    var myID;
-    var targetID;
-    var room;
-    var mediaConstraints = { audio: false, video: true };
 
     function sendToServer(msg) {
         socket.emit("data", msg);
@@ -36,14 +35,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     socket.on("users_paired", function(data) {
 
-        Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
-            faceapi.nets.faceExpressionNet.loadFromUri('../static/models')
-        ]);
-
         myID = data['myID'];
         targetID = data['targetID'];
-        room = data['room'];
 
         navigator.mediaDevices.getUserMedia(mediaConstraints)
         .then((localStream) => {
@@ -87,8 +80,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 document.getElementById("seriousVideo").srcObject = remoteStream;
             } else {
                 document.getElementById("funnyVideo").srcObject = remoteStream;
-                socket.emit("startCountdown", room);
             }
+            socket.emit("startCountdown", room);
         });
     }
 
@@ -208,6 +201,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         console.log('detectSmile() executing...');
         try {
+
+            Promise.all([
+                faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
+                faceapi.nets.faceExpressionNet.loadFromUri('../static/models')
+            ]);
+
             const videoElement = document.getElementById('seriousVideo');
             
             console.log('Models Loaded');
@@ -272,11 +271,30 @@ document.addEventListener("DOMContentLoaded", (event) => {
             document.getElementById("funnyVideo").play();
             document.getElementById("seriousVideo").play();
             detectSmile();
+            socket.emit('startTimerFromServer', room)
         }
-        
+
     });
 
-    socket.on('endRound', function () {
+    socket.on('startTimer', () => {
+        const timerElement = document.getElementById('timer');
+        let seconds = 30;
+
+        countdownInterval = setInterval(function () {
+            timerElement.textContent = seconds;
+            seconds--;
+
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                timerElement.textContent = 'Time is Up!';
+                socket.emit("timerComplete", room)
+            }
+
+        }, 1000);
+    });
+
+    socket.on('endRoundFunnyWin', function () {
+        const timerElement = document.getElementById("timer");
         const funnyStream = document.getElementById("funnyVideo").srcObject;
         const seriousStream = document.getElementById("seriousVideo").srcObject;       
         const funnyTracks = funnyStream.getTracks();
@@ -286,6 +304,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
         seriousTracks[0].stop();
 
         myPeerConnection.close();
+
+        timerElement.textContent = "Funny User has Won!";
+    });
+
+    socket.on('endRoundSeriousWin', function () {
+        const timerElement = document.getElementById("timer");
+        const funnyStream = document.getElementById("funnyVideo").srcObject;
+        const seriousStream = document.getElementById("seriousVideo").srcObject;       
+        const funnyTracks = funnyStream.getTracks();
+        const seriousTracks = seriousStream.getTracks();
+
+        funnyTracks[0].stop();
+        seriousTracks[0].stop();
+
+        myPeerConnection.close();
+
+        timerElement.textContent = "Serious User has Won!";
     });
 
 });
