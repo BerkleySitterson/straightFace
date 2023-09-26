@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             if (seconds <= 0) {
                 clearInterval(countdownInterval);
                 timerElement.textContent = 'Time is Up!';
-                socket.emit("timerComplete", room)
+                socket.emit("endRoundSeriousWin", room);
             }
 
         }, 1000);

@@ -1,20 +1,21 @@
 body, html {
-    background: linear-gradient(to bottom right, #855BDA, #4B0082);
-    overflow: hidden;
-    height: 100%;
+    background: linear-gradient(to bottom right, #855BDA, #000080);
+    height: 100vh;
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
     z-index: -1;
+    overflow-x: hidden;
 }
 
 main {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     width: 100vw;
-    height: auto;
-    flex-direction: column;
+    height: 80vh;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .account_btn {
@@ -38,7 +39,7 @@ main {
 }
 
 .header {
-    height: 7vh;
+    height: 8vh;
     width: 100%;
     border-bottom: 3px solid white;
     justify-content: flex-end;
@@ -89,16 +90,6 @@ main {
     position: relative;
 }
 
-#index_login {
-    margin-right: 2rem;
-}
-
-#index_login:hover, #index_register:hover {
-    background-color: white;
-    color: #4B0082;
-    cursor: pointer;
-}
-
 .err_msg {
     position: relative;
     color: white;
@@ -136,45 +127,6 @@ main {
     transform: translateY(-50%);
 }
 
-#homeIcon {
-    width: 15vw;
-}
-
-#home_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    height: 70vh;
-    width: 100%;
-}
-
-#header_icon {
-    top: 2vw;
-    translate: -50% -50%;
-    scale: .045;
-}
-
-#mainTitle {
-    position: relative;
-    color: white;
-    font-size: 3.5rem;
-    letter-spacing: .15rem;
-    line-height: 4.3rem;
-    font-weight: 550;
-    text-align: center;
-    margin-top: 0vh;
-    margin-bottom: 0vh;
-}
-
-#titleParagraph {
-    color: white;
-    font-size: 1.8rem;
-    letter-spacing: .06rem;
-    text-align: center;
-    margin-bottom: 10vh;
-}
-
 .horizontal-line-home {
     position: relative;
     border-top: 2px solid white;
@@ -201,7 +153,7 @@ main {
     text-decoration: none;
     border-radius: 2rem;
     margin: 10px;
-    width: 10vw;
+    width: 12rem;
     text-align: center;
 }
 
@@ -223,10 +175,6 @@ main {
     align-items: center;
     height: fit-content;
     width: fit-content;
-}
-
-#queue_btn_container {
-    display: flex;
 }
 
 #funnyVideo {
@@ -301,57 +249,7 @@ main {
     font-size: .8rem;
 }
 
-.face {
-  position: absolute;
-  width: 8rem;
-  height: 8rem;
-  left: 50%;
-  top: 40%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: #ffcc09;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-}
-.face::before {
-  content: '';
-  position: absolute;
-  top: 5.2rem;
-  width: 5rem;
-  height: .55rem;
-  background: black;
-  left: 1.5rem;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  transition: 0.5s;
-}
 
-.eyes {
-  position: relative;
-  top: 1rem;
-  left: 1rem;
-  display: flex;
-}
-.eyes .eye {
-  position: relative;
-  width: 3rem;
-  height: 3rem;
-  display: block;
-  background: #fff;
-  border-radius: 50%;
-}
-.eyes .eye::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 1rem;
-  transform: translate(-50%, -50%);
-  width: 1.5rem;
-  height: 1.5rem;
-  background: black;
-  border-radius: 50%;
-}
 .text{
     font-size: 30px;
     font-weight: 500;
@@ -449,4 +347,88 @@ label {
     width: 15%;
     height: 15%;
     
+}
+
+/* Index CSS */
+
+#index_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100vw;
+    height: 80vh;
+    flex-direction: column;
+    align-items: center;
+}
+
+#homeIcon {
+    width: 15vw;
+    min-width: 15vw;
+}
+
+#home_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 70vh;
+    width: 100%;
+}
+
+#header_icon {
+    scale: .045;
+}
+
+#mainTitle {
+    color: white;
+    font-size: 3.5rem;
+    letter-spacing: .15rem;
+    line-height: 4.3rem;
+    font-weight: 550;
+    text-align: center;
+}
+
+#titleParagraph {
+    color: white;
+    font-size: 1.8rem;
+    letter-spacing: .06rem;
+    text-align: center;
+    flex-grow: 1;
+}
+
+#index_login {
+    margin-right: 2rem;
+}
+
+#index_login:hover, #index_register:hover {
+    background-color: white;
+    color: #4B0082;
+    cursor: pointer;
+}
+
+#queue_btn_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#funnyBtn {
+    background-color: #FFD700;
+    color: black;
+    border-color: black;
+}
+
+#seriousBtn {
+    background-color: #D3D3D3;
+    color: black;
+    border-color: black;
+}
+
+#seriousBtn:hover {
+    background-color: #808080;
+}
+
+#funnyBtn:hover {
+    background-color: #FFC04D;
 }
