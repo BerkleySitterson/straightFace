@@ -1,11 +1,30 @@
+:root {
+    --primary-purple: #855BDA;
+    --primary-yellow: #FFD700;
+    --primary-gray: #D3D3D3;
+    --primary-blue: #000080;
+    --secondary-purple: #4B0082;
+}
+
+
 body, html {
-    background: linear-gradient(to bottom right, #855BDA, #000080);
+    background: linear-gradient(to bottom right, var(--primary-purple), var(--primary-blue));
     height: 100vh;
+    width: 100vw;
     margin: 0;
     padding: 0;
     font-family: 'Lato', sans-serif;
     z-index: -1;
     overflow-x: hidden;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 8vh;
+    width: 100%;
+    border-bottom: 3px solid white;
 }
 
 main {
@@ -18,13 +37,31 @@ main {
     flex-wrap: wrap;
 }
 
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-top: 3vh;
+}
+
+/* Index CSS */
+
+#main_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100vw;
+    height: 80vh;
+    flex-direction: column;
+    align-items: center;
+}
+
 .account_btn {
     transition: all .5s ease;
     background-color: #a442f5;
     border: 2px solid white;
     color: white;
-    justify-content: center;
-    align-items: center;
     font-size: 1rem;
     padding: 1vh 2vw;
     border-radius: 1rem;
@@ -36,329 +73,6 @@ main {
     background-color: white;
     color: #a442f5;
     cursor: pointer;
-}
-
-.header {
-    height: 8vh;
-    width: 100%;
-    border-bottom: 3px solid white;
-    justify-content: flex-end;
-    align-items: center;
-    display: flex;
-}
-
-#header_title {
-    position: relative;
-    color: white;
-    font-size: 30px;
-    left: 2rem;
-}
-
-#username {
-    position: relative;
-    color: white;
-    top: 1.8rem;
-    font-size: 1.5rem;
-    left: 83rem;
-    z-index: 2;
-}
-
-#register_title, #login_title {
-    color: white;
-    position: relative;
-    left: 30%;
-}
-
-.login_form, .register_form {
-    height: 3rem;
-    width: 8rem;
-    background-color: #4B0082;
-    border: 2px solid white;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 10px;
-}
-
-#login_body_container, #register_body_container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-.err_msg {
-    position: relative;
-    color: white;
-    left: 24%;
-    top: 12%;
-}
-
-#timer {
-    position: absolute;
-    color: white;
-    left: 49%;
-    top: 4%;
-    font-size: 2rem;
-}
-
-#startSearchBtn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.horizontal-line {
-    position: relative;
-    border-top: 2px solid white;
-    top: 4rem;
-}
-
-.horizontal-line::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
-}
-
-.horizontal-line-home {
-    position: relative;
-    border-top: 2px solid white;
-    top: 1.1rem;
-}
-
-.horizontal-line-home::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
-}
-
-.queue_btn {
-    transition: all .5s ease;
-    background-color: #a442f5;
-    border: 2px solid white;
-    color: white;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 2rem;
-    margin: 10px;
-    width: 12rem;
-    text-align: center;
-}
-
-.queue_btn:hover {
-    background-color: white;
-    color: #a442f5;
-    cursor: pointer;
-}
-
-.queueCounters {
-    color: white;
-    font-size: 1rem;
-    margin: 2vh 2vw;
-}
-
-.btn_container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: fit-content;
-    width: fit-content;
-}
-
-#funnyVideo {
-    object-fit: cover;
-    position: absolute;
-    top: 15%;
-    left: 10%;
-    border: 5px solid white;
-    border-radius: 8px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-}
-
-#seriousVideo {
-    object-fit: cover;
-    position: absolute;
-    top: 15%;
-    left: 56%;
-    border: 5px solid white;
-    border-radius: 8px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-}
-
-#disconnectBtn {
-    position: absolute;
-    background-color: red;
-    color: white;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    font-weight: bold;
-    border: 2px solid white;
-    top: 60%;
-    left: 48.7%;
-    cursor: pointer;
-}
-
-#chat-messages {
-    position: absolute;
-    height: 12rem;
-    width: 30rem;
-    top: 76%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    background-color: white;
-}
-
-#message {
-    position: absolute;
-    top: 90%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 32rem;
-}
-
-#funnyUsername {
-    position: absolute;
-    color: white;
-    font-size: 2rem;
-    top: 7%;
-    left: 27%;
-}
-
-#seriousUsername {
-    position: absolute;
-    color: white;
-    font-size: 2rem;
-    top: 7%;
-    left: 67%;
-}
-
-.font-sm {
-    font-size: .8rem;
-}
-
-
-.text{
-    font-size: 30px;
-    font-weight: 500;
-    color: #606060;
-}
-
-footer {
-    position: fixed;
-    bottom: 0%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-}
-
-#login_form {
-    width: 30%;
-    height: 70%;
-    position: relative;
-    top: 5rem;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    box-shadow: 4px 10px 12px rgba(0, 0, 0, 0.4);
-    background-color: #4B0082;
-    border: 4px solid white;
-    color: white;
-    font-size: 1rem;
-    border-radius: 10px;
-}
-
-#register_form {
-    width: 30%;
-    height: 85%;
-    position: relative;
-    top: 3rem;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    box-shadow: 4px 10px 12px rgba(0, 0, 0, 0.4);
-    background-color: #4B0082;
-    border: 4px solid white;
-    color: white;
-    font-size: 1rem;
-    border-radius: 10px;
-}
-
-input {
-    width: 93%;
-    height: 5%;
-    margin: 1rem;
-    padding: 12px 20px;
-    box-sizing: border-box;
-    border: 3px solid #555;
-    background-color: transparent;
-    color: white;
-    transition: 0.5s;
-    outline: none;
-}
-
-input:focus {
-    border: 3px solid white;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px #4B0082 inset !important;
-    -webkit-text-fill-color: white !important;
-}
-
-.form-group {
-    position: relative;
-    top: 5%;
-}
-
-#login_button, #register_button {
-    position: relative;
-    top: 10%;
-    width: 25%;
-    height: 5%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-label {
-    position: relative;
-    left: 2rem;
-    top: 1rem;
-}
-
-#login_logo {
-    position: relative;
-    top: 3%;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    width: 15%;
-    height: 15%;
-    
-}
-
-/* Index CSS */
-
-#index_container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100vw;
-    height: 80vh;
-    flex-direction: column;
-    align-items: center;
 }
 
 #homeIcon {
@@ -382,7 +96,7 @@ label {
 #mainTitle {
     color: white;
     font-size: 3.5rem;
-    letter-spacing: .15rem;
+    letter-spacing: .10rem;
     line-height: 4.3rem;
     font-weight: 550;
     text-align: center;
@@ -415,14 +129,10 @@ label {
 
 #funnyBtn {
     background-color: #FFD700;
-    color: black;
-    border-color: black;
 }
 
 #seriousBtn {
     background-color: #D3D3D3;
-    color: black;
-    border-color: black;
 }
 
 #seriousBtn:hover {
@@ -432,3 +142,292 @@ label {
 #funnyBtn:hover {
     background-color: #FFC04D;
 }
+
+.queue_btn {
+    transition: all .5s ease;
+    color: black;
+    border: 2px solid black;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 2rem;
+    margin: 10px;
+    width: 12rem;
+    text-align: center;
+}
+
+.queue_btn:hover {
+    cursor: pointer;
+}
+
+@media(max-width:768px) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    #account_btn_container {
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-evenly;
+        margin-left: 5vw;
+        margin-right: 5vw;
+    }
+
+    .account_btn {
+        flex: 1;
+        text-align: center;
+    }
+
+    #mainTitle {
+        font-size: 3rem;
+        line-height: 3.5rem;
+    }
+
+    #titleParagraph {
+        font-size: 1.5rem;
+    }
+
+    #homeIcon {
+        width: 30vw;
+    }
+
+    #login_form, #register_form {
+        flex-grow: .8;
+    }
+
+    #register_email {
+        margin-left: -3.2vw;
+        width: 100%;
+    }
+}
+
+/* Login and Register CSS */
+
+#login_form {
+    display: flex;
+    width: 35vw;
+    height: 80vh;
+    margin-top: 5vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: var(--secondary-purple);
+    border: 2px solid white;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+}
+
+#register_form {
+    display: flex;
+    width: 35vw;
+    height: 80vh;
+    margin-top: 5vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: var(--secondary-purple);
+    border: 2px solid white;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+}
+
+.form_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15vh;
+}
+
+#register_title, #login_title {
+    color: white;
+    
+}
+
+.err_msg {
+    position: relative;
+    color: white;
+    left: 24%;
+    top: 12%;
+}
+
+#login_button {  
+    width: 50%;
+    height: 10%;
+    margin-top: 5vh;  
+}
+
+#register_button {
+    width: 50%;
+    height: 10%;
+}
+
+label {
+    margin-left: 1rem;
+    margin-top: .5rem;
+}
+
+#login_logo {
+    width: 15%;
+    height: 15%;
+}
+
+#register_logo {
+    width: 15%;
+    height: 15%;
+    margin-top: 15vh;
+}
+
+#register_email {
+    margin-right: 2.8vw; 
+}
+
+input {
+    width: 80%;
+    height: 5%;
+    margin: 1rem;
+    padding: 12px 20px;
+    border: 3px solid white;
+    background-color: transparent;
+    color: white;
+    transition: 0.5s;
+    outline: none;
+}
+
+input:focus {
+    border: 3px solid white;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px var(--secondary-purple) inset !important;
+    -webkit-text-fill-color: white !important;
+}
+
+#funnyVideo_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#seriousVideo_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#utils_container {
+    display: flex;
+    flex-direction: row;
+}
+
+#chat_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#header_title {
+    position: relative;
+    color: white;
+    font-size: 30px;
+    left: 2rem;
+}
+
+#username {
+    color: white;
+    font-size: 1.5rem;
+    z-index: 2;
+}
+
+
+#timer { 
+    color: white;
+    font-size: 2rem;
+}
+
+#funnyVideo {
+    object-fit: cover;
+    border: 5px solid white;
+    border-radius: 8px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+}
+
+#seriousVideo {
+    object-fit: cover;
+    border: 5px solid white;
+    border-radius: 8px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+}
+
+#disconnectBtn {
+    background-color: red;
+    color: white;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    font-weight: bold;
+    border: 2px solid white;
+    cursor: pointer;
+}
+
+#chat-messages {
+    height: 12rem;
+    width: 30rem;
+    transform: translate(-50%,-50%);
+    background-color: white;
+}
+
+#message {
+    width: 32rem;
+}
+
+#funnyUsername {
+    color: white;
+    font-size: 2rem;
+}
+
+#seriousUsername {
+    color: white;
+    font-size: 2rem;
+}
+
+.font-sm {
+    font-size: .8rem;
+}
+
+
+.text{
+    font-size: 30px;
+    font-weight: 500;
+    color: #606060;
+}
+

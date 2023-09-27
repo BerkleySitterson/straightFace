@@ -17,31 +17,36 @@
     <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <style>
         canvas {
-            position: absolute;
-            top: 15%;
-            left: 56%;
+            position: relative;
+            top: 0;
+            left: 0;
         }
     </style>
 </head>
 
 <body>
-    
-    <h1 id="funnyUsername"></h1>
-    <h1 id="seriousUsername"></h1>
+    <main>
+            <div id="funnyVideo_container">
+                <h1 id="funnyUsername"></h1>
+                <p id="funnyUsername">{{ funnyUsername }}</p>
+                <video id="funnyVideo" width="600" height="450" playsinline></video>
+            </div>
 
-    <p id="timer"></p>
+            <div id="seriousVideo_container">
+                <h1 id="seriousUsername"></h1>
+                <p id="seriousUsername">{{ seriousUsername }}</p>
+                <video id="seriousVideo" width="600" height="450" playsinline></video>
+            </div>
 
-    <p id="funnyUsername">{{ funnyUsername }}</p>
-    <video id="funnyVideo" width="650" height="400" playsinline></video>
+            <div id="utils_container">
+                <p id="timer"></p>
+                <button type="submit" id="findNewPlayerBtn">Find New Player</button>   
+                <button type="button" id="disconnectBtn">X</button>
+            </div>
 
-    <p id="seriousUsername">{{ seriousUsername }}</p>
-    <video id="seriousVideo" width="650" height="400" playsinline></video>
-
-    <button type="submit" id="findNewPlayerBtn">Find New Player</button>
-   
-    <button type="button" id="disconnectBtn">X</button>
-
-    <ul id="chat-messages"></ul>
-    <input type="text" id="message" placeholder="Enter a Message">
-
+            <div id="chat_container">
+                <ul id="chat-messages"></ul>
+                <input type="text" id="message" placeholder="Enter a Message">
+            </div>
+    </main>
 </body>

@@ -16,24 +16,25 @@
 
 <body>
 
-        <div id="home_page">
-        <div class="header">
-            <img id='header_icon' src="static/images/straightFaceLogoOfficial.svg">
-            <p id="username">{{ username }}</p>
-            <form action="/logout">
-                <button type="submit" class="account_btn" id="logout_button">Log Out</button>
-            </form>
-        </div>        
-        <h1 id="mainTitle">StraightFace</h1>
-        <div id ="home_container">        
+    <header>
+        <div id="account_btn_container">
+            <a href="/logout" class="account_btn">Log Out</a>
+        </div>
+    </header>
+
+    <main>
+        <div id ="main_container">
+            <img id="homeIcon" src="static/images/straightFaceLogoOfficial.svg">
+            <h1 id="mainTitle">StraightFace</h1>       
             <div id="queue_btn_container">
-                <form action="/videoChat_funny">
-                    <button type="submit" class="queue_btn" id="funnyBtn">Make Someone Laugh!</button>
-                </form>
-                <form action="/videoChat_serious">
-                    <button type="submit" class="queue_btn" id="seriousBtn">Be Serious!</button>
-                </form>
+                <a href="/videoChat_funny" class="queue_btn" id="funnyBtn">Make Someone Laugh!</a>
+                <a href="/videoChat_serious" class="queue_btn" id="seriousBtn">Be Serious!</a>
             </div>
         </div>
+    </main>
 
+    <footer>
+        <p class="font-sm">&copy;2023 StraightFace App. All rights reserved.</p>
+    </footer>     
+        
 </body>

@@ -16,33 +16,36 @@
 
 <body>
 
-    <form action="/register" method="POST" class="register_form" id="register_form">
-        <img src="static/images/straightFaceLogoOfficial.svg" alt="straightFace" id="login_logo">
-        <h2 id="register_title">Create a new account</h3>
-            <div class="form-group" id="info_form_group">
-                <label for="username">Username</label>
-                <input type="text" name="username" id="register_username" class="form-control">
+    <main>
+        <form action="/register" method="POST" id="register_form">
+            <img src="static/images/straightFaceLogoOfficial.svg" alt="straightFace" id="register_logo">
+            <h2 id="register_title">Create a new account</h3>
+            <div class="form_container">
+                <div class="form-group" id="info_form_group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="register_username" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="register_password" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="email" id="email_label">Email</label>
+                    <input type="email" name="email" id="register_email" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" id="register_first_name" class="form-control">
+                </div>
+                <div class="form-group" id="info_form_group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" id="register_last_name" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary" id="register_button">Register</button>
+                <p class="err_msg">{{ errMsg }}</p>
             </div>
-            <div class="form-group" id="info_form_group">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="register_password" class="form-control">
-            </div>
-            <div class="form-group" id="info_form_group">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="register_email" class="form-control">
-            </div>
-            <div class="form-group" id="info_form_group">
-                <label for="first_name">First Name</label>
-                <input type="text" name="first_name" id="register_first_name" class="form-control">
-            </div>
-            <div class="form-group" id="info_form_group">
-                <label for="last_name">Last Name</label>
-                <input type="text" name="last_name" id="register_last_name" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary" id="register_button">Register</button>
-            <p class="err_msg">{{ errMsg }}</p>
-    </form>
-
+        </form>
+    </main>
 
 </body>    
    
