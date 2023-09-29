@@ -61,7 +61,7 @@ def register():
         if login_pipeline(username, password):
             print(f"Logged in as user: {username}")
             session["username"] = username
-            return redirect(url_for('home', username=username))
+            return render_template('home.html', username=username)
         else:
             print(f"Unable to log in at this time.")
             return render_template('index.html')
