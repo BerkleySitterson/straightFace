@@ -70,13 +70,15 @@ def register():
 def videoChatFunny():
     username = session['username']
     session["role"] = "funny"
-    return render_template('videoChat.html', funnyUsername=username)
+    role = session["role"]
+    return render_template('videoChat.html', funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
 
 @app.route('/videoChat_serious')
 def videoChatSerious():
     username = session["username"]
     session["role"] = "serious"
-    return render_template('videoChat.html', seriousUsername=username)
+    role = session["role"]
+    return render_template('videoChat.html', seriousUsername=username, funnyUsername="Waiting for Player...", role=role)
 
 @app.route('/logout')
 def logout():
@@ -97,12 +99,10 @@ def findNewPlayer():
     if role == "funny":
         print(f"User {username} has joined the funny side!")
         db.add_funny_user(username, sid)
-        emit('setRole', { "role": role})
         attempt_pairing()
     elif role == "serious":
         print(f"User {username} has joined the serious side!")
         db.add_serious_user(username, sid)
-        emit('setRole', { "role": role})
         attempt_pairing()
 
         

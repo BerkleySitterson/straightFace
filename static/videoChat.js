@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
-    var role;
     var myID;
     var targetID;
     var room;
@@ -10,10 +9,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     document.getElementById("findNewPlayerBtn").addEventListener("click", () => {
         socket.emit("find_new_player");
-    });
-
-    socket.on("setRole", (data) => {
-        role = data['role'];
     });
 
     socket.on("set_round_data", (data) => {
@@ -40,9 +35,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         navigator.mediaDevices.getUserMedia(mediaConstraints)
         .then((localStream) => {
-            if (role == "funny") {
+            if (role === "funny") {
                 document.getElementById("funnyVideo").srcObject = localStream;
-            } else {
+            } else if (role === "serious") {
                 document.getElementById("seriousVideo").srcObject = localStream;
             }
             createPeerConnection();
@@ -76,12 +71,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         myPeerConnection.addEventListener('track', async (event) => {
             const [remoteStream] = event.streams;
 
-            if (role == "funny") {
+            if (role === "funny") {
                 document.getElementById("seriousVideo").srcObject = remoteStream;
             } else {
                 document.getElementById("funnyVideo").srcObject = remoteStream;
+                socket.emit("startCountdown", room);
             }
-            socket.emit("startCountdown", room);
         });
     }
 
@@ -207,16 +202,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 faceapi.nets.faceExpressionNet.loadFromUri('../static/models')
             ]);
 
-            const videoElement = document.getElementById('seriousVideo');
-            
             console.log('Models Loaded');
 
-            const canvas = await faceapi.createCanvasFromMedia(videoElement);
-            
+            const videoElement = document.getElementById('seriousVideo');
+            const canvas = await faceapi.createCanvasFromMedia(videoElement);          
             document.body.append(canvas);
 
-            const displaySize = { width: videoElement.width, height: videoElement.height };
+            const vwWidth = 45;
+            const vhHeight = 30; 
+            const displaySize = { width: vwWidth * window.innerWidth / 100, height: vhHeight * window.innerHeight / 100 };
+
             await faceapi.matchDimensions(canvas, displaySize);
+            
             /*Options for face detectors: input for tiny face must be a multiple of 32*/
             const options = await new faceapi.TinyFaceDetectorOptions();            
             //const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
@@ -230,7 +227,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     await faceapi.draw.drawDetections(canvas, resizedDetections);
                     await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
-                    if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
+                    if (detections && detections[0] && detections[0].expressions.happy >= 0.90) {
                         console.log('Happy Emotion Detected');
                         socket.emit("userSmiled", room);
                         clearInterval(detectionInterval);
@@ -267,9 +264,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
         if (role === "funny") {
             document.getElementById("funnyVideo").play();
             document.getElementById("seriousVideo").play();
-        } else {
-            document.getElementById("funnyVideo").play();
+        } else if (role === "serious") {
             document.getElementById("seriousVideo").play();
+            document.getElementById("funnyVideo").play();
             detectSmile();
             socket.emit('startTimerFromServer', room)
         }
