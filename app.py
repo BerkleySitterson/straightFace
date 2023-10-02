@@ -179,14 +179,15 @@ def handleStartTimerFromServer(room):
 @socketio.on("userSmiled")
 def handleUserSmile(room):
     emit("endRoundFunnyWin", room=room)
-
-@socketio.on("disconnect_user")
-def handle_user_disconnect(room):
-    emit("user_left", room=room)
+    emit("endTimer", room=room)
     
 @socketio.on("timerComplete")
 def handleTimerComplete(room):
     emit("endRoundSeriousWin", room=room)
+    
+@socketio.on("disconnect_user")
+def handle_user_disconnect(room):
+    emit("user_left", room=room)
     
 @socketio.on("disconnect")
 def handle_disconnect():

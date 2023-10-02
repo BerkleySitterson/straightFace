@@ -5,10 +5,38 @@ document.addEventListener("DOMContentLoaded", (event) => {
     var myID;
     var targetID;
     var room;
-    var mediaConstraints = { audio: false, video: true };
+    var mediaConstraints = { audio: true, video: true };
+    var funnyVideo = document.getElementById("funnyVideo");
+    var seriousVideo = document.getElementById("seriousVideo");
+    var searchBtn = document.getElementById("searchBtn");
+    var countdownInterval
+    var localStream;
 
-    document.getElementById("findNewPlayerBtn").addEventListener("click", () => {
-        socket.emit("find_new_player");
+    navigator.mediaDevices.getUserMedia(mediaConstraints)
+    .then((stream) => {
+        localStream = stream;
+        if (role === "funny") {
+            funnyVideo.srcObject = localStream;
+            funnyVideo.play();
+        } else if (role === "serious") {
+            seriousVideo.srcObject = localStream;
+            seriousVideo.play();
+        }
+    })
+    .catch((error) => {
+        console.log("Error getting Video or Audio: " + error);
+    });
+    
+
+    searchBtn.addEventListener("click", () => {
+        try {
+            if (localStream.getVideoTracks().length > 0 && localStream.getAudioTracks().length > 0) {
+                searchBtn.disabled = true;
+                socket.emit("find_new_player");
+            }
+        } catch (Exception) {
+            console.log('Error: Video or Audio not detected: ' + Exception.toString());
+        }
     });
 
     socket.on("set_round_data", (data) => {
@@ -33,16 +61,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
         myID = data['myID'];
         targetID = data['targetID'];
 
-        navigator.mediaDevices.getUserMedia(mediaConstraints)
-        .then((localStream) => {
-            if (role === "funny") {
-                document.getElementById("funnyVideo").srcObject = localStream;
-            } else if (role === "serious") {
-                document.getElementById("seriousVideo").srcObject = localStream;
-            }
-            createPeerConnection();
-            localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
-        })
+        createPeerConnection();
+        localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
+        
     });
 
     function createPeerConnection() {
@@ -72,9 +93,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const [remoteStream] = event.streams;
 
             if (role === "funny") {
-                document.getElementById("seriousVideo").srcObject = remoteStream;
+                seriousVideo.srcObject = remoteStream;
             } else {
-                document.getElementById("funnyVideo").srcObject = remoteStream;
+                funnyVideo.srcObject = remoteStream;
                 socket.emit("startCountdown", room);
             }
         });
@@ -114,8 +135,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     socket.on("handleVideoOfferMsg", function(msg) {
         
-        let localStream = null;
-        
         myID = msg.target;
         targetID = msg.name;
         
@@ -125,16 +144,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         
         myPeerConnection
             .setRemoteDescription(desc)
-            .then(() => navigator.mediaDevices.getUserMedia(mediaConstraints))
-            .then((stream) => {
-            localStream = stream;
-            if (role == "funny") {
-                document.getElementById("funnyVideo").srcObject = localStream;
-            } else {
-                document.getElementById("seriousVideo").srcObject = localStream;
-            }   
-            localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
-            })
+            .then(() => localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream)))
             .then(() => myPeerConnection.createAnswer())
             .then((answer) => myPeerConnection.setLocalDescription(answer))
             .then(() => {
@@ -160,11 +170,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
     });
     
     socket.on("user_left", function() { 
-
-        const funnyStream = document.getElementById("funnyVideo").srcObject;
-        const seriousStream = document.getElementById("seriousVideo").srcObject;       
-        const funnyTracks = funnyStream.getTracks();
-        const seriousTracks = seriousStream.getTracks();
+     
+        const funnyTracks = funnyVideo.srcObject.getTracks();
+        const seriousTracks = seriousVideo.srcObject.getTracks();
 
         funnyTracks[0].stop();
         seriousTracks[0].stop();
@@ -204,8 +212,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             console.log('Models Loaded');
 
-            const videoElement = document.getElementById('seriousVideo');
-            const canvas = await faceapi.createCanvasFromMedia(videoElement);          
+            const canvas = await faceapi.createCanvasFromMedia(seriousVideo);          
             document.body.append(canvas);
 
             const vwWidth = 45;
@@ -214,23 +221,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             await faceapi.matchDimensions(canvas, displaySize);
             
-            /*Options for face detectors: input for tiny face must be a multiple of 32*/
             const options = await new faceapi.TinyFaceDetectorOptions();            
-            //const options = await new faceapi.SsdMobilenetv1Options({minConfidence: 0.1})
             const canvasContext = await canvas.getContext('2d', { willReadFrequently: true });
             console.log('Commencing Face Detection');
             const detectionInterval = setInterval(async () => {
                 try {
-                    let detections = await faceapi.detectAllFaces(videoElement, options).withFaceExpressions();
-                    let resizedDetections = await faceapi.resizeResults(detections, displaySize);
+                    let detections = await faceapi.detectAllFaces(seriousVideo, options).withFaceExpressions();
                     await canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-                    await faceapi.draw.drawDetections(canvas, resizedDetections);
-                    await faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
 
-                    if (detections && detections[0] && detections[0].expressions.happy >= 0.90) {
+                    if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                         console.log('Happy Emotion Detected');
                         socket.emit("userSmiled", room);
-                        clearInterval(detectionInterval);
+                        clearInterval(detectionInterval);                      
                     }
                 }
                 catch (Exception) {
@@ -261,19 +263,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
         console.log('Starting Round');
         console.log("Role: " + role);
 
-        if (role === "funny") {
-            document.getElementById("funnyVideo").play();
-            document.getElementById("seriousVideo").play();
-        } else if (role === "serious") {
-            document.getElementById("seriousVideo").play();
-            document.getElementById("funnyVideo").play();
-            detectSmile();
-            socket.emit('startTimerFromServer', room)
+        try {
+            if (role === "funny") {
+                seriousVideo.play();
+            } else if (role === "serious") {
+                funnyVideo.play();
+                detectSmile();
+                socket.emit('startTimerFromServer', room)
+            }
+        } catch (Exception) {
+            console.log("Error Starting Round: " + Exception.toString());
         }
 
     });
 
-    socket.on('startTimer', () => {
+    socket.on('startTimer', () => { 
         const timerElement = document.getElementById('timer');
         let seconds = 30;
 
@@ -281,43 +285,72 @@ document.addEventListener("DOMContentLoaded", (event) => {
             timerElement.textContent = seconds;
             seconds--;
 
-            if (seconds <= 0) {
-                clearInterval(countdownInterval);
+            if (seconds == 0) {
                 timerElement.textContent = 'Time is Up!';
-                socket.emit("endRoundSeriousWin", room);
+                socket.emit("timerComplete", room);
+                clearInterval(countdownInterval);
             }
 
         }, 1000);
+
+    });
+
+    socket.on('endTimer', () => {
+        clearInterval(countdownInterval);
     });
 
     socket.on('endRoundFunnyWin', function () {
-        const timerElement = document.getElementById("timer");
-        const funnyStream = document.getElementById("funnyVideo").srcObject;
-        const seriousStream = document.getElementById("seriousVideo").srcObject;       
-        const funnyTracks = funnyStream.getTracks();
-        const seriousTracks = seriousStream.getTracks();
+        try {
+            const timerElement = document.getElementById("timer");    
+            const funnyTracks = funnyVideo.srcObject.getTracks();
+            const seriousTracks = seriousVideo.srcObject.getTracks();
 
-        funnyTracks[0].stop();
-        seriousTracks[0].stop();
+            funnyTracks[0].stop();
+            seriousTracks[0].stop();
 
-        myPeerConnection.close();
+            room = "";
+            targetID = "";
 
-        timerElement.textContent = "Funny User has Won!";
+            myPeerConnection.close();
+            searchBtn.disabled = false;
+
+            if (role === "funny") {
+                document.getElementById("seriousUsername").textContent = "Waiting for Player...";
+            } else {
+                document.getElementById("funnyUsername").textContent = "Waiting for Player...";
+            }
+
+            timerElement.textContent = "Funny User has Won!";
+        } catch (Exception) {
+            console.log("Error ending round w/ funny win: " + Exception.toString());
+        }
     });
 
     socket.on('endRoundSeriousWin', function () {
-        const timerElement = document.getElementById("timer");
-        const funnyStream = document.getElementById("funnyVideo").srcObject;
-        const seriousStream = document.getElementById("seriousVideo").srcObject;       
-        const funnyTracks = funnyStream.getTracks();
-        const seriousTracks = seriousStream.getTracks();
+        try {
+            const timerElement = document.getElementById("timer");    
+            const funnyTracks = funnyVideo.srcObject.getTracks();
+            const seriousTracks = seriousVideo.srcObject.getTracks();
 
-        funnyTracks[0].stop();
-        seriousTracks[0].stop();
+            funnyTracks[0].stop();
+            seriousTracks[0].stop();
 
-        myPeerConnection.close();
+            room = "";
+            targetID = "";
 
-        timerElement.textContent = "Serious User has Won!";
+            myPeerConnection.close();
+            searchBtn.disabled = false;
+
+            if (role === "funny") {
+                document.getElementById("seriousUsername").textContent = "Waiting for Player...";
+            } else {
+                document.getElementById("funnyUsername").textContent = "Waiting for Player...";
+            }
+
+            timerElement.textContent = "Serious User has Won!";
+        } catch (Exception) {
+            console.log("Error ending round w/ serious win: " + Exception.toString());
+        }
     });
 
 });
