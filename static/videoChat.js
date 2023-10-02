@@ -11,15 +11,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
     var searchBtn = document.getElementById("searchBtn");
     var countdownInterval
     var localStream;
+    var userSmiled = false;
 
     navigator.mediaDevices.getUserMedia(mediaConstraints)
     .then((stream) => {
         localStream = stream;
         if (role === "funny") {
             funnyVideo.srcObject = localStream;
+            funnyVideo.muted = true;
             funnyVideo.play();
         } else if (role === "serious") {
             seriousVideo.srcObject = localStream;
+            seriousVideo.muted = true;
             seriousVideo.play();
         }
     })
@@ -285,9 +288,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
             timerElement.textContent = seconds;
             seconds--;
 
-            if (seconds == 0) {
-                timerElement.textContent = 'Time is Up!';
+            if (seconds <= 0) {
+                timerElement.textContent = 'Serious User has won!';
                 socket.emit("timerComplete", room);
+                clearInterval(countdownInterval);
+            } else if (userSmiled === true) {
+                timerElement.textContent = 'Funny User has won!';
                 clearInterval(countdownInterval);
             }
 
@@ -295,13 +301,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     });
 
-    socket.on('endTimer', () => {
-        clearInterval(countdownInterval);
+    socket.on('setUserSmiled', () => {
+        userSmiled = true;
     });
 
     socket.on('endRoundFunnyWin', function () {
         try {
-            const timerElement = document.getElementById("timer");    
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
 
@@ -319,16 +324,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
             } else {
                 document.getElementById("funnyUsername").textContent = "Waiting for Player...";
             }
-
-            timerElement.textContent = "Funny User has Won!";
         } catch (Exception) {
             console.log("Error ending round w/ funny win: " + Exception.toString());
         }
     });
 
     socket.on('endRoundSeriousWin', function () {
-        try {
-            const timerElement = document.getElementById("timer");    
+        try {  
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
 
@@ -346,8 +348,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             } else {
                 document.getElementById("funnyUsername").textContent = "Waiting for Player...";
             }
-
-            timerElement.textContent = "Serious User has Won!";
         } catch (Exception) {
             console.log("Error ending round w/ serious win: " + Exception.toString());
         }

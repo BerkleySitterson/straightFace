@@ -179,7 +179,7 @@ def handleStartTimerFromServer(room):
 @socketio.on("userSmiled")
 def handleUserSmile(room):
     emit("endRoundFunnyWin", room=room)
-    emit("endTimer", room=room)
+    emit("setUserSmiled", room=room)
     
 @socketio.on("timerComplete")
 def handleTimerComplete(room):
