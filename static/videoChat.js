@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         try {
             if (localStream.getVideoTracks().length > 0 && localStream.getAudioTracks().length > 0) {
                 searchBtn.disabled = true;
+                document.getElementById("timer").textContent = "";
                 socket.emit("find_new_player");
             }
         } catch (Exception) {
@@ -288,12 +289,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
             timerElement.textContent = seconds;
             seconds--;
 
-            if (seconds <= 0) {
+            if (userSmiled === true) {
+                timerElement.textContent = "Funny User has won!";
+                clearInterval(countdownInterval);
+            } else if (seconds <= 0) {
                 timerElement.textContent = 'Serious User has won!';
                 socket.emit("timerComplete", room);
-                clearInterval(countdownInterval);
-            } else if (userSmiled === true) {
-                timerElement.textContent = 'Funny User has won!';
                 clearInterval(countdownInterval);
             }
 
@@ -317,6 +318,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             targetID = "";
 
             myPeerConnection.close();
+            userSmiled = false;
             searchBtn.disabled = false;
 
             if (role === "funny") {
@@ -324,13 +326,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
             } else {
                 document.getElementById("funnyUsername").textContent = "Waiting for Player...";
             }
-        } catch (Exception) {
-            console.log("Error ending round w/ funny win: " + Exception.toString());
+        } catch (e) {
+            console.log("Error ending round w/ funny win: " + e.toString());
         }
     });
 
     socket.on('endRoundSeriousWin', function () {
-        try {  
+        try { 
+            timerElement = document.getElementById("timer");
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
 
@@ -341,6 +344,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             targetID = "";
 
             myPeerConnection.close();
+            userSmiled = false;
             searchBtn.disabled = false;
 
             if (role === "funny") {
@@ -348,8 +352,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
             } else {
                 document.getElementById("funnyUsername").textContent = "Waiting for Player...";
             }
-        } catch (Exception) {
-            console.log("Error ending round w/ serious win: " + Exception.toString());
+        } catch (e) {
+            console.log("Error ending round w/ serious win: " + e.toString());
         }
     });
 
