@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-
     var protocol = window.location.protocol;
     var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
     var myID;
@@ -9,9 +7,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     var funnyVideo = document.getElementById("funnyVideo");
     var seriousVideo = document.getElementById("seriousVideo");
     var searchBtn = document.getElementById("searchBtn");
-    var countdownInterval
     var localStream;
-    var userSmiled = false;
+    var tracksReceieved = 0;
+    var countdownInterval;
+    var detectionInterval;
 
     navigator.mediaDevices.getUserMedia(mediaConstraints)
     .then((stream) => {
@@ -67,7 +66,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         createPeerConnection();
         localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
-        
     });
 
     function createPeerConnection() {
@@ -95,12 +93,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         myPeerConnection.addEventListener('track', async (event) => {
             const [remoteStream] = event.streams;
+            tracksReceieved++;
 
             if (role === "funny") {
                 seriousVideo.srcObject = remoteStream;
             } else {
                 funnyVideo.srcObject = remoteStream;
-                socket.emit("startCountdown", room);
+                if (tracksReceieved === 2) {
+                    socket.emit("startingRound", room);
+                }
             }
         });
     }
@@ -228,15 +229,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const options = await new faceapi.TinyFaceDetectorOptions();            
             const canvasContext = await canvas.getContext('2d', { willReadFrequently: true });
             console.log('Commencing Face Detection');
-            const detectionInterval = setInterval(async () => {
+            detectionInterval = setInterval(async () => {
                 try {
                     let detections = await faceapi.detectAllFaces(seriousVideo, options).withFaceExpressions();
                     await canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
                     if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                         console.log('Happy Emotion Detected');
-                        socket.emit("userSmiled", room);
-                        clearInterval(detectionInterval);                      
+                        socket.emit("userSmiled", room);           
                     }
                 }
                 catch (Exception) {
@@ -249,31 +249,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
     }
 
-    socket.on('updateCountdown', (data) => {
-        console.log('Starting Countdown');
-
-        const countdown = data.countdown;
-        const timerElement = document.getElementById('timer');
-
-        if (countdown === 0) {
-            timerElement.textContent = 'Start!';
-        } else {
-            timerElement.textContent = countdown;
-        }
-       
-    });
-
     socket.on('startRound', () => {
         console.log('Starting Round');
-        console.log("Role: " + role);
 
         try {
             if (role === "funny") {
+                startTimer();
                 seriousVideo.play();
             } else if (role === "serious") {
+                startTimer();
                 funnyVideo.play();
                 detectSmile();
-                socket.emit('startTimerFromServer', room)
             }
         } catch (Exception) {
             console.log("Error Starting Round: " + Exception.toString());
@@ -281,35 +267,38 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     });
 
-    socket.on('startTimer', () => { 
-        const timerElement = document.getElementById('timer');
-        let seconds = 30;
+    function startTimer() {
+        const timer = document.getElementById('timer');
+        const countdownDuration = 30;
+      
+        const startTime = new Date().getTime();
+      
+        updateCountdown();
+      
+        countdownInterval = setInterval(updateCountdown, 1000);
 
-        countdownInterval = setInterval(function () {
-            timerElement.textContent = seconds;
-            seconds--;
-
-            if (userSmiled === true) {
-                timerElement.textContent = "Funny User has won!";
-                clearInterval(countdownInterval);
-            } else if (seconds <= 0) {
-                timerElement.textContent = 'Serious User has won!';
-                socket.emit("timerComplete", room);
-                clearInterval(countdownInterval);
+        function updateCountdown() {
+            const currentTime = new Date().getTime();
+            const elapsedTime = (currentTime - startTime) / 1000;
+            const remainingTime = countdownDuration - elapsedTime;
+        
+            if (remainingTime < 0) {
+              socket.emit('timerComplete', room);
+            } else {
+              timer.innerText = "Time remaining: " + remainingTime.toFixed(0);
             }
-
-        }, 1000);
-
-    });
-
-    socket.on('setUserSmiled', () => {
-        userSmiled = true;
-    });
+          }
+    }
 
     socket.on('endRoundFunnyWin', function () {
         try {
+            const timer = document.getElementById('timer');
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
+
+            timer.innerText = "Funny User Won!";
+            clearInterval(countdownInterval);
+            clearInterval(detectionInterval);   
 
             funnyTracks[0].stop();
             seriousTracks[0].stop();
@@ -318,7 +307,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             targetID = "";
 
             myPeerConnection.close();
-            userSmiled = false;
+            tracksReceieved = 0;
             searchBtn.disabled = false;
 
             if (role === "funny") {
@@ -333,9 +322,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     socket.on('endRoundSeriousWin', function () {
         try { 
-            timerElement = document.getElementById("timer");
+            const timer = document.getElementById('timer');
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
+
+            timer.innerText = "Serious User Won!";
+            clearInterval(countdownInterval);
+            clearInterval(detectionInterval);   
 
             funnyTracks[0].stop();
             seriousTracks[0].stop();
@@ -344,7 +337,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             targetID = "";
 
             myPeerConnection.close();
-            userSmiled = false;
+            tracksReceieved = 0;
             searchBtn.disabled = false;
 
             if (role === "funny") {
@@ -356,5 +349,3 @@ document.addEventListener("DOMContentLoaded", (event) => {
             console.log("Error ending round w/ serious win: " + e.toString());
         }
     });
-
-});

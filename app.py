@@ -160,26 +160,13 @@ def handleSignaling(msg):
     elif msg_type == "video-answer":
         emit("handleVideoAnswerMsg", msg, to=target)   
         
-@socketio.on("startCountdown")
-def handleStartCountdown(room):
-    print("Starting Countdown for Room: " + room)
-    
-    for i in range(3, -1, -1):
-        emit("updateCountdown", {"countdown": i}, room=room)
-        time.sleep(1)
-    
-    emit("startRound", room=room)
-
-@socketio.on("startTimerFromServer")
-def handleStartTimerFromServer(room):
-    print("Starting Timer from Server");
-    emit("startTimer", room=room)
-    
+@socketio.on("startingRound")
+def handleStartRound(room):
+    emit("startRound", room=room)  
     
 @socketio.on("userSmiled")
 def handleUserSmile(room):
     emit("endRoundFunnyWin", room=room)
-    emit("setUserSmiled", room=room)
     
 @socketio.on("timerComplete")
 def handleTimerComplete(room):
