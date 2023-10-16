@@ -36,7 +36,10 @@
                     <h1 id="funnyUsername">{{ funnyUsername }}</h1>
                 </div>          
                 <video id="funnyVideo" playsinline></video>
+                <button id="screenShareBtn" onclick="shareScreen();" disabled>Share Screen</button>
             </div>
+
+            <p id="timer"></p>
 
             <div id="seriousVideo_container">
                 <div id="seriousVideoHeader_container">
@@ -49,7 +52,6 @@
 
         <div id="bottom_video_container">
             <div id="utils_container">
-                <p id="timer"></p>
                 <button type="submit" id="searchBtn">Find New Player</button>   
                 <button type="button" id="disconnectBtn">X</button>
             </div>

@@ -1,5 +1,5 @@
 import eventlet
-import time
+import queue
 
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import SocketIO, join_room, rooms, close_room, emit
@@ -15,6 +15,9 @@ app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 HOST, PORT = '0.0.0.0', 5000
 app.debug = True
+
+funnyQueue = queue.Queue()
+seriousQueue = queue.Queue()
 
 @app.route('/')
 def index():
@@ -94,15 +97,16 @@ def logout():
 def findNewPlayer():
     username = session["username"]
     role = session["role"]
-    sid = request.sid
+    sid = request.sid    
+    user = {'username': username, 'sid': sid}
     
     if role == "funny":
         print(f"User {username} has joined the funny side!")
-        db.add_funny_user(username, sid)
+        funnyQueue.put(user)
         attempt_pairing()
     elif role == "serious":
         print(f"User {username} has joined the serious side!")
-        db.add_serious_user(username, sid)
+        seriousQueue.put(user)
         attempt_pairing()
 
         
@@ -110,9 +114,9 @@ def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serio
     
     print(f"attempt_pairing executing")
 
-    if db.get_funnyUsers_length() >= 1 and db.get_seriousUsers_length() >= 1:
-        funnyUser = db.get_and_remove_first_funnyUser()
-        seriousUser = db.get_and_remove_first_seriousUser()
+    if funnyQueue.qsize() >= 1 and seriousQueue.qsize() >= 1:
+        funnyUser = funnyQueue.get()
+        seriousUser = seriousQueue.get()
         print(f"{funnyUser} and {seriousUser}")
         pair_users(funnyUser, seriousUser)
         print(f"attempt_pairing completed successfully")
@@ -120,24 +124,21 @@ def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serio
 
 def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and puts them in a room
     
-    room = f"{funnyUser[1]}_{seriousUser[1]}_room"
-    print(f"{funnyUser[1]}_{seriousUser[1]}_room")
+    room = f"{funnyUser['sid']}_{seriousUser['sid']}_room"
+    print(f"{funnyUser['sid']}_{seriousUser['sid']}_room")
     
-    join_room(room, funnyUser[1])
-    join_room(room, seriousUser[1])
+    join_room(room, funnyUser['sid'])
+    join_room(room, seriousUser['sid'])
     
-    db.remove_user_from_queues(funnyUser[0])
-    db.remove_user_from_queues(seriousUser[0])
-    
-    if funnyUser[1] == request.sid:
-        targetID = seriousUser[1]    
+    if funnyUser['sid'] == request.sid:
+        targetID = seriousUser['sid']    
     else:
-        targetID = funnyUser[1]
+        targetID = funnyUser['sid']
         
-    funnyUsername = funnyUser[0]
-    seriousUsername = seriousUser[0]
+    funnyUsername = funnyUser['username']
+    seriousUsername = seriousUser['username']
     
-    print(f"Paired {funnyUser[0]} with {seriousUser[0]} in room: {room}")
+    print(f"Paired {funnyUser['username']} with {seriousUser['username']} in room: {room}")
     emit("set_round_data", {"funnyUsername": funnyUsername, "seriousUsername": seriousUsername, "room": room}, room=room)
     emit("users_paired", {"myID": request.sid, "targetID": targetID})
     print(f"UserID: {request.sid} || PeerID: {targetID}")
@@ -171,6 +172,7 @@ def handleUserSmile(room):
 @socketio.on("timerComplete")
 def handleTimerComplete(room):
     emit("endRoundSeriousWin", room=room)
+
     
 @socketio.on("disconnect_user")
 def handle_user_disconnect(room):

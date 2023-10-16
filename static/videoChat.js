@@ -7,10 +7,12 @@
     var funnyVideo = document.getElementById("funnyVideo");
     var seriousVideo = document.getElementById("seriousVideo");
     var searchBtn = document.getElementById("searchBtn");
+    var screenShareBtn = document.getElementById("screenShareBtn");
     var localStream;
     var tracksReceieved = 0;
     var countdownInterval;
     var detectionInterval;
+    var remoteUsername;
 
     navigator.mediaDevices.getUserMedia(mediaConstraints)
     .then((stream) => {
@@ -44,11 +46,13 @@
 
     socket.on("set_round_data", (data) => {
         if (role === "funny") {
-            console.log("Role is " + role + " and remote username is " + data['seriousUsername']);
-            document.getElementById("seriousUsername").textContent = data['seriousUsername'];
+            remoteUsername = data['seriousUsername'];
+            console.log("Role is " + role + " and remote username is " + remoteUsername);
+            document.getElementById("seriousUsername").textContent = remoteUsername;
         } else {
-            console.log("Role is " + role + " and remote username is " + data['funnyUsername']);
-            document.getElementById("funnyUsername").textContent = data['funnyUsername'];
+            remoteUsername = data['funnyUsername'];
+            console.log("Role is " + role + " and remote username is " + remoteUsername);
+            document.getElementById("funnyUsername").textContent = remoteUsername;
         }
         room = data['room'];
     });
@@ -70,41 +74,88 @@
 
     function createPeerConnection() {
 
-        myPeerConnection = new RTCPeerConnection({
-            iceServers: [{
-                urls: [ "stun:us-turn8.xirsys.com" ]
-                }, {
-                username: "VcPom22kSQlvPJ1FRMjb5qXw8-sSdYPFdhiLq3NMGzc-imBAUGSNLKmGhYnbKf_eAAAAAGTbqk9FcGlwaG9uZTE5OTY=",
-                credential: "565fb534-3b8a-11ee-a7b9-0242ac140004",
-                urls: [
-                    "turn:us-turn8.xirsys.com:80?transport=udp",
-                    "turn:us-turn8.xirsys.com:3478?transport=udp",
-                    "turn:us-turn8.xirsys.com:80?transport=tcp",
-                    "turn:us-turn8.xirsys.com:3478?transport=tcp",
-                    "turns:us-turn8.xirsys.com:443?transport=tcp",
-                    "turns:us-turn8.xirsys.com:5349?transport=tcp"
-                ]
+        try {
+            console.log("Creating Peer Connection");
+            myPeerConnection = new RTCPeerConnection({
+                iceServers: [{
+                    urls: [ "stun:us-turn8.xirsys.com" ]
+                    }, {
+                    username: "VcPom22kSQlvPJ1FRMjb5qXw8-sSdYPFdhiLq3NMGzc-imBAUGSNLKmGhYnbKf_eAAAAAGTbqk9FcGlwaG9uZTE5OTY=",
+                    credential: "565fb534-3b8a-11ee-a7b9-0242ac140004",
+                    urls: [
+                        "turn:us-turn8.xirsys.com:80?transport=udp",
+                        "turn:us-turn8.xirsys.com:3478?transport=udp",
+                        "turn:us-turn8.xirsys.com:80?transport=tcp",
+                        "turn:us-turn8.xirsys.com:3478?transport=tcp",
+                        "turns:us-turn8.xirsys.com:443?transport=tcp",
+                        "turns:us-turn8.xirsys.com:5349?transport=tcp"
+                    ]
+                    }
+                ],
+            });
+
+            const dataChannel = myPeerConnection.createDataChannel("chat");
+
+            console.log(dataChannel.readyState);
+
+            myPeerConnection.onicecandidate = handleICECandidateEvent;
+            myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
+
+            myPeerConnection.addEventListener('track', async (event) => {
+                const [remoteStream] = event.streams;
+                tracksReceieved++;
+
+                if (role === "funny") {
+                    seriousVideo.srcObject = remoteStream;
+                    screenShareBtn.disabled = false;
+                } else {
+                    funnyVideo.srcObject = remoteStream;
+                    if (tracksReceieved === 2) {
+                        socket.emit("startingRound", room);
+                    }
                 }
-            ],
-        });
+            });
 
-        myPeerConnection.onicecandidate = handleICECandidateEvent;
-        myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
+            console.log("Adding message event listener to DataChannel '" + dataChannel.label + "'");
+            dataChannel.onmessage = (event) => {
+                console.log("Message from DataChannel");
+                const message = event.data;
+                let ul = document.getElementById("chat-messages");
+                let li = document.createElement("li");
+                li.style.listStyleType = "none";
+                li.appendChild(document.createTextNode(remoteUsername + ": " + message));
+                ul.appendChild(li);
+                ul.scrollTop = ul.scrollHeight;
+                console.log("Message from DataChannel " + dataChannel.label + " received: " + message);
+            };
 
-        myPeerConnection.addEventListener('track', async (event) => {
-            const [remoteStream] = event.streams;
-            tracksReceieved++;
+            document.getElementById("message").addEventListener("keyup", function(event) {
+                if (event.key === "Enter") {
+                    let message = document.getElementById("message").value;
+                    let ul = document.getElementById("chat-messages");
+                    let li = document.createElement("li");
+                    li.style.listStyleType = "none";
+                    li.appendChild(document.createTextNode("You: " + message));
+                    ul.appendChild(li);
+                    ul.scrollTop = ul.scrollHeight;
 
-            if (role === "funny") {
-                seriousVideo.srcObject = remoteStream;
-            } else {
-                funnyVideo.srcObject = remoteStream;
-                if (tracksReceieved === 2) {
-                    socket.emit("startingRound", room);
+                    dataChannel.send(message);
+                    document.getElementById("message").value = "";
+                    console.log("Message sent: " + message + " to DataChannel " + dataChannel.label);
                 }
-            }
-        });
-    }
+            });
+
+            dataChannel.addEventListener('open', () => {
+                console.log('Data channel is open and ready to use!');
+              });
+
+            dataChannel.onerror = (error) => {
+                console.error("Data channel error: " + error);
+            };
+        } catch (e) {
+            console.log("Error creating peer connection: " + e.toString());
+        }
+}
 
     function handleNegotiationNeededEvent() {
 
@@ -184,23 +235,6 @@
 
         myPeerConnection.close();
 
-    });
-    
-    document.getElementById("message").addEventListener("keyup", function(event) {
-        if (event.key == "Enter") {
-            let message = document.getElementById("message").value;
-            socket.emit("new_message", message);
-            document.getElementById("message").value = "";
-        }
-    });
-    
-    socket.on("chat", function (data) {
-        let ul = document.getElementById("chat-messages");
-        let li = document.createElement("li");
-        li.style.listStyleType = "none";
-        li.appendChild(document.createTextNode(data["username"] + ": " + data["message"]));
-        ul.appendChild(li);
-        ul.scrolltop = ul.scrollHeight;
     });
 
     // ---------- Smile-Detection ---------- //
@@ -285,7 +319,7 @@
             if (remainingTime < 0) {
               socket.emit('timerComplete', room);
             } else {
-              timer.innerText = "Time remaining: " + remainingTime.toFixed(0);
+              timer.innerText = remainingTime.toFixed(0);
             }
           }
     }
@@ -296,6 +330,7 @@
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
 
+            timer.style.fontSize = "2rem";
             timer.innerText = "Funny User Won!";
             clearInterval(countdownInterval);
             clearInterval(detectionInterval);   
@@ -309,6 +344,7 @@
             myPeerConnection.close();
             tracksReceieved = 0;
             searchBtn.disabled = false;
+            screenShareBtn.disabled = true;
 
             if (role === "funny") {
                 document.getElementById("seriousUsername").textContent = "Waiting for Player...";
@@ -326,6 +362,7 @@
             const funnyTracks = funnyVideo.srcObject.getTracks();
             const seriousTracks = seriousVideo.srcObject.getTracks();
 
+            timer.style.fontSize = "2rem";
             timer.innerText = "Serious User Won!";
             clearInterval(countdownInterval);
             clearInterval(detectionInterval);   
@@ -339,6 +376,7 @@
             myPeerConnection.close();
             tracksReceieved = 0;
             searchBtn.disabled = false;
+            screenShareBtn.disabled = true;
 
             if (role === "funny") {
                 document.getElementById("seriousUsername").textContent = "Waiting for Player...";
@@ -349,3 +387,40 @@
             console.log("Error ending round w/ serious win: " + e.toString());
         }
     });
+
+    const shareScreen = async () => {
+        const mediaStream = await getLocalScreenCaptureStream();
+        const screenTrack = mediaStream.getVideoTracks()[0];
+
+        if (screenTrack) {
+            console.log('Replacing video stream with screen track');
+            replaceTrack(screenTrack);
+        }
+    };
+
+    const getLocalScreenCaptureStream = async () => {
+        try {
+            const constraints = { video: { cursor: 'always' }, audio: false };
+            const screenCaptureStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+        
+            return screenCaptureStream;
+          } catch (error) {
+            console.error('failed to get local screen', error);
+          }
+    };
+
+    const replaceTrack = (newTrack) => {
+        localStream.removeTrack(localStream.getVideoTracks()[0]);
+        localStream.addTrack(newTrack);
+        const sender = myPeerConnection.getSenders().find(sender =>
+          sender.track.kind === newTrack.kind 
+        );
+      
+        if (!sender) {
+          console.warn('failed to find sender');
+      
+          return;
+        }
+      
+        sender.replaceTrack(newTrack);
+      }
