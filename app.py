@@ -13,7 +13,7 @@ global db
 db = Database('database/straightface.db')
 app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
-HOST, PORT = '0.0.0.0', 5000
+# HOST, PORT = '0.0.0.0', 5000
 app.debug = True
 
 funnyQueue = queue.Queue()
