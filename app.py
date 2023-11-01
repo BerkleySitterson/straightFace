@@ -1,5 +1,6 @@
 import eventlet
 import queue
+import os
 
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import SocketIO, join_room, rooms, close_room, emit
@@ -13,7 +14,8 @@ global db
 db = Database('database/straightface.db')
 app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
-# HOST, PORT = '0.0.0.0', 5000
+PORT = int(os.environ.get('PORT', 5000))
+HOST = '0.0.0.0'
 app.debug = True
 
 funnyQueue = queue.Queue()
@@ -189,4 +191,4 @@ def handle_disconnect():
     
 
 if __name__ == '__main__':
-    socketio.run(app) # host='0.0.0.0', port=33507
+    socketio.run(app, host=HOST, port=PORT)
