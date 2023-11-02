@@ -1,18 +1,20 @@
-    var protocol = window.location.protocol;
-    var socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
-    var myID;
-    var targetID;
-    var room;
-    var mediaConstraints = { audio: true, video: true };
-    var funnyVideo = document.getElementById("funnyVideo");
-    var seriousVideo = document.getElementById("seriousVideo");
-    var searchBtn = document.getElementById("searchBtn");
-    var screenShareBtn = document.getElementById("screenShareBtn");
+    'use strict';
+    
+    const protocol = window.location.protocol;
+    const socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
+    const mediaConstraints = { audio: true, video: true };
+    const funnyVideo = document.getElementById("funnyVideo");
+    const seriousVideo = document.getElementById("seriousVideo");
+    const searchBtn = document.getElementById("searchBtn");
+    const screenShareBtn = document.getElementById("screenShareBtn");
     var localStream;
     var tracksReceieved = 0;
     var countdownInterval;
     var detectionInterval;
     var remoteUsername;
+    var myID;
+    var targetID;
+    var room;
 
     navigator.mediaDevices.getUserMedia(mediaConstraints)
     .then((stream) => {

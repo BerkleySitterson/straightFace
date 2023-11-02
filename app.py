@@ -2,8 +2,8 @@ import eventlet
 import queue
 import os
 
-from flask import Flask, render_template, request, session, redirect, url_for
-from flask_socketio import SocketIO, join_room, rooms, close_room, emit
+from flask import Flask, render_template, request, session
+from flask_socketio import SocketIO, join_room, emit
 from database.db import Database
 from authentication.auth_tools import login_pipeline, update_passwords, hash_password, username_exists
 
