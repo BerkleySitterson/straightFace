@@ -175,3 +175,62 @@ class Database:
         self.cursor.execute(
             "UPDATE users SET last_name = ? WHERE username = ?", (new_last_name, username))
         self.connection.commit()
+        
+    def remove_user_from_queues(self, username: str, role: str):
+        """
+
+        Args:
+            username (str): _description_
+        """
+        if (role == "funny"):
+            self.cursor.execute(
+                "DELETE FROM funny_queue WHERE username = ?", (username,))
+            self.connection.commit()
+        else:
+            self.cursor.execute(
+                "DELETE FROM serious_queue WHERE username = ?", (username,))
+            self.connection.commit()
+            
+    def addFunnyWin(self, username: str):
+        self.cursor.execute(
+            "UPDATE users SET funny_wins = funny_wins + 1 WHERE username = ?", (username,))
+        self.connection.commit()
+        
+    def addFunnyLoss(self, username: str):
+        self.cursor.execute(
+            "UPDATE users SET funny_loss = funny_loss + 1 WHERE username = ?", (username,))
+        self.connection.commit()
+        
+    def addSeriousWin(self, username: str):
+        self.cursor.execute(
+            "UPDATE users SET serious_wins = serious_wins + 1 WHERE username = ?", (username,))
+        self.connection.commit()
+        
+    def addSeriousLoss(self, username: str):
+        self.cursor.execute(
+            "UPDATE users SET serious_loss = serious_loss + 1 WHERE username = ?", (username,))
+        self.connection.commit()
+        
+    def getFunnyRecord(self, username: str):
+        self.cursor.execute(
+            "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
+        result = self.cursor.fetchone()
+
+        if result:
+            wins, losses = result
+            wl = f"{wins}-{losses}"
+            return wl
+        else:
+            return "0-0"
+    
+    def getSeriousRecord(self, username: str):
+        self.cursor.execute(
+            "SELECT serious_wins, serious_loss FROM users WHERE username = ?", (username,))
+        result = self.cursor.fetchone()
+        
+        if result:
+            wins, losses = result
+            wl = f"{wins}-{losses}"
+            return wl
+        else:
+            return "0-0"

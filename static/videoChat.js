@@ -14,8 +14,6 @@ var myID;
 var targetID;
 var room;
 
-// <!-- dark-blue: #27274C , light-blue: #3E3E64 , purple: bottom-right: #4F44E1 to #8C5ABE , yellow: #FDD760 -->
-
 
 navigator.mediaDevices.getUserMedia(mediaConstraints)
 .then((stream) => {
@@ -273,7 +271,7 @@ async function detectSmile() {
 
                 if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                     console.log('Happy Emotion Detected');
-                    socket.emit("userSmiled", room);           
+                    socket.emit("userSmiled", room, remoteUsername);           
                 }
             }
             catch (Exception) {
