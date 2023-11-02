@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 PORT = int(os.environ.get('PORT', 5000))
 HOST = '0.0.0.0'
-app.debug = True
+app.debug = True 
 
 funnyQueue = queue.Queue()
 seriousQueue = queue.Queue()

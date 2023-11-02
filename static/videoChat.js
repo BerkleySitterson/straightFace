@@ -14,6 +14,9 @@ var myID;
 var targetID;
 var room;
 
+// <!-- dark-blue: #27274C , light-blue: #3E3E64 , purple: bottom-right: #4F44E1 to #8C5ABE , yellow: #FDD760 -->
+
+
 navigator.mediaDevices.getUserMedia(mediaConstraints)
 .then((stream) => {
     localStream = stream;

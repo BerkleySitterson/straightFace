@@ -1,14 +1,14 @@
-:root {
-    --primary-purple: #855BDA;
-    --primary-yellow: #FFD700;
-    --primary-gray: #D3D3D3;
-    --primary-blue: #000080;
-    --secondary-purple: #4B0082;
+:root { 
+    --primary-blue: #222243;
+    --primary-yellow: #FDD760;
+    --primary-lightblue: #27274C;
+    --primary-purple: #4F44E1;
+    --secondary-purple: #8C5ABE;
 }
 
 
 body, html {
-    background: linear-gradient(to bottom right, var(--primary-purple), var(--primary-blue));
+    background: var(--primary-lightblue);
     height: 100vh;
     width: 100vw;
     margin: 0;
@@ -22,9 +22,10 @@ header {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    height: 8vh;
+    height: 10vh;
     width: 100%;
-    border-bottom: 3px solid white;
+    background-color: var(--primary-blue);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 main {
@@ -57,22 +58,44 @@ footer {
     align-items: center;
 }
 
-.account_btn {
-    transition: all .5s ease;
-    background-color: #a442f5;
-    border: 2px solid white;
-    color: white;
-    font-size: 1rem;
-    padding: 1vh 2vw;
-    border-radius: 1rem;
-    text-decoration: none;
-    margin-right: 1vw;
+#account_btn_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-right: 4rem;
+    width: 22rem;
 }
 
-.account_btn:hover {
-    background-color: white;
-    color: #a442f5;
+#loginBtn:hover {
     cursor: pointer;
+    box-shadow: 0px 4px 30px black;
+}
+
+#signUpBtn:hover {
+    cursor: pointer;
+    box-shadow: 0px 4px 30px black;
+}
+
+#loginBtn {
+    transition: all .5s ease;
+    background: #3E3E64;
+    color: white;
+    font-size: 1.2rem;
+    padding: 1vh 2vw;
+    border-radius: 2rem;
+    text-decoration: none;
+    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+#signUpBtn {
+    transition: all .5s ease;
+    background: var(--primary-purple);
+    color: white;
+    font-size: 1.2rem;
+    padding: 1vh 2vw;
+    border-radius: 2rem;
+    text-decoration: none;
+    box-shadow: 0px 2px 20px #3A3580;
 }
 
 #homeIcon {
@@ -129,10 +152,12 @@ footer {
 
 #funnyBtn {
     background-color: #FFD700;
+    box-shadow: 0px 2px 8px #FFD700;
 }
 
 #seriousBtn {
     background-color: #D3D3D3;
+    box-shadow: 0px 2px 8px #D3D3D3;
 }
 
 #seriousBtn:hover {
@@ -146,10 +171,9 @@ footer {
 .queue_btn {
     transition: all .5s ease;
     color: black;
-    border: 2px solid black;
     padding: 10px 20px;
-    font-size: 1rem;
     font-weight: bold;
+    font-size: 1rem;
     text-decoration: none;
     border-radius: 2rem;
     margin: 10px;
@@ -171,7 +195,7 @@ footer {
     #account_btn_container {
         flex-grow: 1;
         display: flex;
-        justify-content: space-evenly;
+        justify-content: space-between;
         margin-left: 5vw;
         margin-right: 5vw;
     }
