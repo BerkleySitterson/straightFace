@@ -16,32 +16,33 @@
 
     <main>
         <form action="/register" method="POST" id="register_form">
-            <img src="static/images/straightFaceLogoOfficial.svg" alt="straightFace" id="register_logo">
-            <h2 id="register_title">Create a new account</h3>
-            <div class="form_container">
+            <div class="form_container" id="register_container">
+                <img src="static/images/straightFaceLogoOfficial.svg" alt="straightFace" id="register_logo">
+                <h2 id="register_title">Create a new account</h3>
                 <div class="form-group" id="info_form_group">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="register_username" class="form-control">
+                    <input type="text" name="username" id="register_username" class="form-control" placeholder="Username / Display Name">
                 </div>
                 <div class="form-group" id="info_form_group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="register_password" class="form-control">
+                    <input type="password" name="password" id="register_password" class="form-control" placeholder="Password">
                 </div>
                 <div class="form-group" id="info_form_group">
                     <label for="email" id="email_label">Email</label>
-                    <input type="email" name="email" id="register_email" class="form-control">
+                    <input type="email" name="email" id="register_email" class="form-control" placeholder="Email Address">
                 </div>
                 <div class="form-group" id="info_form_group">
                     <label for="first_name">First Name</label>
-                    <input type="text" name="first_name" id="register_first_name" class="form-control">
+                    <input type="text" name="first_name" id="register_first_name" class="form-control" placeholder="First Name">
                 </div>
                 <div class="form-group" id="info_form_group">
                     <label for="last_name">Last Name</label>
-                    <input type="text" name="last_name" id="register_last_name" class="form-control">
+                    <input type="text" name="last_name" id="register_last_name" class="form-control" placeholder="Last Name">
                 </div>
                 <button type="submit" class="btn btn-primary" id="register_button">Register</button>
                 <p class="err_msg">{{ errMsg }}</p>
             </div>
+            <p id="register_login">Already have an account? <a href="/login">Login</a></p>
         </form>
     </main>
 

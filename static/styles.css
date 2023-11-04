@@ -17,6 +17,8 @@ body, html {
     font-family: 'Lato', sans-serif;
     z-index: -1;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -262,9 +264,24 @@ footer {
 @media(max-width:768px) {
     header {
         flex-direction: column;
-        justify-content: center;
         border: 0px;
-        height: 15vh;
+        height: 20vh;
+    }
+
+    #header_logo {
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-evenly;
+        margin-left: 5vw;
+        margin-right: 5vw;
+        margin-right: 2.5rem;
+    }
+
+    #howToPlay_container {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        width: 80vw;
+        height: 38rem;
     }
 
     #account_btn_container {
@@ -353,6 +370,10 @@ footer {
         margin-top: 0rem;
         margin-right: 0rem;
     }
+
+    footer {
+        margin-top: 45rem;
+    }
     
 }
 
@@ -378,7 +399,6 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 15vh;
 }
 
 #register_title, #login_title {
@@ -386,11 +406,17 @@ footer {
     
 }
 
+#register_container {
+    margin-top: 5rem;
+}
+
 .err_msg {
-    position: relative;
     color: white;
-    left: 24%;
-    top: 12%;
+    margin-top: 3rem;
+}
+
+#register_login {
+    margin-bottom: 10rem;
 }
 
 #login_button, #register_button {  
@@ -398,6 +424,7 @@ footer {
     background: var(--primary-purple);
     color: white;
     font-size: 1.2rem;
+    width: 20rem;
     padding: 1vh 2vw;
     border-radius: 2rem;
     text-decoration: none;
@@ -405,6 +432,7 @@ footer {
     border: None;
     cursor: pointer;
     margin-top: 2rem;
+    margin-left: .65rem;
 }
 
 #login_button:hover, #register_button:hover {
@@ -418,7 +446,7 @@ footer {
 
 label {
     margin-left: 1rem;
-    margin-top: .5rem;
+    margin-top: .3rem;
 }
 
 #login_logo {
@@ -427,9 +455,8 @@ label {
 }
 
 #register_logo {
-    width: 15%;
-    height: 15%;
-    margin-top: 15vh;
+    width: 30%;
+    height: 30%;
 }
 
 #register_email {
@@ -438,16 +465,13 @@ label {
 
 input {
     width: 80%;
-    height: 5%;
+    height: 3%;
     margin: 1rem;
     padding: 12px 20px;
-    background-color: var(--secondary-blue);
+    background-color: rgba(255,255,255,0.07);
     transition: 0.5s;
     outline: none;
-}
-
-input:focus {
-    border: 3px solid white;
+    border: none;
 }
 
 
@@ -498,6 +522,18 @@ video {
     width: 100%;
     height: 100%;
 }
+
+#login_form a:visited {
+    color: var(--primary-purple);
+    text-decoration: none;
+}
+
+#login_form a:link {
+    color: var(--primary-purple);
+    text-decoration: none;
+}
+
+
 
 
 #header_title {

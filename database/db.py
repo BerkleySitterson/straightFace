@@ -218,8 +218,8 @@ class Database:
 
         if result:
             wins, losses = result
-            wl = f"{wins}-{losses}"
-            return wl
+            record = f"{wins}-{losses}"
+            return record
         else:
             return "0-0"
     
@@ -230,7 +230,7 @@ class Database:
         
         if result:
             wins, losses = result
-            wl = f"{wins}-{losses}"
-            return wl
+            record = f"{wins}-{losses}"
+            return record
         else:
             return "0-0"
