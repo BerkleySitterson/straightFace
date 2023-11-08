@@ -34,13 +34,17 @@ def login():
     
     username = request.form['username']
     password = request.form['password']
+    totalFunnyMatches = db.getTotalFunnyMatches(username)
+    totalSeriousMatches = db.getTotalSeriousMatches(username)
     funnyRecord = db.getFunnyRecord(username)
     seriousRecord = db.getSeriousRecord(username)
+    laughterRatio = db.calculateFunnyRatio(username)
+    seriousRatio = db.calculateSeriousRatio(username)
     
     if login_pipeline(username, password):
         session["username"] = username
         print(f"Login Successful for { username }")
-        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord)
+        return render_template('home.html', username=username, totalFunnyMatches=totalFunnyMatches,totalSeriousMatches=totalSeriousMatches, funnyWL=funnyRecord, seriousWL=seriousRecord, laughterRatio=laughterRatio, seriousRatio=seriousRatio)
     else:
         print(f"Incorrect Username ({username}) or Password ({password}).")
         return render_template('login.html', errMsg="Invalid Username or Password")

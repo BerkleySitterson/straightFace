@@ -10,6 +10,7 @@
     <link rel="icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
+    <script defer src="../static/index.js"></script>
 </head>
 
 <body>  
@@ -26,7 +27,28 @@
 
     <main>
 
-        <div id="profile_container">
+        <div id="emotionIcon_container">
+            <button class="emotionIcon" id="funnyFaceBtn" onclick="showFunnyQueue()"><img class="emotionIcon" id="funnyIcon" src="static/images/onlyFunnyFace.svg"></button>
+            <button class="emotionIcon" id="straightFaceBtn" onclick="showSeriousQueue()"><img class="emotionIcon" id="seriousIcon" src="static/images/onlyStraightFace.svg"></button>
+        </div>
+        <div class="queue_container" id="funnyQueue_container">
+            <h1 id="username">{{ username }}</h1>
+            <h3 id="totalMatches">Total Matches<br>{{ totalFunnyMatches }}</h3>
+            <h3 id="winLoss">Win/Loss<br>{{ funnyWL }}</h3>
+            <h3 id="laughterRatio">Laughter Ratio<br>{{ laughterRatio}}</h3>
+            <h3 id="longestStreak">Longest Streak<br>---</h3>            
+            <a href="/videoChat_funny" class="queue_btn" id="funnyBtn">Make Someone Laugh<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F; position: absolute; margin-left: 28rem;"></i></a>                    
+        </div>
+        <div class="queue_container" id="seriousQueue_container">
+            <h1 id="username">{{ username }}</h1>
+            <h3 id="totalMatches">Total Matches<br>{{ totalSeriousMatches }}</h3>
+            <h3 id="winLoss">Win/Loss<br>{{ seriousWL }}</h3>
+            <h3 id="laughterRatio">Straight Face Ratio<br>{{ seriousRatio }}</h3>
+            <h3 id="longestStreak">Longest Streak<br>---</h3>            
+            <a href="/videoChat_serious" class="queue_btn" id="seriousBtn">Be Serious<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F; position: absolute; margin-left: 28rem;"></i></a>                    
+        </div>
+
+        <!-- <div id="profile_container">
             <div id="username_container">
                 <i class="fa-regular fa-user fa-4x" style="color: #ffffff;" id="user_icon"></i>
                 <h2 id="index_username">{{ username }}</h2>
@@ -61,6 +83,7 @@
             <p>&bull; Good Luck and Have Fun!<br></p>
             
         </div>
+    -->
 
     </main>
 

@@ -10,6 +10,7 @@
     <link rel="icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
+    <script defer src="../static/index.js"></script>
 </head>
 
 <body>
@@ -26,28 +27,37 @@
     </header>
 
     <main>
-        <div id="profile_container">
-            <div id="username_container">
-                <i class="fa-regular fa-user fa-4x" style="color: #ffffff;" id="user_icon"></i>
-                <h2 id="index_username">---</h2>
-            </div>
-            <div id="winLoss">
-                <div id="funny">
-                    <img src="static/images/onlyFunnyFace.svg" class="logo-sm">
-                    <h3 id="WLCounter">W/L<br>---</h3>
-                </div>
-                <div id="serious">
-                    <img src="static/images/onlyStraightFace.svg" class="logo-sm">
-                    <h3 id="WLCounter">W/L<br>---</h3>
-                </div>
-            </div>   
-            <div id="queue_btn_container">
-                <a href="/login" class="queue_btn" id="funnyBtn">Make Someone Laugh</a>
-                <a href="/login" class="queue_btn" id="seriousBtn">Be Serious</a>
-            </div>             
+        <div id="emotionIcon_container">
+            <button class="emotionIcon active" id="funnyFaceBtn" onclick="showFunnyQueue()"><img class="emotionIcon" id="funnyIcon" src="static/images/onlyFunnyFace.svg"></button>
+            <button class="emotionIcon inactive underlineHover" id="straightFaceBtn" onclick="showSeriousQueue()"><img class="emotionIcon" id="seriousIcon" src="static/images/onlyStraightFace.svg"></button>
         </div>
+        <div class="queue_container" id="funnyQueue_container">
+            <h1 id="username">Log In or Sign Up</h1>
+            <h3 id="totalMatches">Total Matches<br>---</h3>
+            <h3 id="winLoss">Win/Loss<br>---</h3>
+            <h3 id="laughterRatio">Laughter Ratio<br>---</h3>
+            <h3 id="longestStreak">Longest Streak<br>---</h3>            
+            <a href="/login" class="queue_btn" id="funnyBtn">Make Someone Laugh<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F; position: absolute; margin-left: 28rem;"></i></a>                      
+        </div>
+        <div class="queue_container" id="seriousQueue_container">
+            <h1 id="username">Log In or Sign Up</h1>
+            <h3 id="totalMatches">Total Matches<br>---</h3>
+            <h3 id="winLoss">Win/Loss<br>---</h3>
+            <h3 id="laughterRatio">Straight Face Ratio<br>---</h3>
+            <h3 id="longestStreak">Longest Streak<br>---</h3>            
+            <a href="/login" class="queue_btn" id="seriousBtn">Be Serious<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F; position: absolute; margin-left: 28rem;"></i></a>                      
+        </div>
+  
+    </main>
 
-        <div id="howToPlay_container">
+    <footer>
+        <p class="font-sm">&copy;2023 StraightFace App. All rights reserved.</p>
+    </footer>
+                      
+</body>    
+
+<!-- 
+    <div id="howToPlay_container">
             <h1 id="HTPTitle">How to Play</h1>
             <p><br>&bull; StraightFace is a random video-chat roulette app
                 where the goal is to make your opponent smile or
@@ -61,14 +71,7 @@
             <p>&bull; Good Luck and Have Fun!<br></p>
             
         </div>
-  
-    </main>
-
-    <footer>
-        <p class="font-sm">&copy;2023 StraightFace App. All rights reserved.</p>
-    </footer>
-                      
-</body>    
+-->
 
 
    

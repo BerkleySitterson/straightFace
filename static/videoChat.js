@@ -5,6 +5,7 @@ const funnyVideo = document.getElementById("funnyVideo");
 const seriousVideo = document.getElementById("seriousVideo");
 const searchBtn = document.getElementById("searchBtn");
 const screenShareBtn = document.getElementById("screenShareBtn");
+const playSoundBtn = document.getElementById("playSoundBtn");
 var localStream;
 var tracksReceieved = 0;
 var countdownInterval;
@@ -108,7 +109,6 @@ function createPeerConnection() {
 
             if (role === "funny") {
                 seriousVideo.srcObject = remoteStream;
-                screenShareBtn.disabled = false;
             } else {
                 funnyVideo.srcObject = remoteStream;
                 if (tracksReceieved === 2) {
@@ -345,7 +345,6 @@ socket.on('endRoundFunnyWin', function () {
         myPeerConnection.close();
         tracksReceieved = 0;
         searchBtn.disabled = false;
-        screenShareBtn.disabled = true;
 
         if (role === "funny") {
             document.getElementById("seriousUsername").textContent = "Waiting for Player...";
@@ -377,7 +376,6 @@ socket.on('endRoundSeriousWin', function () {
         myPeerConnection.close();
         tracksReceieved = 0;
         searchBtn.disabled = false;
-        screenShareBtn.disabled = true;
 
         if (role === "funny") {
             document.getElementById("seriousUsername").textContent = "Waiting for Player...";
@@ -425,3 +423,9 @@ const replaceTrack = (newTrack) => {
     
     sender.replaceTrack(newTrack);
     }
+
+playSoundBtn.addEventListener("click", () => {
+    const fartNoise = document.getElementById("fartNoise");
+    fartNoise.volume = 0.2;
+    fartNoise.play();
+});

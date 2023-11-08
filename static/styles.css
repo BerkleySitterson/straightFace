@@ -1,15 +1,13 @@
 :root { 
-    --primary-blue: #181831;
     --primary-yellow: #FDD760;
-    --primary-lightblue: #27274C;
-    --primary-purple: #4F44E1;
-    --secondary-purple: #8C5ABE;
-    --secondary-blue: #373458;
+    --primary-blue: #27274C;
+    --primary-purple: #7c73e6;
+    --primary-grey: #D3D3D3;
 }
 
 
 body, html {
-    background: var(--primary-lightblue);
+    background: #7c73e6;
     height: 100vh;
     width: 100vw;
     margin: 0;
@@ -33,11 +31,9 @@ header {
 
 main {
     display: flex;
-    justify-content: space-evenly;
     align-items: center;
-    flex-direction: row;
+    flex-direction: column;
     width: 100vw;
-    height: 80vh;
     gap: 1rem;
     flex-wrap: wrap;
 }
@@ -82,24 +78,24 @@ footer {
 
 #loginBtn {
     transition: all .5s ease;
-    background: #3E3E64;
+    background: transparent;
     color: white;
     font-size: 1.2rem;
     padding: 1vh 2vw;
     border-radius: 2rem;
     text-decoration: none;
     box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
+    border: 3px solid white;
 }
 
 #signUpBtn {
     transition: all .5s ease;
-    background: var(--primary-purple);
-    color: white;
+    background: var(--primary-yellow);
+    color: black;
     font-size: 1.2rem;
     padding: 1vh 2vw;
     border-radius: 2rem;
     text-decoration: none;
-    box-shadow: 0px 2px 20px #3A3580;
 }
 
 #logo {
@@ -130,6 +126,23 @@ footer {
     margin-left: 4rem;
 }
 
+#emotionIcon_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 30rem;
+    margin-top: 6rem;
+    margin-bottom: .5rem;
+}
+
+.emotionIcon {
+    width: 3rem;
+    height: 3rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
 #mainTitle {
     color: white;
     font-size: 3.5rem;
@@ -157,44 +170,42 @@ footer {
     cursor: pointer;
 }
 
-#queue_btn_container {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
 #funnyBtn {
-    background-color: #FFD700;
-    box-shadow: 0px 4px 30px black;
-    width: 15rem;
+    background-color: var(--primary-yellow);
+    display: flex;
 }
 
 #seriousBtn {
     background-color: #D3D3D3;
-    box-shadow: 0px 4px 30px black;
-    width: 15rem;
 }
 
 #seriousBtn:hover {
-    box-shadow: 0px 4px 30px #D3D3D3;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 #funnyBtn:hover {
-    box-shadow: 0px 4px 30px var(--primary-yellow);
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .queue_btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: all .5s ease;
     color: black;
     padding: 10px 20px;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 1.4rem;
     text-decoration: none;
-    border-radius: 2rem;
+    border-radius: 20px;
     margin: 10px;
-    width: 12rem;
-    text-align: center;
+    width: 30.5rem;
+    height: 3.5rem;
+    margin-left: -1.5rem;
+    margin-bottom: -2.4rem;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+
 }
 
 .queue_btn:hover {
@@ -209,7 +220,7 @@ footer {
 #howToPlay_container {
     width: 30rem;
     height: 35rem;
-    background: var(--secondary-blue);
+    background: var(--primary-blue);
     border-radius: 2rem;
     color: white;
     font-weight: bold;
@@ -226,16 +237,24 @@ footer {
     margin-top: 3rem;
 }
 
-#profile_container {
+.queue_container {
     color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 30rem;
-    height: 38rem;
+    height: 32rem;
     justify-content: space-evenly;
     padding: 1.5rem;
-    margin-top: 3rem;
+    background-color: var(--primary-blue);
+    border-radius: 20px;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
+    transition: all .5s ease;
+    line-height: 30px;
+}
+
+#seriousQueue_container {
+    display: none;
 }
 
 #username_container {
@@ -250,7 +269,6 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width: 15rem;
     align-items: center;
 }
 
@@ -365,14 +383,13 @@ footer {
         margin-top: 10vh;
     }
 
-    #seriousIcon,
-    #funnyIcon {
-        margin-top: 0rem;
-        margin-right: 0rem;
-    }
-
     footer {
         margin-top: 45rem;
+    }
+
+    #btn_container {
+        display: flex;
+        flex-direction: row;
     }
     
 }
@@ -387,7 +404,7 @@ footer {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    background-color: var(--secondary-blue);
+    background-color: var(--primary-blue);
     color: white;
     font-size: 1rem;
     font-weight: bold;
@@ -563,7 +580,6 @@ video {
     position: relative;
     color: white;
     font-size: 3rem;
-    margin-top: 0;
     height: 6vh;
     width: 6vw;
     text-align: center;
@@ -588,28 +604,38 @@ video {
 }
 
 #disconnectBtn {
-    background-color: red;
+    background-color: #8B0000;
     color: white;
-    width: 3rem;
-    height: 3rem;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     font-weight: bold;
-    border: 2px solid white;
+    border: none;
     cursor: pointer;
+    font-size: 24px;
+    box-shadow: 0px 4px 30px black;
+    transition: all .5s ease;
+}
+
+#disconnectBtn:hover {
+    box-shadow: 0px 4px 30px #8B0000;
 }
 
 #chat-messages {
     height: 12rem;
-    width: 32rem;
+    width: 80vw;
     background-color: transparent;
     margin: 0;
-    border: 3px solid black;
+    border: 3px solid white;
+    border-bottom: none;
 }
 
 #message {
-    width: 31.6rem;
+    width: 80vw;
     margin: 0;
-    border: 3px solid black;
+    border: 3px solid white;
+    border-top: none;
+    background-color: var(--primary-blue);
 }
 
 #funnyUsername {
@@ -626,13 +652,93 @@ video {
 #funnyIcon {
     width: 3rem;
     height: 3rem;
-    margin-top: 1rem;
-    margin-right: 1rem;
+}
+
+#seriousIcon {
+    filter: blur(2px);
 }
 
 #seriousVideoHeader_container,
 #funnyVideoHeader_container {
     display: flex;
     flex-direction: row;
+}
+.fab {
+    width: 56px;
+    height: 56px;
+    background-color: var(--primary-purple);
+    border-radius: 50%;
+    box-shadow: 0px 4px 30px black;
+    text-align: center;
+    line-height: 56px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    transition: all .5s ease;
+}
+
+.fab:hover {
+    box-shadow: 0px 4px 30px #4F44E1;
+}
+
+#playSoundBtn {
+    width: 56px;
+    height: 56px;
+    background-color: var(--primary-purple);
+    border-radius: 50%;
+    box-shadow: 0px 4px 30px black;
+    text-align: center;
+    line-height: 56px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    transition: all .5s ease;
+}
+
+#playSoundBtn:hover {
+    box-shadow: 0px 4px 30px #4F44E1;
+}   
+
+#soundIcon {
+    margin-top: 8px;
+}
+
+#btn_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 4rem;
+}
+
+#searchBtn {
+    background-color: #009900;
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 30px;
+    box-shadow: 0px 4px 30px black;
+    transition: all .5s ease;
+}
+
+#searchBtn:hover {
+    box-shadow: 0px 4px 30px #009900;
+}
+
+#searchBtn:disabled {
+    background-color: #FFD700;
+    box-shadow: 0px 4px 30px black;
+}
+
+#searchBtn:disabled:hover {
+    box-shadow: 0px 4px 30px black;
+}
+
+.img_lower {
+    margin-top: 4px;
 }
 

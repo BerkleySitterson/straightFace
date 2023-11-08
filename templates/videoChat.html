@@ -34,10 +34,23 @@
                     <h1 id="funnyUsername">{{ funnyUsername }}</h1>
                 </div>          
                 <video id="funnyVideo" playsinline></video>
-                <button id="screenShareBtn" onclick="shareScreen();" disabled>Share Screen</button>
             </div>
 
-            <p id="timer"></p>
+        <div id="btn_container">
+            <p id="timer">30</p>
+            <button type="submit" id="searchBtn">
+                <img class="img_lower" src="static/images/searchplayerIcon.svg" alt="searchPlayer" width="38px" height="38px">
+            </button>   
+            <button type="button" id="disconnectBtn">
+                <img class="img_lower" src="static/images/leaveIcon.svg" alt="disconnect" width="38px" height="38px">
+            </button>
+            <button class="fab" id="screenShareBtn" onclick="shareScreen();">
+                <img class="img_lower" src="static/images/sharescreenIcon.svg" alt="screenShare" width="38px" height="38px">
+            </button>
+            <button id="playSoundBtn">
+                <img id="soundIcon" src="static/images/soundsIcon.svg" alt="playSounds" width="38px" height="38px">
+            </button>
+        </div>
 
             <div id="seriousVideo_container">
                 <div id="seriousVideoHeader_container">
@@ -49,17 +62,15 @@
         </div>
 
         <div id="bottom_video_container">
-            <div id="utils_container">
-                <button type="submit" id="searchBtn">Find New Player</button>   
-                <button type="button" id="disconnectBtn">X</button>
-            </div>
 
             <div id="chat_container">
                 <ul id="chat-messages"></ul>
-                <input type="text" id="message" placeholder="Enter a Message">
+                <input type="text" id="message" placeholder="Enter a Message" color="white">
             </div>
         </div>
     </main>
+
+    <audio id="fartNoise" src="static/sounds/fart.mp3" preload="auto"></audio>
 </body>
 
 <script>

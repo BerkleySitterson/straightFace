@@ -1,5 +1,4 @@
 import sqlite3
-import datetime as dt
 
 class Database:
     """
@@ -211,6 +210,32 @@ class Database:
             "UPDATE users SET serious_loss = serious_loss + 1 WHERE username = ?", (username,))
         self.connection.commit()
         
+    def getTotalFunnyMatches(self, username: str):
+        self.cursor.execute(
+            "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
+        result = self.cursor.fetchone()
+        
+        if result:
+            wins, losses = result
+            total = wins + losses
+            return total
+        else:
+            return 0
+        
+    def getTotalSeriousMatches(self, username: str):
+        self.cursor.execute(
+            "SELECT serious_wins, serious_loss FROM users WHERE username = ?", (username,))
+        result = self.cursor.fetchone()
+        
+        if result:
+            wins, losses = result
+            total = wins + losses
+            return total
+        else:
+            return 0
+        
+        
+        
     def getFunnyRecord(self, username: str):
         self.cursor.execute(
             "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
@@ -234,3 +259,27 @@ class Database:
             return record
         else:
             return "0-0"
+        
+    def calculateFunnyRatio(self, username: str):
+        self.cursor.execute(
+            "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
+        result = self.cursor.fetchone()
+        
+        if result:
+            wins, losses = result
+            ratio = (wins / (wins + losses)) * 100
+            return f"{ratio}%"
+        else:
+            return "0%"
+        
+    def calculateSeriousRatio(self, username: str):
+        self.cursor.execute(
+            "SELECT serious_wins, serious_loss FROM users WHERE username = ?", (username,))
+        result = self.cursor.fetchone()
+        
+        if result:
+            wins, losses = result
+            ratio = (wins / (wins + losses)) * 100
+            return f"{ratio}%"
+        else:
+            return "0%"
