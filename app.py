@@ -34,17 +34,14 @@ def login():
     
     username = request.form['username']
     password = request.form['password']
-    totalFunnyMatches = db.getTotalFunnyMatches(username)
-    totalSeriousMatches = db.getTotalSeriousMatches(username)
     funnyRecord = db.getFunnyRecord(username)
     seriousRecord = db.getSeriousRecord(username)
-    laughterRatio = db.calculateFunnyRatio(username)
-    seriousRatio = db.calculateSeriousRatio(username)
+    totalMatches = db.getTotalMatches(username)
     
     if login_pipeline(username, password):
         session["username"] = username
         print(f"Login Successful for { username }")
-        return render_template('home.html', username=username, totalFunnyMatches=totalFunnyMatches,totalSeriousMatches=totalSeriousMatches, funnyWL=funnyRecord, seriousWL=seriousRecord, laughterRatio=laughterRatio, seriousRatio=seriousRatio)
+        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord, totalMatches=totalMatches)
     else:
         print(f"Incorrect Username ({username}) or Password ({password}).")
         return render_template('login.html', errMsg="Invalid Username or Password")
@@ -64,8 +61,10 @@ def register():
     last_name = request.form['last_name']
     funnyRecord = db.getFunnyRecord(username)
     seriousRecord = db.getSeriousRecord(username)
+    totalMatches = db.getTotalMatches(username)
+    print(f"Total Matches: {totalMatches}")
 
-    if username == "" or password == "" or email == "" or first_name == "" or last_name == "":
+    if any(value == "" for value in [username, password, email, first_name, last_name]):
         return render_template('register.html', errMsg="Please make sure all fields are complete.")
     else:
         salt, key = hash_password(password)
@@ -74,7 +73,7 @@ def register():
         if login_pipeline(username, password):
             print(f"Logged in as user: {username}")
             session["username"] = username
-            return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord)
+            return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord, totalMatches=totalMatches)
         else:
             print(f"Unable to log in at this time.")
             return render_template('index.html')
@@ -110,31 +109,19 @@ def findNewPlayer():
     user = {'username': username, 'sid': sid}
     
     if role == "funny":
-        print(f"User {username} has joined the funny side!")
         funnyQueue.put(user)
-        attempt_pairing()
-    elif role == "serious":
-        print(f"User {username} has joined the serious side!")
+    else:
         seriousQueue.put(user)
-        attempt_pairing()
-
         
-def attempt_pairing(): # Checking to see if there is atleast 1 funny and 1 serious user
-    
-    print(f"attempt_pairing executing")
-
-    if funnyQueue.qsize() >= 1 and seriousQueue.qsize() >= 1:
+    if funnyQueue.qsize() and seriousQueue.qsize():
         funnyUser = funnyQueue.get()
         seriousUser = seriousQueue.get()
-        print(f"{funnyUser} and {seriousUser}")
         pair_users(funnyUser, seriousUser)
-        print(f"attempt_pairing completed successfully")
         
 
 def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and puts them in a room
     
     room = f"{funnyUser['sid']}_{seriousUser['sid']}_room"
-    print(f"{funnyUser['sid']}_{seriousUser['sid']}_room")
     
     join_room(room, funnyUser['sid'])
     join_room(room, seriousUser['sid'])
@@ -147,10 +134,8 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     funnyUsername = funnyUser['username']
     seriousUsername = seriousUser['username']
     
-    print(f"Paired {funnyUser['username']} with {seriousUser['username']} in room: {room}")
     emit("set_round_data", {"funnyUsername": funnyUsername, "seriousUsername": seriousUsername, "room": room}, room=room)
     emit("users_paired", {"myID": request.sid, "targetID": targetID})
-    print(f"UserID: {request.sid} || PeerID: {targetID}")
     
     
 @socketio.on("data") 
@@ -158,10 +143,6 @@ def handleSignaling(msg):
 
     msg_type = msg["type"]
     target = msg["target"]
-    
-    print(f"Message: {msg}")
-    print(f"Message Type: {msg_type}")
-    print(f"Target ID: {target}")
     
     if msg_type == "video-offer":
         emit("handleVideoOfferMsg", msg, to=target)
@@ -179,7 +160,6 @@ def handleUserSmile(room, remoteUsername):
     username = session["username"]
     db.addFunnyWin(remoteUsername)
     db.addSeriousLoss(username)
-    print(f"User {username} is calling this function")
     emit("endRoundFunnyWin", room=room)
     
 @socketio.on("timerComplete")
@@ -190,7 +170,6 @@ def handleTimerComplete(room):
         db.addFunnyLoss(username)
     elif role == "serious":
         db.addSeriousWin(username)
-    print(f"User {username} is calling this function")
     emit("endRoundSeriousWin", room=room)
 
     

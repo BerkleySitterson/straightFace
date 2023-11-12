@@ -210,27 +210,15 @@ class Database:
             "UPDATE users SET serious_loss = serious_loss + 1 WHERE username = ?", (username,))
         self.connection.commit()
         
-    def getTotalFunnyMatches(self, username: str):
+    def getTotalMatches(self, username: str):
         self.cursor.execute(
-            "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
+            "SELECT (funny_wins + funny_loss + serious_wins + serious_loss) as total_matches FROM users WHERE username = ?",
+            (username,))
         result = self.cursor.fetchone()
-        
+
         if result:
-            wins, losses = result
-            total = wins + losses
-            return total
-        else:
-            return 0
-        
-    def getTotalSeriousMatches(self, username: str):
-        self.cursor.execute(
-            "SELECT serious_wins, serious_loss FROM users WHERE username = ?", (username,))
-        result = self.cursor.fetchone()
-        
-        if result:
-            wins, losses = result
-            total = wins + losses
-            return total
+            total_matches = result[0]
+            return total_matches
         else:
             return 0
         

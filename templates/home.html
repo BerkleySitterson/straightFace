@@ -16,59 +16,28 @@
 <body>  
 
     <header>
-        <div id="header_logo">
+        <div class="header_logo">
             <img id="logo" src="static/images/straightFaceLogoOfficial.svg">
-            <h2 id="logo_title">StraightFace</h2>
+            <h2 id="logo_name">StraightFace</h2>
         </div>
-        <div id="account_btn_container">
+        <div class="account_btn_container">
             <a href="/logout" class="account_btn" id="signUpBtn">Log Out</a>
         </div>
     </header>
 
     <main>
 
-        <div id="emotionIcon_container">
-            <button class="emotionIcon" id="funnyFaceBtn" onclick="showFunnyQueue()"><img class="emotionIcon" id="funnyIcon" src="static/images/onlyFunnyFace.svg"></button>
-            <button class="emotionIcon" id="straightFaceBtn" onclick="showSeriousQueue()"><img class="emotionIcon" id="seriousIcon" src="static/images/onlyStraightFace.svg"></button>
-        </div>
-        <div class="queue_container" id="funnyQueue_container">
+        <div class="queue_container">
             <h1 id="username">{{ username }}</h1>
-            <h3 id="totalMatches">Total Matches<br>{{ totalFunnyMatches }}</h3>
-            <h3 id="winLoss">Win/Loss<br>{{ funnyWL }}</h3>
-            <h3 id="laughterRatio">Laughter Ratio<br>{{ laughterRatio}}</h3>
-            <h3 id="longestStreak">Longest Streak<br>---</h3>            
-            <a href="/videoChat_funny" class="queue_btn" id="funnyBtn">Make Someone Laugh<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F; position: absolute; margin-left: 28rem;"></i></a>                    
-        </div>
-        <div class="queue_container" id="seriousQueue_container">
-            <h1 id="username">{{ username }}</h1>
-            <h3 id="totalMatches">Total Matches<br>{{ totalSeriousMatches }}</h3>
-            <h3 id="winLoss">Win/Loss<br>{{ seriousWL }}</h3>
-            <h3 id="laughterRatio">Straight Face Ratio<br>{{ seriousRatio }}</h3>
-            <h3 id="longestStreak">Longest Streak<br>---</h3>            
-            <a href="/videoChat_serious" class="queue_btn" id="seriousBtn">Be Serious<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F; position: absolute; margin-left: 28rem;"></i></a>                    
-        </div>
-
-        <!-- <div id="profile_container">
-            <div id="username_container">
-                <i class="fa-regular fa-user fa-4x" style="color: #ffffff;" id="user_icon"></i>
-                <h2 id="index_username">{{ username }}</h2>
-            </div>
-            <div id="winLoss">
-                <div id="funny">
-                    <img src="static/images/onlyFunnyFace.svg" class="logo-sm">
-                    <h3 id="WLCounter">W/L<br>{{ funnyWL }}</h3>
-                </div>
-                <div id="serious">
-                    <img src="static/images/onlyStraightFace.svg" class="logo-sm">
-                    <h3 id="WLCounter">W/L<br>{{ seriousWL }}</h3>
-                </div>
-            </div>   
-            <div id="queue_btn_container">
-                <a href="/videoChat_funny" class="queue_btn" id="funnyBtn">Make Someone Laugh</a>
-                <a href="/videoChat_serious" class="queue_btn" id="seriousBtn">Be Serious</a>
+            <h3 id="totalMatches">Total Matches:<br>{{ totalMatches }}</h3>
+            <div class="queueBtn_container">
+                <a href="/videoChat_funny" class="queue_btn" id="funnyBtn"><img class="emotionIcon" src="static/images/onlyFunnyFace.svg">{{ funnyWL }}<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
+                <a href="/videoChat_serious" class="queue_btn" id="seriousBtn"><img class="emotionIcon" src="static/images/onlyStraightFace.svg">{{ seriousWL }}<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>    
             </div>             
         </div>
 
+
+    <!-- 
         <div id="howToPlay_container">
             <h1 id="HTPTitle">How to Play</h1>
             <p><br>&bull; StraightFace is a random video-chat roulette app
@@ -80,8 +49,7 @@
                 charisma to make the other player laugh or smile.<br><br></p>
             <p>&bull; If you're keeping straight face, your mission is to 
                 resist laughing or smiling during your turn.<br><br></p>
-            <p>&bull; Good Luck and Have Fun!<br></p>
-            
+            <p>&bull; Good Luck and Have Fun!<br></p>     
         </div>
     -->
 

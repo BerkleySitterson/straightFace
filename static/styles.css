@@ -5,7 +5,6 @@
     --primary-grey: #D3D3D3;
 }
 
-
 body, html {
     background: #7c73e6;
     height: 100vh;
@@ -24,7 +23,7 @@ header {
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width: 100%;
+    width: 100vw;
     background-color: var(--primary-blue);
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
@@ -43,59 +42,15 @@ footer {
     justify-content: center;
     align-items: center;
     color: white;
-    margin-top: 3vh;
+    margin-top: 8vh;
 }
 
 /* Index CSS */
-
-#main_container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100vw;
-    height: 80vh;
-    flex-direction: column;
-    align-items: center;
-}
-
-#account_btn_container {
+.header_logo {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    margin-right: 4rem;
-    width: 22rem;
-}
-
-#loginBtn:hover {
-    cursor: pointer;
-    box-shadow: 0px 4px 30px black;
-}
-
-#signUpBtn:hover {
-    cursor: pointer;
-    box-shadow: 0px 4px 30px black;
-}
-
-#loginBtn {
-    transition: all .5s ease;
-    background: transparent;
-    color: white;
-    font-size: 1.2rem;
-    padding: 1vh 2vw;
-    border-radius: 2rem;
-    text-decoration: none;
-    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
-    border: 3px solid white;
-}
-
-#signUpBtn {
-    transition: all .5s ease;
-    background: var(--primary-yellow);
-    color: black;
-    font-size: 1.2rem;
-    padding: 1vh 2vw;
-    border-radius: 2rem;
-    text-decoration: none;
+    align-items: center;
+    margin-left: 4rem;
 }
 
 #logo {
@@ -104,35 +59,101 @@ footer {
     margin-bottom: .2rem;
 }
 
-#logo_title {
+#logo_name {
     color: white;
     font-size: 2.5rem;
     margin-left: .8rem;
 }
 
-#home_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    height: 70vh;
-    width: 100%;
-}
-
-#header_logo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 4rem;
-}
-
-#emotionIcon_container {
+.account_btn_container {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width: 30rem;
-    margin-top: 6rem;
-    margin-bottom: .5rem;
+    margin-right: 4rem;
+    width: 22rem;
+}
+
+.account_btn {
+    flex: 1;
+    text-align: center;
+    transition: all .5s ease;
+    font-size: 1.2rem;
+    padding: 1vh 2vw;
+    border-radius: 2rem;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.account_btn:hover {
+    cursor: pointer;
+    box-shadow: 0px 4px 30px black;
+}
+
+#loginBtn {
+    background: transparent;
+    color: white;
+    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
+    border: 3px solid white;
+}
+
+#signUpBtn {
+    transition: all .5s ease;
+    background: var(--primary-yellow);
+    color: black;
+}
+
+.queue_container {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 32rem;
+    height: 35rem;
+    justify-content: space-between;
+    background-color: var(--primary-blue);
+    padding: 2rem;
+    line-height: 30px;
+    margin-top: 5rem;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+}
+
+.queueBtn_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.queue_btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .5s ease;
+    color: black;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-decoration: none;
+    border-radius: 20px;
+    margin: 5px;
+    height: 4rem;
+    cursor: pointer;
+    width: 38%;
+}
+
+.queue_btn:hover {
+    box-shadow: 0px 4px 30px black;
+}
+
+#funnyBtn {
+    background-color: var(--primary-yellow);
+    box-shadow: 0px 4px 15px var(--primary-yellow);
+}
+
+#seriousBtn {
+    background-color: var(--primary-grey);
+    box-shadow: 0px 4px 15px var(--primary-grey);
 }
 
 .emotionIcon {
@@ -141,143 +162,15 @@ footer {
     cursor: pointer;
     background: none;
     border: none;
-}
-
-#mainTitle {
-    color: white;
-    font-size: 3.5rem;
-    letter-spacing: .10rem;
-    line-height: 4.3rem;
-    font-weight: 550;
-    text-align: center;
-}
-
-#titleParagraph {
-    color: white;
-    font-size: 1.8rem;
-    letter-spacing: .06rem;
-    text-align: center;
-    flex-grow: 1;
-}
-
-#index_login {
-    margin-right: 2rem;
-}
-
-#index_login:hover, #index_register:hover {
-    background-color: white;
-    color: #4B0082;
-    cursor: pointer;
-}
-
-#funnyBtn {
-    background-color: var(--primary-yellow);
-    display: flex;
-}
-
-#seriousBtn {
-    background-color: #D3D3D3;
-}
-
-#seriousBtn:hover {
-    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
-}
-
-#funnyBtn:hover {
-    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
-}
-
-.queue_btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border-radius: 50%;
     transition: all .5s ease;
-    color: black;
-    padding: 10px 20px;
-    font-weight: bold;
-    font-size: 1.4rem;
-    text-decoration: none;
-    border-radius: 20px;
-    margin: 10px;
-    width: 30.5rem;
-    height: 3.5rem;
-    margin-left: -1.5rem;
-    margin-bottom: -2.4rem;
-    border-top-right-radius: 0px;
-    border-top-left-radius: 0px;
-
-}
-
-.queue_btn:hover {
-    cursor: pointer;
-}
-
-.logo-sm {
-    width: 3rem;
-    height: 3rem;
-}
-
-#howToPlay_container {
-    width: 30rem;
-    height: 35rem;
-    background: var(--primary-blue);
-    border-radius: 2rem;
-    color: white;
-    font-weight: bold;
-    padding: 1.5rem;
-    line-height: 1.5rem;
-    margin-top: 3rem;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
-    letter-spacing: .05rem;
-    margin-left: -15rem;
-}
-
-#HTPTitle {
-    text-align: center;
-    margin-top: 3rem;
-}
-
-.queue_container {
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 30rem;
-    height: 32rem;
-    justify-content: space-evenly;
-    padding: 1.5rem;
-    background-color: var(--primary-blue);
-    border-radius: 20px;
-    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.4);
-    transition: all .5s ease;
-    line-height: 30px;
-}
-
-#seriousQueue_container {
-    display: none;
-}
-
-#username_container {
-    display: flex;
-    flex-direction: column;   
-    align-items: center;   
 }
 
 
 
-#winLoss {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-}
 
-#funny, #serious {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
+
+
 
 @media(max-width:768px) {
     header {
@@ -286,7 +179,7 @@ footer {
         height: 20vh;
     }
 
-    #header_logo {
+    .header_logo {
         flex-grow: 1;
         display: flex;
         justify-content: space-evenly;
@@ -295,54 +188,12 @@ footer {
         margin-right: 2.5rem;
     }
 
-    #howToPlay_container {
-        margin-left: 1rem;
-        margin-right: 1rem;
-        width: 80vw;
-        height: 38rem;
-    }
-
-    #account_btn_container {
+    .account_btn_container {
         flex-grow: 1;
         display: flex;
         justify-content: space-between;
         margin-left: 5vw;
         margin-right: 5vw;
-    }
-
-    #username_container {
-        flex-grow: 1;
-        display: flex;
-        justify-content: space-evenly;
-        margin-left: 5vw;
-        margin-right: 5vw;
-    }
-    #logout_btn {
-        flex-grow: 1;
-        text-align: center;
-        min-width: 10rem;
-    }
-
-    #homeUsername {
-        width: 100%;
-    }
-
-    .account_btn {
-        flex: 1;
-        text-align: center;
-    }
-
-    #mainTitle {
-        font-size: 3rem;
-        line-height: 3.5rem;
-    }
-
-    #titleParagraph {
-        font-size: 1.5rem;
-    }
-
-    #homeIcon {
-        width: 30vw;
     }
 
     #login_form, #register_form {
@@ -550,29 +401,8 @@ video {
     text-decoration: none;
 }
 
-
-
-
-#header_title {
-    position: relative;
-    color: white;
-    font-size: 30px;
-    left: 2rem;
-}
-
 #username {
-    color: white;
-    font-size: 1.5rem;
-    z-index: 2;
-}
-
-#homeUsername {
-    font-size: 1.5rem;
-}
-
-#logout_btn {
-    height: 25%;
-    
+    font-size: 2rem;
 }
 
 
@@ -648,21 +478,12 @@ video {
     font-size: 2rem;
 }
 
-#seriousIcon,
-#funnyIcon {
-    width: 3rem;
-    height: 3rem;
-}
-
-#seriousIcon {
-    filter: blur(2px);
-}
-
 #seriousVideoHeader_container,
 #funnyVideoHeader_container {
     display: flex;
     flex-direction: row;
 }
+
 .fab {
     width: 56px;
     height: 56px;
@@ -679,28 +500,6 @@ video {
 
 .fab:hover {
     box-shadow: 0px 4px 30px #4F44E1;
-}
-
-#playSoundBtn {
-    width: 56px;
-    height: 56px;
-    background-color: var(--primary-purple);
-    border-radius: 50%;
-    box-shadow: 0px 4px 30px black;
-    text-align: center;
-    line-height: 56px;
-    font-size: 24px;
-    cursor: pointer;
-    border: none;
-    transition: all .5s ease;
-}
-
-#playSoundBtn:hover {
-    box-shadow: 0px 4px 30px #4F44E1;
-}   
-
-#soundIcon {
-    margin-top: 8px;
 }
 
 #btn_container {
@@ -740,5 +539,11 @@ video {
 
 .img_lower {
     margin-top: 4px;
+}
+
+#funnyIcon,
+#seriousIcon {
+    width: 3rem;
+    height: 3rem;
 }
 

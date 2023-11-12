@@ -27,6 +27,7 @@
 
 <body>
     <main>
+
         <div id="video_container">
             <div id="funnyVideo_container">
                 <div id="funnyVideoHeader_container">
@@ -34,7 +35,7 @@
                     <h1 id="funnyUsername">{{ funnyUsername }}</h1>
                 </div>          
                 <video id="funnyVideo" playsinline></video>
-            </div>
+        </div>
 
         <div id="btn_container">
             <p id="timer">30</p>
@@ -47,12 +48,9 @@
             <button class="fab" id="screenShareBtn" onclick="shareScreen();">
                 <img class="img_lower" src="static/images/sharescreenIcon.svg" alt="screenShare" width="38px" height="38px">
             </button>
-            <button id="playSoundBtn">
-                <img id="soundIcon" src="static/images/soundsIcon.svg" alt="playSounds" width="38px" height="38px">
-            </button>
         </div>
 
-            <div id="seriousVideo_container">
+        <div id="seriousVideo_container">
                 <div id="seriousVideoHeader_container">
                     <img id="seriousIcon" src="static/images/onlyStraightFace.svg">
                     <h1 id="seriousUsername">{{ seriousUsername }}</h1>
@@ -62,15 +60,14 @@
         </div>
 
         <div id="bottom_video_container">
-
             <div id="chat_container">
                 <ul id="chat-messages"></ul>
                 <input type="text" id="message" placeholder="Enter a Message" color="white">
             </div>
         </div>
+
     </main>
 
-    <audio id="fartNoise" src="static/sounds/fart.mp3" preload="auto"></audio>
 </body>
 
 <script>
