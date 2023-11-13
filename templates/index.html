@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>StraightFace - Welcome</title>
@@ -17,12 +17,22 @@
 
     <header>
         <div class="header_logo">
-            <img id="logo" src="static/images/straightFaceLogoOfficial.svg">
+            <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo">
             <h2 id="logo_name">StraightFace</h2>
         </div>
         <div class="account_btn_container">
             <a href="/login" class="account_btn" id="loginBtn">Log In</a>
             <a href="/register" class="account_btn" id="signUpBtn">Sign Up</a>
+            <div class="dropdown">
+                <button id="dropDownBtn" onclick="dropDownMenu()"><i class="fa-solid fa-bars fa-2xl" style="color: #ffffff;"></i></button>
+                <div id="dropDownMenu" class="dropdown-content">
+                    <a href="/account" class="dropdown_btn">Account</a>
+                    <a href="/howToPlay" class="dropdown_btn">How to Play?</a>
+                    <a href="/stayingSafe" class="dropdown_btn">Terms of Service</a>
+                    <a href="/howToPlay" class="dropdown_btn">Privacy Policy</a>
+                    <a href="/howToPlay" class="dropdown_btn">FAQ</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -32,18 +42,38 @@
             <h1>Log In or Sign Up</h1>
             <h3>Total Matches:<br>---</h3>
             <div class="queueBtn_container">           
-                <a href="/login" class="queue_btn" id="funnyBtn"><img class="emotionIcon" src="static/images/onlyFunnyFace.svg">0-0<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
-                <a href="/login" class="queue_btn" id="seriousBtn"><img class="emotionIcon" src="static/images/onlyStraightFace.svg">0-0<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
+                <a href="/login" class="queue_btn" id="funnyBtn"><img class="emotionIcon" src="static/images/onlyFunnyFace.svg" alt="HappyFace">0-0<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
+                <a href="/login" class="queue_btn" id="seriousBtn"><img class="emotionIcon" src="static/images/onlyStraightFace.svg" alt="SeriousFace">0-0<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
             </div>            
-        </div>  
+        </div>
 
     </main>
 
     <footer>
         <p class="font-sm">&copy;2023 StraightFace App. All rights reserved.</p>
     </footer>
+
+    <script>
+
+        function dropDownMenu() {
+            document.getElementById("dropDownMenu").classList.toggle("show");
+        }
+
+    </script> 
                       
 </body>    
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- 
     <div id="howToPlay_container">
