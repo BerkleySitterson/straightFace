@@ -34,6 +34,7 @@ main {
     flex-direction: row;
     justify-content: center;
     width: 100vw;
+    height: 80vh;
     gap: 1rem;
     flex-wrap: wrap;
 }
@@ -69,7 +70,7 @@ footer {
     flex-direction: row;
     justify-content: space-evenly;
     margin-right: 4rem;
-    width: 26rem;
+    width: 28rem;
 }
 
 .account_btn {
@@ -78,8 +79,7 @@ footer {
     justify-content: center;
     align-items: center;
     transition: all .5s ease;
-    font-size: 1.2rem;
-    padding: 1vh 2vw;
+    font-size: 1rem;
     border-radius: 2rem;
     text-decoration: none;
     margin: 12px;
@@ -100,6 +100,7 @@ footer {
     transition: all .5s ease;
     background: var(--primary-yellow);
     color: black;
+    margin-right: 40px;
 }
 
 #dropDownBtn {
@@ -111,9 +112,18 @@ footer {
     cursor: pointer;
     margin-top: .2rem;
     transition: all .5s ease;
+    scale: 1.2;
 }
 
-#dropDownBtn:hover, #dropDownBtn:focus {
+#dropDownBtn:hover + .dropdown-content, .dropdown-content:hover {
+    display: block;
+}
+
+#dropDownBtn:has(+ .dropdown-content:hover)  {
+    scale: 1.5;
+}
+
+#dropDownBtn:hover {
     scale: 1.5;
 }
 
@@ -128,11 +138,12 @@ footer {
     background-color: var(--primary-blue);
     min-width: 10rem;
     z-index: 1;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
     left: -48px;
-    top: 80px;
+    top: 60px;
     text-align: center;
+    padding-top: 20px;
 }
 
 .dropdown-content a {

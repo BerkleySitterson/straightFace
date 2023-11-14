@@ -23,7 +23,15 @@ seriousQueue = queue.Queue()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    username = session.get("username")
+    
+    if (username == None):        
+        return render_template('index.html')
+    else:
+        funnyRecord = db.getFunnyRecord(username)
+        seriousRecord = db.getSeriousRecord(username)
+        totalMatches = db.getTotalMatches(username)
+        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord, totalMatches=totalMatches)
 
 @app.route('/login')
 def login_page():
@@ -78,19 +86,48 @@ def register():
             print(f"Unable to log in at this time.")
             return render_template('index.html')
         
+@app.route('/account')
+def account_page():
+    username = session.get("username")
+    
+    if (username != None):
+        return render_template('account.html', username=username)
+    else:
+        return render_template('account.html', username="Please log in or sign up")
+    
+@app.route('/how-to-play')
+def how_to_play_page():
+    return render_template('how-to-play.html')
+
+@app.route('/terms-of-service')
+def terms_of_service_page():
+    return render_template('terms-of-service.html')
+
+@app.route('/privacy-policy')
+def privacy_policy_page():
+    return render_template('privacy-policy.html')
+
+@app.route('/faq')
+def faq_page():
+    return render_template('faq.html')
+
+@app.route('/contact')
+def contact_page():
+    return render_template('contact.html')
+       
 @app.route('/videoChat_funny')
 def videoChatFunny():
     username = session['username']
     session["role"] = "funny"
     role = session["role"]
-    return render_template('videoChat.html', funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
+    return render_template('video-chat.html', funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
 
 @app.route('/videoChat_serious')
 def videoChatSerious():
     username = session["username"]
     session["role"] = "serious"
     role = session["role"]
-    return render_template('videoChat.html', seriousUsername=username, funnyUsername="Waiting for Player...", role=role)
+    return render_template('video-chat.html', seriousUsername=username, funnyUsername="Waiting for Player...", role=role)
 
 @app.route('/logout')
 def logout():
@@ -183,6 +220,7 @@ def handle_disconnect():
     print(f"Handle_disconnect being called")
     try:
         db.remove_user_from_queues(username)
+        session.pop('username', None)
     except:
         print(f"User { username } not found in any queues.")
     

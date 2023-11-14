@@ -10,7 +10,6 @@
     <link rel="icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <script defer src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
-    <script defer src="../static/index.js"></script>
 </head>
 
 <body>
@@ -24,13 +23,14 @@
             <a href="/login" class="account_btn" id="loginBtn">Log In</a>
             <a href="/register" class="account_btn" id="signUpBtn">Sign Up</a>
             <div class="dropdown">
-                <button id="dropDownBtn" onclick="dropDownMenu()"><i class="fa-solid fa-bars fa-2xl" style="color: #ffffff;"></i></button>
+                <button id="dropDownBtn" onhover="dropDownMenu()"><i class="fa-solid fa-bars fa-2xl" style="color: #ffffff;"></i></button>
                 <div id="dropDownMenu" class="dropdown-content">
                     <a href="/account" class="dropdown_btn">Account</a>
-                    <a href="/howToPlay" class="dropdown_btn">How to Play?</a>
-                    <a href="/stayingSafe" class="dropdown_btn">Terms of Service</a>
-                    <a href="/howToPlay" class="dropdown_btn">Privacy Policy</a>
-                    <a href="/howToPlay" class="dropdown_btn">FAQ</a>
+                    <a href="/how-to-play" class="dropdown_btn">How to Play?</a>
+                    <a href="/terms-of-service" class="dropdown_btn">Terms of Service</a>
+                    <a href="/privacy-policy" class="dropdown_btn">Privacy Policy</a>
+                    <a href="/faq" class="dropdown_btn">FAQ</a>
+                    <a href="/contact" class="dropdown_btn">Contact</a>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
             document.getElementById("dropDownMenu").classList.toggle("show");
         }
 
-    </script> 
+    </script>
                       
 </body>    
 
