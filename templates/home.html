@@ -9,9 +9,9 @@
     <link rel="shortcut icon" href="#">
     <link rel="icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
-    <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
+    <script defer src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
     <script defer src="../static/index.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link defer href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 </head>
 
 <body>  
@@ -84,9 +84,15 @@
     
     <script>
 
-        function dropDownMenu() {
-            document.getElementById("dropDownMenu").classList.toggle("show");
+        function rotateLogo() {
+            var logo = document.getElementById('logo');
+            logo.style.animation = 'none';
+            void logo.offsetWidth;
+            logo.style.animation = null; 
         }
+    
+        setInterval(rotateLogo, 8000);
+          
 
     </script> 
         
