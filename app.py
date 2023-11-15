@@ -42,14 +42,13 @@ def login():
     
     username = request.form['username']
     password = request.form['password']
-    funnyRecord = db.getFunnyRecord(username)
-    seriousRecord = db.getSeriousRecord(username)
-    totalMatches = db.getTotalMatches(username)
     
     if login_pipeline(username, password):
         session["username"] = username
+        funnyRecord = db.getFunnyRecord(username)
+        seriousRecord = db.getSeriousRecord(username)
         print(f"Login Successful for { username }")
-        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord, totalMatches=totalMatches)
+        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord)
     else:
         print(f"Incorrect Username ({username}) or Password ({password}).")
         return render_template('login.html', errMsg="Invalid Username or Password")
@@ -67,10 +66,6 @@ def register():
     email = request.form['email']
     first_name = request.form['first_name']
     last_name = request.form['last_name']
-    funnyRecord = db.getFunnyRecord(username)
-    seriousRecord = db.getSeriousRecord(username)
-    totalMatches = db.getTotalMatches(username)
-    print(f"Total Matches: {totalMatches}")
 
     if any(value == "" for value in [username, password, email, first_name, last_name]):
         return render_template('register.html', errMsg="Please make sure all fields are complete.")
@@ -81,7 +76,9 @@ def register():
         if login_pipeline(username, password):
             print(f"Logged in as user: {username}")
             session["username"] = username
-            return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord, totalMatches=totalMatches)
+            funnyRecord = db.getFunnyRecord(username)
+            seriousRecord = db.getSeriousRecord(username)
+            return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord)
         else:
             print(f"Unable to log in at this time.")
             return render_template('index.html')
@@ -99,9 +96,9 @@ def account_page():
 def how_to_play_page():
     return render_template('how-to-play.html')
 
-@app.route('/terms-of-service')
-def terms_of_service_page():
-    return render_template('terms-of-service.html')
+@app.route('/terms-of-use')
+def terms_of_use_page():
+    return render_template('terms-of-use.html')
 
 @app.route('/privacy-policy')
 def privacy_policy_page():
@@ -131,11 +128,13 @@ def videoChatSerious():
 
 @app.route('/logout')
 def logout():
-    username = session["username"]
+    username = session.get("username")
 
-    if username_exists(username):
+    if username != None:
         print(f"Logout Successful for { username }")
         session.pop('username', None)
+        return render_template('index.html')
+    else:
         return render_template('index.html')
     
 @socketio.on("find_new_player")

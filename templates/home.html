@@ -11,23 +11,25 @@
     <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
     <script defer src="../static/index.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 </head>
 
 <body>  
 
     <header>
         <div class="header_logo">
-            <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="115px" height="115px">
+            <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="90" height="90">
             <h2 id="logo_name">StraightFace</h2>
         </div>
         <div class="account_btn_container">
-            <a href="/logout" class="account_btn" id="signUpBtn">Log Out</a>
+            <h2 style="color: white">{{ username }}</h2>
+            <a href="/logout" class="account_btn" id="log_out_btn">Log Out</a>
             <div class="dropdown">
                 <button id="dropDownBtn" onclick="dropDownMenu()"><i class="fa-solid fa-bars fa-2xl" style="color: #ffffff;"></i></button>
                 <div id="dropDownMenu" class="dropdown-content">
                     <a href="/account" class="dropdown_btn">Account</a>
                     <a href="/how-to-play" class="dropdown_btn">How to Play?</a>
-                    <a href="/terms-of-service" class="dropdown_btn">Terms of Service</a>
+                    <a href="/terms-of-use" class="dropdown_btn">Terms of Use</a>
                     <a href="/privacy-policy" class="dropdown_btn">Privacy Policy</a>
                     <a href="/faq" class="dropdown_btn">FAQ</a>
                     <a href="/contact" class="dropdown_btn">Contact</a>
@@ -39,12 +41,22 @@
     <main>
 
         <div class="queue_container">
-            <h1 id="username">{{ username }}</h1>
-            <h3 id="totalMatches">Total Matches:<br>{{ totalMatches }}</h3>
-            <div class="queueBtn_container">
-                <a href="/videoChat_funny" class="queue_btn" id="funnyBtn"><img class="emotionIcon" src="static/images/onlyFunnyFace.svg" alt="Happyface">{{ funnyWL }}<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
-                <a href="/videoChat_serious" class="queue_btn" id="seriousBtn"><img class="emotionIcon" src="static/images/onlyStraightFace.svg" alt="SeriousFace">{{ seriousWL }}<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>    
-            </div>             
+            <img id="container_logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="115" height="115">
+            <div class="main_text">
+                <h1 class="font-lrg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StraightFace</h1>  
+                <p>&bull; StraightFace is a random video-chat roulette app with a twist... one of you will try and make the other person smile or laugh!<br><br></p>
+                <p>&bull; Once the game starts, you will have 1 minute
+                    to win the round.<br><br></p>
+                <p>&bull; If you're team Yellow, use your creativity, humor, and 
+                    charisma to make the other player laugh or smile.<br><br></p>
+                <p>&bull; If you're team Grey, your goal is to 
+                    resist laughing or smiling during your turn. Even a slight grin might give it away.<br><br></p>
+                <p>&bull; Good Luck and Have Fun!</p>
+            </div>        
+            <div class="queueBtn_container">           
+                <a href="/videoChat_funny" class="queue_btn" id="funnyBtn"><img class="emotionIcon" src="static/images/onlyFunnyFace.svg" alt="HappyFace">Team Yellow<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
+                <a href="/videoChat_serious" class="queue_btn" id="seriousBtn"><img class="emotionIcon" src="static/images/onlyStraightFace.svg" alt="SeriousFace">Team Grey<i class="fa-solid fa-chevron-right fa-lg" style="color: #0F0F0F;"></i></a>
+            </div>            
         </div>
 
 

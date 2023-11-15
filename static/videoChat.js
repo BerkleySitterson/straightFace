@@ -287,12 +287,13 @@ async function detectSmile() {
 socket.on('startRound', () => {
     console.log('Starting Round');
 
+    timer.style.fontSize = "3rem";
+    startTimer();
+
     try {
         if (role === "funny") {
-            startTimer();
             seriousVideo.play();
-        } else if (role === "serious") {
-            startTimer();
+        } else {
             funnyVideo.play();
             detectSmile();
         }
@@ -304,7 +305,7 @@ socket.on('startRound', () => {
 
 function startTimer() {
     const timer = document.getElementById('timer');
-    const countdownDuration = 30;
+    const countdownDuration = 59;
     
     const startTime = new Date().getTime();
     
@@ -331,7 +332,7 @@ socket.on('endRoundFunnyWin', function () {
         const funnyTracks = funnyVideo.srcObject.getTracks();
         const seriousTracks = seriousVideo.srcObject.getTracks();
 
-        timer.style.fontSize = "2rem";
+        timer.style.fontSize = "1rem";
         timer.innerText = "Funny User Won!";
         clearInterval(countdownInterval);
         clearInterval(detectionInterval);   
@@ -362,7 +363,7 @@ socket.on('endRoundSeriousWin', function () {
         const funnyTracks = funnyVideo.srcObject.getTracks();
         const seriousTracks = seriousVideo.srcObject.getTracks();
 
-        timer.style.fontSize = "2rem";
+        timer.style.fontSize = "1rem";
         timer.innerText = "Serious User Won!";
         clearInterval(countdownInterval);
         clearInterval(detectionInterval);   
@@ -423,9 +424,3 @@ const replaceTrack = (newTrack) => {
     
     sender.replaceTrack(newTrack);
     }
-
-playSoundBtn.addEventListener("click", () => {
-    const fartNoise = document.getElementById("fartNoise");
-    fartNoise.volume = 0.2;
-    fartNoise.play();
-});

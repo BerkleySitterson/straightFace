@@ -11,7 +11,7 @@ body, html {
     width: 100vw;
     margin: 0;
     padding: 0;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Poppins', sans-serif;
     z-index: -1;
     overflow-x: hidden;
     display: flex;
@@ -44,7 +44,7 @@ footer {
     justify-content: center;
     align-items: center;
     color: white;
-    margin-top: 8vh;
+    margin-top: 5vh;
 }
 
 /* Index CSS */
@@ -55,14 +55,25 @@ footer {
     margin-left: 4rem;
 }
 
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 #logo {
     margin-bottom: .2rem;
+    animation: spin 1s 1s;
 }
 
 #logo_name {
     color: white;
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin-left: .8rem;
+    letter-spacing: 2px;
 }
 
 .account_btn_container {
@@ -75,7 +86,6 @@ footer {
 
 .account_btn {
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
     transition: all .5s ease;
@@ -83,6 +93,7 @@ footer {
     border-radius: 2rem;
     text-decoration: none;
     margin: 12px;
+    width: 10rem;
 }
 
 .account_btn:hover {
@@ -165,14 +176,14 @@ footer {
     color: white;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    width: 32rem;
-    height: 35rem;
     justify-content: space-between;
+    align-items: center;
+    width: 32rem;
+    height: 36rem;
     background-color: var(--primary-blue);
     padding: 2rem;
-    line-height: 30px;
-    margin-top: 5rem;
+    line-height: 22px;
+    margin-top: 5.5rem;
     box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.8);
     border-radius: 20px;
 }
@@ -225,7 +236,30 @@ footer {
     transition: all .5s ease;
 }
 
+#log_out_btn {
+    background: transparent;
+    color: white;
+    border: 3px solid white;
+    cursor: pointer;
+    transition: all .5s ease;
+    margin: 16px;
+}
 
+#container_logo {
+    position: absolute;
+    top: 120px;
+}
+
+.font-lrg {
+    font-size: 2.4rem;
+    margin-top: 2rem;
+    border-bottom: 3px solid white;
+    padding-bottom: 28px;
+}
+
+.main_text {
+    height: 30rem;
+}
 
 
 
@@ -235,16 +269,17 @@ footer {
     header {
         flex-direction: column;
         border: 0px;
-        height: 20vh;
+        height: 15vh;
+        align-items: center;
+    }
+
+    #container_logo {
+        display: none;
     }
 
     .header_logo {
-        flex-grow: 1;
         display: flex;
         justify-content: space-evenly;
-        margin-left: 5vw;
-        margin-right: 5vw;
-        margin-right: 2.5rem;
     }
 
     .account_btn_container {
