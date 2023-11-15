@@ -86,9 +86,13 @@ def register():
 @app.route('/account')
 def account_page():
     username = session.get("username")
+    email = db.get_email_by_username(username)
+    totalMatches = db.getTotalMatches(username)
+    funnyWL = db.getFunnyRecord(username)
+    seriousWL = db.getSeriousRecord(username)
     
     if (username != None):
-        return render_template('account.html', username=username)
+        return render_template('account.html', username=username, email=email, totalMatches=totalMatches, funnyWL=funnyWL, seriousWL=seriousWL)
     else:
         return render_template('account.html', username="Please log in or sign up")
     

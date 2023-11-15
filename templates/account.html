@@ -13,11 +13,12 @@
     <body>
         <header>
             <div class="header_logo">
-                <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="115px" height="115px">
-                <h2 id="logo_name">StraightFace</h2>
+                <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="90" height="90">
+                <a href="/" id="logo_name">StraightFace</a>
             </div>
             <div class="account_btn_container">
                 <div class="dropdown">
+                    <a href="/" class="home_btn"><i class="fa-solid fa-house fa-2xl" style="color: #ffffff;"></i></a>
                     <button id="dropDownBtn"><i class="fa-solid fa-bars fa-2xl" style="color: #ffffff;"></i></button>
                     <div id="dropDownMenu" class="dropdown-content">
                         <a href="/account" class="dropdown_btn">Account</a>
@@ -32,7 +33,16 @@
         </header>
 
         <main>
-            <h1> Username: {{ username }}</h1>
+            <div class="account_container">
+                <h1 class="font-lrg">Account</h1>
+                <div class="account-data-container">
+                    <h3>Username&nbsp;:&nbsp; {{ username }}</h3>
+                    <h3>Email&nbsp;:&nbsp; {{ email }}</h3>
+                    <h3>Total Matches&nbsp;:&nbsp; {{ totalMatches }}</h3>
+                    <h3>Funny W/L&nbsp;:&nbsp; {{ funnyWL}}</h3>
+                    <h3>Serious W/L&nbsp;:&nbsp; {{ seriousWL }}</h3>
+                </div>
+            </div>
         </main> 
         
         <footer>

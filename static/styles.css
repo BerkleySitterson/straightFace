@@ -74,6 +74,8 @@ footer {
     font-size: 2.2rem;
     margin-left: .8rem;
     letter-spacing: 2px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .account_btn_container {
@@ -250,7 +252,7 @@ footer {
     top: 120px;
 }
 
-.font-lrg {
+.main_header {
     font-size: 2.4rem;
     margin-top: 2rem;
     border-bottom: 3px solid white;
@@ -261,7 +263,41 @@ footer {
     height: 30rem;
 }
 
+.account_container {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    align-items: center;
+    justify-content: space-between;
+    height: 40rem;
+    width: 65rem;
+    background: var(--primary-blue);
+    border-radius: 15px;
+    margin-top: 3rem;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
+}
 
+.account-data-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;   
+    width: 20rem;
+    height: 40rem;
+    font-weight: lighter;
+    margin-left: 6rem;
+}
+
+
+.font-lrg {
+    font-size: 3rem;
+    border-bottom: 3px solid white;
+    padding-bottom: 28px;
+}
+
+.home_btn:hover {
+    cursor: pointer;
+
+}
 
 
 

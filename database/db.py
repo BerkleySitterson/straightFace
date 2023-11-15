@@ -81,9 +81,17 @@ class Database:
         returns:
             - The email for the user with the given username.
         """
+        
         self.cursor.execute(
             "SELECT email FROM users WHERE username = ?", (username,))
-        return self.cursor.fetchone()
+        
+        result = self.cursor.fetchone()
+
+        if result is not None:
+            email = result[0]
+            return email
+        else:
+            return None
 
     def get_first_name_by_username(self, username: str):
         """
