@@ -287,16 +287,12 @@ async function detectSmile() {
 socket.on('startRound', () => {
     console.log('Starting Round');
 
-    timer.style.fontSize = "3rem";
     startTimer();
 
     try {
-        if (role === "funny") {
-            seriousVideo.play();
-        } else {
-            funnyVideo.play();
+        if (role === "serious") {
             detectSmile();
-        }
+        } 
     } catch (Exception) {
         console.log("Error Starting Round: " + Exception.toString());
     }
@@ -306,6 +302,7 @@ socket.on('startRound', () => {
 function startTimer() {
     const timer = document.getElementById('timer');
     const countdownDuration = 59;
+    const warningTime = 15;
     
     const startTime = new Date().getTime();
     
@@ -318,10 +315,10 @@ function startTimer() {
         const elapsedTime = (currentTime - startTime) / 1000;
         const remainingTime = countdownDuration - elapsedTime;
     
-        if (remainingTime < 0) {
-            socket.emit('timerComplete', room);
+        if (remainingTime > 0) {
+            timer.innerText = remainingTime.toFixed(0);  
         } else {
-            timer.innerText = remainingTime.toFixed(0);
+            socket.emit('timerComplete', room);
         }
         }
 }
@@ -332,8 +329,6 @@ socket.on('endRoundFunnyWin', function () {
         const funnyTracks = funnyVideo.srcObject.getTracks();
         const seriousTracks = seriousVideo.srcObject.getTracks();
 
-        timer.style.fontSize = "1rem";
-        timer.innerText = "Funny User Won!";
         clearInterval(countdownInterval);
         clearInterval(detectionInterval);   
 
@@ -346,6 +341,7 @@ socket.on('endRoundFunnyWin', function () {
         myPeerConnection.close();
         tracksReceieved = 0;
         searchBtn.disabled = false;
+        timer.textContent = "1:00";
 
         if (role === "funny") {
             document.getElementById("seriousUsername").textContent = "Waiting for Player...";
@@ -363,8 +359,6 @@ socket.on('endRoundSeriousWin', function () {
         const funnyTracks = funnyVideo.srcObject.getTracks();
         const seriousTracks = seriousVideo.srcObject.getTracks();
 
-        timer.style.fontSize = "1rem";
-        timer.innerText = "Serious User Won!";
         clearInterval(countdownInterval);
         clearInterval(detectionInterval);   
 
@@ -377,6 +371,7 @@ socket.on('endRoundSeriousWin', function () {
         myPeerConnection.close();
         tracksReceieved = 0;
         searchBtn.disabled = false;
+        timer.textContent = "1:00";
 
         if (role === "funny") {
             document.getElementById("seriousUsername").textContent = "Waiting for Player...";
