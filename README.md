@@ -10,8 +10,6 @@ StraightFace takes its own twist on modern video-chat roulette applications. Ins
 
 -**Video Calling**: The app utilizes WebRTC technology to enable real-time video and audio communication between the paired users.
 
--**Entertainment Challenge**: One user is tasked with making the other user smile or laugh during the call, adding an element of fun and spontaneity.
-
 -**Chat Functionality**: If the user does not posess a camera, they can use the chat feature to communicate.
 
 -**Flask/SocketIO Backend**: Flask and Socket.IO are used to create the web server and handle real-time communication between clients.
