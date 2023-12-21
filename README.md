@@ -1,8 +1,8 @@
 # StraightFace: Video-Chat Roulette Web App
 
-## A video-chat app where 2 users are paired randomly and one of them must make the other one laugh built using Flask/SocketIO/WebRTC/OpenCV.
+## A video-chat app where 2 users are paired randomly and one of them must make the other one laugh built using Flask/SocketIO/WebRTC/FaceAPI.
 
-StraightFace takes its own twist on modern video-chat roulette applications. Instead of just calling somone, the goal is to make your opponent laugh, or be the one trying to stay serious. It utilizes SocketIO to pair users, WebRTC to establish a video connection, and OpenCV to detect if the user is smiling or laughing.
+StraightFace takes its own twist on modern video-chat roulette applications. Instead of just calling somone, the goal is to make your opponent laugh, or be the one trying to stay serious. It utilizes SocketIO to pair users, WebRTC to establish a video connection, and FaceAPI to detect if the user is smiling or laughing.
 
 ## Features
 
@@ -16,21 +16,10 @@ StraightFace takes its own twist on modern video-chat roulette applications. Ins
 
 -**Flask/SocketIO Backend**: Flask and Socket.IO are used to create the web server and handle real-time communication between clients.
 
--**Smile/Laugh Detection**: The OpenCV library is used for video processing and facial expression recognition to determine if the challenge is successfully met.
+-**Smile/Laugh Detection**: JavaScript FaceAPI is used for video processing and facial expression recognition to determine if the challenge is successfully met.
 
-## Installation
+## URL
 
-To run this app on your own machine, follow the steps below:
-
-1. Clone this repository - 'git clone https://github.com/BerkleySitterson/straightFace'
-
-2. Install the required dependencies- 'pip install -r requirements.txt'
-
-3. Start the local server- 'python app.py'
-
-4. Open in your browser- 'http://localhost:5000'
-
-5. Enjoy!
-
+-**Link: https://straightface-18bbe9887133.herokuapp.com/ 
 
 
