@@ -16,14 +16,14 @@ var targetID;
 var room;
 
 
-navigator.mediaDevices.getUserMedia(mediaConstraints)
+navigator.mediaDevices.getUserMedia(mediaConstraints) // Playing Video/Audio after user has accepted permissions based on role
 .then((stream) => {
     localStream = stream;
     if (role === "funny") {
         funnyVideo.srcObject = localStream;
         funnyVideo.muted = true;
         funnyVideo.play();
-    } else if (role === "serious") {
+    } else {
         seriousVideo.srcObject = localStream;
         seriousVideo.muted = true;
         seriousVideo.play();
@@ -34,7 +34,7 @@ navigator.mediaDevices.getUserMedia(mediaConstraints)
 });
 
 
-searchBtn.addEventListener("click", () => {
+searchBtn.addEventListener("click", () => { // If user has accepted permissions and clicks search, emit event to find new player
     try {
         if (localStream.getVideoTracks().length > 0 && localStream.getAudioTracks().length > 0) {
             searchBtn.disabled = true;
@@ -46,7 +46,7 @@ searchBtn.addEventListener("click", () => {
     }
 });
 
-socket.on("set_round_data", (data) => {
+socket.on("set_round_data", (data) => { // Set round data and display remote username
     if (role === "funny") {
         remoteUsername = data['seriousUsername'];
         console.log("Role is " + role + " and remote username is " + remoteUsername);
@@ -65,7 +65,7 @@ function sendToServer(msg) {
     socket.emit("data", msg);
 }
 
-socket.on("users_paired", function(data) {
+socket.on("users_paired", function(data) { // Users have been paired, set myID and targetID and create peer connection
 
     myID = data['myID'];
     targetID = data['targetID'];
@@ -74,7 +74,7 @@ socket.on("users_paired", function(data) {
     localStream.getTracks().forEach((track) => myPeerConnection.addTrack(track, localStream));
 });
 
-function createPeerConnection() {
+function createPeerConnection() { // Create peer connection and set event listeners
 
     try {
         console.log("Creating Peer Connection");
@@ -158,7 +158,7 @@ function createPeerConnection() {
     }
 }
 
-function handleNegotiationNeededEvent() {
+function handleNegotiationNeededEvent() { // Create offer and send to signaling server on backend
 
     myPeerConnection
         .createOffer()
@@ -173,7 +173,7 @@ function handleNegotiationNeededEvent() {
         })
 }
 
-function handleICECandidateEvent(event) {
+function handleICECandidateEvent(event) { // Send ICE candidate to signaling server on backend
 
     if (event.candidate) {
         sendToServer({
@@ -190,7 +190,7 @@ socket.on("handleNewIceCandidateMsg", function(msg) {
     myPeerConnection.addIceCandidate(candidate);
 });
 
-socket.on("handleVideoOfferMsg", function(msg) {
+socket.on("handleVideoOfferMsg", function(msg) { // Setting remote description and creating answer
     
     myID = msg.target;
     targetID = msg.name;
@@ -226,7 +226,7 @@ document.getElementById("disconnectBtn").addEventListener("click", function() {
     socket.emit("disconnect_user", room);
 });
 
-socket.on("user_left", function() { 
+socket.on("user_left", function() { // User has left, reset variables, and close peer connection
     
     const funnyTracks = funnyVideo.srcObject.getTracks();
     const seriousTracks = seriousVideo.srcObject.getTracks();
@@ -240,7 +240,7 @@ socket.on("user_left", function() {
 
 // ---------- Smile-Detection ---------- //
 
-async function detectSmile() {
+async function detectSmile() { // Detect smile using face-api.js
 
     console.log('detectSmile() executing...');
     try {
@@ -284,7 +284,7 @@ async function detectSmile() {
     }
 }
 
-socket.on('startRound', () => {
+socket.on('startRound', () => { // Start round and timer
     console.log('Starting Round');
 
     startTimer();
@@ -299,10 +299,9 @@ socket.on('startRound', () => {
 
 });
 
-function startTimer() {
+function startTimer() { // Start timer and emit event to start round on backend
     const timer = document.getElementById('timer');
     const countdownDuration = 59;
-    const warningTime = 15;
     
     const startTime = new Date().getTime();
     
@@ -323,7 +322,7 @@ function startTimer() {
         }
 }
 
-socket.on('endRoundFunnyWin', function () {
+socket.on('endRoundFunnyWin', function () { // End round and reset variables
     try {
         const timer = document.getElementById('timer');
         const funnyTracks = funnyVideo.srcObject.getTracks();
@@ -353,7 +352,7 @@ socket.on('endRoundFunnyWin', function () {
     }
 });
 
-socket.on('endRoundSeriousWin', function () {
+socket.on('endRoundSeriousWin', function () { // End round and reset variables
     try { 
         const timer = document.getElementById('timer');
         const funnyTracks = funnyVideo.srcObject.getTracks();
@@ -383,7 +382,7 @@ socket.on('endRoundSeriousWin', function () {
     }
 });
 
-const shareScreen = async () => {
+const shareScreen = async () => { // Share screen feature
     const mediaStream = await getLocalScreenCaptureStream();
     const screenTrack = mediaStream.getVideoTracks()[0];
 
@@ -418,4 +417,4 @@ const replaceTrack = (newTrack) => {
     }
     
     sender.replaceTrack(newTrack);
-    }
+}

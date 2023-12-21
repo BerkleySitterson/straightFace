@@ -83,7 +83,7 @@ def register():
             print(f"Unable to log in at this time.")
             return render_template('index.html')
         
-@app.route('/account')
+@app.route('/account') # Renders the account page with corresponding data
 def account_page():
     username = session.get("username")
     email = db.get_email_by_username(username)
@@ -95,35 +95,15 @@ def account_page():
         return render_template('account.html', username=username, email=email, totalMatches=totalMatches, funnyWL=funnyWL, seriousWL=seriousWL)
     else:
         return render_template('account.html', username="Please log in or sign up")
-    
-@app.route('/how-to-play')
-def how_to_play_page():
-    return render_template('how-to-play.html')
-
-@app.route('/terms-of-use')
-def terms_of_use_page():
-    return render_template('terms-of-use.html')
-
-@app.route('/privacy-policy')
-def privacy_policy_page():
-    return render_template('privacy-policy.html')
-
-@app.route('/faq')
-def faq_page():
-    return render_template('faq.html')
-
-@app.route('/contact')
-def contact_page():
-    return render_template('contact.html')
        
-@app.route('/videoChat_funny')
+@app.route('/videoChat_funny') # Sets the role of the user and renders the funny video chat page
 def videoChatFunny():
     username = session['username']
     session["role"] = "funny"
     role = session["role"]
     return render_template('video-chat.html', funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
 
-@app.route('/videoChat_serious')
+@app.route('/videoChat_serious') # Sets the role of the user and renders the serious video chat page
 def videoChatSerious():
     username = session["username"]
     session["role"] = "serious"
@@ -141,7 +121,7 @@ def logout():
     else:
         return render_template('index.html')
     
-@socketio.on("find_new_player")
+@socketio.on("find_new_player") # Checks if there is a player in the each queue and pairs the first 2 together
 def findNewPlayer():
     username = session["username"]
     role = session["role"]
@@ -178,7 +158,7 @@ def pair_users(funnyUser, seriousUser): # Pairs 1 funny and 1 serious user and p
     emit("users_paired", {"myID": request.sid, "targetID": targetID})
     
     
-@socketio.on("data") 
+@socketio.on("data") # Handles the data being sent from the client side WebRTC
 def handleSignaling(msg):
 
     msg_type = msg["type"]
