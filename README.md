@@ -20,6 +20,6 @@ StraightFace takes its own twist on modern video-chat roulette applications. Ins
 
 ## URL
 
--**Link: https://straightface-18bbe9887133.herokuapp.com/ 
+-**Link**: https://straightface-18bbe9887133.herokuapp.com/ 
 
 
