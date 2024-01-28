@@ -6,9 +6,11 @@
 
 - WebRTC is used to connect users with each other directly in the broswer. Benefits of this include a more secure connection, higher quality voice/video feeds, compatibility, and performance.
 
-- Real-time smile detection is achieved using face-api, an open source JavaScript API used to detect facial expressions in the browser.
+- Real-time smile detection is achieved using face-api, an open source JavaScript API used to recognize facial expressions in the browser.
 
 - Implemented salted password hashing to increase user security and authentication.
+
+- The frontend is built using plain HTML and CSS.
 
 ## URL
 
