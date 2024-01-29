@@ -2,7 +2,7 @@ import eventlet
 import queue
 import os
 
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import SocketIO, join_room, emit
 from database.db import Database
 from authentication.auth_tools import login_pipeline, update_passwords, hash_password, username_exists
@@ -20,6 +20,16 @@ app.debug = True
 
 funnyQueue = queue.Queue()
 seriousQueue = queue.Queue()
+
+def is_logged_in():
+    print("Checking if user is logged in")
+    username=session.get("username")
+    if not username == "Anonymous" and not username == None:
+        print(f"User { username } is logged in")
+        return True
+    else:
+        print(f"User is not logged in")
+        return False
 
 @app.route('/')
 def index():
@@ -98,14 +108,22 @@ def account_page():
        
 @app.route('/videoChat_funny') # Sets the role of the user and renders the funny video chat page
 def videoChatFunny():
-    username = session['username']
+    if not (is_logged_in()):
+        session["username"] = "Anonymous"
+    
+    username = session["username"]
+        
     session["role"] = "funny"
     role = session["role"]
     return render_template('video-chat.html', funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
 
 @app.route('/videoChat_serious') # Sets the role of the user and renders the serious video chat page
 def videoChatSerious():
+    if not (is_logged_in()):
+        session["username"] = "Anonymous"
+    
     username = session["username"]
+    
     session["role"] = "serious"
     role = session["role"]
     return render_template('video-chat.html', seriousUsername=username, funnyUsername="Waiting for Player...", role=role)
@@ -119,6 +137,18 @@ def logout():
         session.pop('username', None)
         return render_template('index.html')
     else:
+        return render_template('index.html')
+    
+@app.route('/leave_video_chat')
+def leave_video_chat():
+    if (is_logged_in()):
+        print("Returning to home page")
+        username = session["username"]
+        funnyRecord = db.getFunnyRecord(username)
+        seriousRecord = db.getSeriousRecord(username)
+        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord)
+    else:
+        print("Returning to index page")
         return render_template('index.html')
     
 @socketio.on("find_new_player") # Checks if there is a player in the each queue and pairs the first 2 together
@@ -180,7 +210,7 @@ def handleUserSmile(room, remoteUsername):
     username = session["username"]
     db.addFunnyWin(remoteUsername)
     db.addSeriousLoss(username)
-    emit("endRoundFunnyWin", room=room)
+    emit("endRound", room=room)
     
 @socketio.on("timerComplete")
 def handleTimerComplete(room):
@@ -190,8 +220,7 @@ def handleTimerComplete(room):
         db.addFunnyLoss(username)
     elif role == "serious":
         db.addSeriousWin(username)
-    emit("endRoundSeriousWin", room=room)
-
+    emit("endRound", room=room)
     
 @socketio.on("disconnect_user")
 def handle_user_disconnect(room):
@@ -199,11 +228,11 @@ def handle_user_disconnect(room):
     
 @socketio.on("disconnect")
 def handle_disconnect():
-    username = session["username"]   
     print(f"Handle_disconnect being called")
+    username = session["username"]
+    session.pop('username', None)
     try:
         db.remove_user_from_queues(username)
-        session.pop('username', None)
     except:
         print(f"User { username } not found in any queues.")
     

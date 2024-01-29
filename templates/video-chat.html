@@ -7,11 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
     <script defer src="../static/face-api.min.js"></script>
+    <script defer src="../static/webrtcHandler.js"></script>
     <script defer src="../static/videoChat.js"></script>
     <link rel="shortcut icon" href="#">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
-    <link rel="icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="static/images/straightFaceLogoBig.svg" type="image/x-icon">
     <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
     <style>
@@ -48,6 +47,10 @@
             </button>
             <button class="fab" id="screenShareBtn" onclick="shareScreen();">
                 <img class="img_lower" src="static/images/sharescreenIcon.svg" alt="screenShare" width="38px" height="38px">
+            </button>
+            <button type="submit" class="fab" id="backBtn">
+                <img class="img_lower" src="static/images/house-solid.svg" alt="backButton" width="38px" height="38px"></img>
+                <a href="/home"></a>
             </button>
         </div>
 
