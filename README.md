@@ -4,7 +4,7 @@
 
 - The backend is built using Flask which uses SocketIO to respond to real-time events during the video call.
 
-- WebRTC is used to connect users with each other directly in the broswer. Benefits of this include a more secure connection, higher quality voice/video feeds, compatibility, and performance.
+- WebRTC is used to connect users with each other directly in the browser. Benefits of this include a more secure connection, higher quality voice/video feeds, compatibility, and performance.
 
 - Real-time smile detection is achieved using face-api, an open source JavaScript API used to recognize facial expressions in the browser.
 
