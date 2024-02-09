@@ -10,16 +10,25 @@
  *
  */
 
+let localStream, countdownInterval, detectionInterval, remoteUsername, myID, targetID, room;
+let tracksReceieved = 0;
+
+const protocol = window.location.protocol;
+const socket = io(protocol + '//' + document.domain + ':' + location.port, {autoConnect: true});
+const mediaConstraints = { audio: true, video: true };
+const funnyVideo = document.getElementById("funnyVideo");
+const seriousVideo = document.getElementById("seriousVideo");
+const searchBtn = document.getElementById("searchBtn");
+const screenShareBtn = document.getElementById("screenShareBtn");
+
 navigator.mediaDevices.getUserMedia(mediaConstraints) // Playing Video/Audio after user has accepted permissions based on role
     .then((stream) => {
         handleLocalStream(stream);
-    });
+});
 
 /**
  * @description If user has accepted video/audio permissions, set local stream and play media feeds. Based on what role the user has chosen.
- * 
  * @param {MediaStream} stream - The video and audio feed of the current user
- * 
  * @throws {Exception} Throws an exception if the user has not accepted video/audio permissions
  */
 function handleLocalStream(stream) {
@@ -216,3 +225,25 @@ const replaceTrack = (newTrack) => {
     
     sender.replaceTrack(newTrack);
 }
+
+document.getElementById("disconnectBtn").addEventListener("click", function() { 
+    socket.emit("disconnect_user", room);
+});
+
+document.getElementById("backBtn").addEventListener("click", function() { 
+    socket.emit("leave_video_chat", room);
+});
+
+socket.on("user_left", function() { // User has left, reset variables, and close peer connection
+    try {
+        const funnyTracks = funnyVideo.srcObject.getTracks();
+        const seriousTracks = seriousVideo.srcObject.getTracks();
+
+        funnyTracks[0].stop();
+        seriousTracks[0].stop();
+
+        myPeerConnection.close();
+    } catch (e) {
+        console.log("No tracks detected: " + e.toString());
+    }
+});
