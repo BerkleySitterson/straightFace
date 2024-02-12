@@ -1,7 +1,6 @@
 import eventlet
 import queue
 import os
-import random
 
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, join_room, emit
