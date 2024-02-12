@@ -107,7 +107,10 @@ async function detectSmile() { // Detect smile using face-api.js
 
                 if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                     console.log('Happy Emotion Detected');
+                    updateSmileIndicator(Math.floor(100));
                     socket.emit("userSmiled", room, remoteUsername);           
+                } else {
+                    updateSmileIndicator(detections[0].expressions.happy * 100);
                 }
             }
             catch (Exception) {
@@ -230,9 +233,7 @@ document.getElementById("disconnectBtn").addEventListener("click", function() {
     socket.emit("disconnect_user", room);
 });
 
-document.getElementById("backBtn").addEventListener("click", function() { 
-    socket.emit("leave_video_chat", room);
-});
+
 
 socket.on("user_left", function() { // User has left, reset variables, and close peer connection
     try {
@@ -247,3 +248,8 @@ socket.on("user_left", function() { // User has left, reset variables, and close
         console.log("No tracks detected: " + e.toString());
     }
 });
+
+function updateSmileIndicator(smileIntensity) {
+    const smileBar = document.querySelector('.smile-bar');
+    smileBar.style.height = `${smileIntensity}%`;
+}

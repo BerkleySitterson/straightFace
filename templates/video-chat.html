@@ -6,12 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
-    <script defer src="../static/face-api.min.js"></script>
+    <script defer src="../static/models/face-api.min.js"></script>
     <script defer src="../static/videoChat.js"></script>
     <script defer src="../static/webrtcHandler.js"></script>
     <link rel="shortcut icon" href="#">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1/dist/face-api.js"></script>
     <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
     <style>
@@ -40,6 +39,9 @@
 
         <div id="btn_container">
             <p id="timer">1:00</p>
+            <div id="smile-indicator">
+                <div class="smile-bar"></div>
+            </div>
             <button type="submit" id="searchBtn">
                 <img class="img_lower" src="static/images/searchplayerIcon.svg" alt="searchPlayer" width="38px" height="38px">
             </button>   

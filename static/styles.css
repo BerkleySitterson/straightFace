@@ -426,10 +426,6 @@ footer {
     
 }
 
-#register_container {
-    
-}
-
 #register_inputs {
     display: flex;
     flex-direction: row;
@@ -440,10 +436,6 @@ footer {
 .err_msg {
     color: white;
     margin-top: 3rem;
-}
-
-#register_login {
-    
 }
 
 #login_button, #register_button {  
@@ -709,5 +701,20 @@ video {
     height: 3rem;
     margin-top: 1rem;
     margin-right: 1rem;
+}
+
+#smile-indicator {
+    width: 15px;
+    height: 80px;
+    background-color: var(--primary-grey); /* Start with red */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.smile-bar {
+    width: 100%;
+    height: 0%;
+    background-color: #0f0; /* Filled with green */
+    transition: height 0.5s; /* Smooth transition */
 }
 
