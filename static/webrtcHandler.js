@@ -90,45 +90,6 @@ function createPeerConnection() {
             }
         }
     });
-
-
-    dataChannel.onmessage = (event) => {
-
-        let message = event.data;
-        let ul = document.getElementById("chat-messages");
-        let li = document.createElement("li");
-
-        li.style.listStyleType = "none";
-        li.appendChild(document.createTextNode(remoteUsername + ": " + message));
-        ul.appendChild(li);
-        ul.scrollTop = ul.scrollHeight;
-    };
-
-    document.getElementById("message").addEventListener("keyup", function(event) {
-
-        if (event.key === "Enter") {
-
-            let message = document.getElementById("message").value;
-            let ul = document.getElementById("chat-messages");
-            let li = document.createElement("li");
-
-            li.style.listStyleType = "none";
-            li.appendChild(document.createTextNode("You: " + message));
-            ul.appendChild(li);
-            ul.scrollTop = ul.scrollHeight;
-
-            dataChannel.send(message);
-            document.getElementById("message").value = "";
-        }
-    });
-
-    dataChannel.addEventListener('open', () => {
-        console.log('Data channel is open and ready to use');
-    });
-
-    dataChannel.onerror = (error) => {
-        console.error("Data channel error: " + error);
-    };
 } 
 
 

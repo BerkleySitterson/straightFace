@@ -338,7 +338,7 @@ def handleUserSmile(room, remoteUsername):
     username = session["username"]
     db.addFunnyWin(remoteUsername)
     db.addSeriousLoss(username)
-    emit("endRound", room=room)
+    emit("endRoundFunnyWin", room=room)
 
 
 
@@ -359,7 +359,7 @@ def handleTimerComplete(room):
         db.addFunnyLoss(username)
     elif role == "serious":
         db.addSeriousWin(username)
-    emit("endRound", room=room)
+    emit("endRoundSeriousWin", room=room)
 
 
 

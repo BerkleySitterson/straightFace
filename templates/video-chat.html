@@ -15,9 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
     <style>
         canvas {
-            position: relative;
-            top: 0;
-            left: 0;
+            position: absolute;
+            margin-top: 6rem;
         }
     </style>
     <script>
@@ -28,32 +27,13 @@
 <body>
     <main>
 
-        <div id="video_container">
-            <div id="funnyVideo_container">
+    <div id="video_container">
+        <div id="funnyVideo_container">
                 <div id="funnyVideoHeader_container">
                     <img id="funnyIcon" src="static/images/onlyFunnyFace.svg">
                     <h1 id="funnyUsername">{{ funnyUsername }}</h1>
                 </div>          
                 <video id="funnyVideo" playsinline autoplay></video>
-        </div>
-
-        <div id="btn_container">
-            <p id="timer">1:00</p>
-            <div id="smile-indicator">
-                <div class="smile-bar"></div>
-            </div>
-            <button type="submit" id="searchBtn">
-                <img class="img_lower" src="static/images/searchplayerIcon.svg" alt="searchPlayer" width="38px" height="38px">
-            </button>   
-            <button type="button" id="disconnectBtn">
-                <img class="img_lower" src="static/images/leaveIcon.svg" alt="disconnect" width="38px" height="38px">
-            </button>
-            <button class="fab" id="screenShareBtn" onclick="shareScreen();">
-                <img class="img_lower" src="static/images/sharescreenIcon.svg" alt="screenShare" width="38px" height="38px">
-            </button>
-
-            <a href="/" class="img_lower" src="static/images/house-solid.svg" alt="homeButton" width="38px" height="38px" style="color: white; text-decoration: none;">Leave</a>
-        
         </div>
 
         <div id="seriousVideo_container">
@@ -62,15 +42,18 @@
                     <h1 id="seriousUsername">{{ seriousUsername }}</h1>
                 </div>
                 <video id="seriousVideo" playsinline autoplay></video>
-            </div>
         </div>
+    </div>
 
-        <div id="bottom_video_container">
-            <div id="chat_container">
-                <ul id="chat-messages"></ul>
-                <input type="text" id="message" placeholder="Enter a Message" color="white">
-            </div>
+    <div id="util_container">
+        <p id="timer">1:00</p>
+        <div id="btn_container">
+            <button type="button" id="searchBtn">New Match</button>   
+            <button type="button" id="disconnectBtn">Forfeit</button>
+            <button type="button" id="screenShareBtn" onclick="shareScreen();">Share Screen</button>
+            <a href="/" id="homeBtn" alt="homeButton" style="text-decoration: none;">Leave</a>
         </div>
+    </div>
 
     </main>
 

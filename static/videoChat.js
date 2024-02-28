@@ -54,6 +54,7 @@ searchBtn.addEventListener("click", () => { // If user has accepted permissions 
         if (localStream.getVideoTracks().length > 0 && localStream.getAudioTracks().length > 0) {
             searchBtn.disabled = true;
             document.getElementById("timer").textContent = "";
+
             socket.emit("find_new_player");
         }
     } catch (Exception) {
@@ -88,11 +89,12 @@ async function detectSmile() { // Detect smile using face-api.js
 
         console.log('Models Loaded');
 
+        const videoContainer = document.getElementById('seriousVideo_container');
         const canvas = await faceapi.createCanvasFromMedia(seriousVideo);          
-        document.body.append(canvas);
+        videoContainer.append(canvas);
 
-        const vwWidth = 45;
-        const vhHeight = 30; 
+        const vwWidth = 49;
+        const vhHeight = 59; 
         const displaySize = { width: vwWidth * window.innerWidth / 100, height: vhHeight * window.innerHeight / 100 };
 
         await faceapi.matchDimensions(canvas, displaySize);
@@ -107,10 +109,7 @@ async function detectSmile() { // Detect smile using face-api.js
 
                 if (detections && detections[0] && detections[0].expressions.happy >= 0.99) {
                     console.log('Happy Emotion Detected');
-                    updateSmileIndicator(Math.floor(100));
                     socket.emit("userSmiled", room, remoteUsername);           
-                } else {
-                    updateSmileIndicator(detections[0].expressions.happy * 100);
                 }
             }
             catch (Exception) {
@@ -161,8 +160,9 @@ function startTimer() { // Start timer and emit event to start round on backend
         }
 }
 
-socket.on('endRound', function () { // End round and reset variables
+socket.on('endRoundFunnyWin', function () { // End round and reset variables
     try {
+        console.log("Funny Win");
         const timer = document.getElementById('timer');
         const funnyTracks = funnyVideo.srcObject.getTracks();
         const seriousTracks = seriousVideo.srcObject.getTracks();
@@ -182,13 +182,49 @@ socket.on('endRound', function () { // End round and reset variables
         timer.textContent = "1:00";
  
         if (role === "funny") {
+            console.log("You have won!");
             document.getElementById("seriousUsername").textContent = "Waiting for Player...";
         } else {
+            console.log("You have lost!");
             document.getElementById("funnyUsername").textContent = "Waiting for Player...";
         }
         
     } catch (e) {
         console.log("Error ending round w/ funny win: " + e.toString());
+    }
+});
+
+socket.on('endRoundSeriousWin', function () { // End round and reset variables
+    try {
+        console.log("Serious Win");
+        const timer = document.getElementById('timer');
+        const funnyTracks = funnyVideo.srcObject.getTracks();
+        const seriousTracks = seriousVideo.srcObject.getTracks();
+
+        clearInterval(countdownInterval);
+        clearInterval(detectionInterval);   
+
+        funnyTracks[0].stop();
+        seriousTracks[0].stop();
+
+        room = "";
+        targetID = "";
+
+        myPeerConnection.close();
+        tracksReceieved = 0;
+        searchBtn.disabled = false;
+        timer.textContent = "1:00";
+ 
+        if (role === "funny") {
+            console.log("You have lost!");
+            document.getElementById("seriousUsername").textContent = "Waiting for Player...";
+        } else {
+            console.log("You have won!");
+            document.getElementById("funnyUsername").textContent = "Waiting for Player...";
+        }
+        
+    } catch (e) {
+        console.log("Error ending round w/ serious win: " + e.toString());
     }
 });
 
@@ -248,8 +284,3 @@ socket.on("user_left", function() { // User has left, reset variables, and close
         console.log("No tracks detected: " + e.toString());
     }
 });
-
-function updateSmileIndicator(smileIntensity) {
-    const smileBar = document.querySelector('.smile-bar');
-    smileBar.style.height = `${smileIntensity}%`;
-}
