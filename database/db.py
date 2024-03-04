@@ -1,4 +1,5 @@
-import sqlite3
+import psycopg2, os
+from authentication.auth_tools import hash_password
 
 class Database:
     """
@@ -9,20 +10,19 @@ class Database:
 
     attributes:
         - database_path: The path to the database file.
-        - connection: The connection to the database.
-        - cursor: The cursor of the database.
+        - conn: The connection to the database.
+        - cur: The cursor of the database.
     """
     
-    def __init__(self, database_path: str = "straightface.db") -> None:
-        self.database_path = database_path
-        self.connection = sqlite3.connect(database_path)
-        self.cursor = self.connection.cursor()
+    def __init__(self) -> None:
         
-    # -----------------------------------------------------------------
-    # ------------------------- Users ---------------------------------
-    # -----------------------------------------------------------------
+        database_url = os.environ.get("DATABASE_URL")
+        self.conn = psycopg2.connect(database_url, sslmode='require')
+        self.cur = self.conn.cursor()
+        
+    # ------- Registration & Authentication -------
     
-    def add_new_user(self, username: str, password_hash: str, email: str, first_name: str, last_name: str) -> None:
+    def add_new_user(self, username: str, password_hash: str, salt: str, email: str, first_name: str, last_name: str) -> None:
         """
         Inserts a new user into the database.
 
@@ -34,10 +34,54 @@ class Database:
         returns:
             - None
         """
-        self.cursor.execute(
-            "INSERT INTO users (username, password_hash, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)",
-            (username, password_hash, email, first_name, last_name))
-        self.connection.commit()
+        self.cur.execute(
+            "INSERT INTO users (username, password_hash, salt, email, firstname, lastname) VALUES (%s, %s, %s, %s, %s, %s)",
+            (username, password_hash, salt, email, first_name, last_name))
+        self.conn.commit()
+        
+        
+    def username_exists(self, username: str) -> bool:
+        """
+        Checks if a username exists in the postgres database.
+
+        args:
+            - username: A string of the username to check.
+
+        returns:
+            - True if the username exists, False if not.
+        """
+        try:
+            self.cur.execute("SELECT 1 FROM users WHERE username = %s", (username,))
+            return self.cur.fetchone() is not None
+        except:
+            return False
+        
+        
+    def login_pipeline(self, username: str, password: str) -> bool:
+        """
+        Checks if a username and password combination is correct.
+
+        args:
+            - username: A string of the username to check.
+            - password: A string of the password to check.
+
+        returns:
+            - True if the username and password combination is correct, False if not.
+        """
+        try:
+            self.cur.execute("SELECT password_hash, salt FROM users WHERE username = %s", (username,))
+            row = self.cur.fetchone()
+            if row:
+                stored_password_hash, salt = row
+                hashed_password = hash_password(password, salt)
+                return hashed_password[0] == stored_password_hash
+            else:
+                print("Invalid username or password: " + username + " " + password + " --- " + str(row))
+                return False
+        except psycopg2.Error as e:
+            print("Error executing SQL query:", e)
+            return False
+    
         
     # ------- Getter Methods -------
     
@@ -51,12 +95,10 @@ class Database:
         returns:
             - A list of all user information in the database.
         """
-        self.cursor.execute("SELECT * FROM users")
-        return self.cursor.fetchall()
-    
-
+        self.cur.execute("SELECT * FROM users")
+        return self.cur.fetchall()
         
-    
+        
     def get_password_hash_by_username(self, username: str):
         """
         Gets the password hash of a user from the database.
@@ -67,9 +109,10 @@ class Database:
         returns:
             - The password hash for the user with the given username.
         """
-        self.cursor.execute(
-            "SELECT password_hash FROM users WHERE username = ?", (username,))
-        return self.cursor.fetchone()
+        self.cur.execute(
+            "SELECT password_hash FROM users WHERE username = %s", (username,))
+        return self.cur.fetchone()
+    
     
     def get_email_by_username(self, username: str):
         """
@@ -82,16 +125,17 @@ class Database:
             - The email for the user with the given username.
         """
         
-        self.cursor.execute(
-            "SELECT email FROM users WHERE username = ?", (username,))
+        self.cur.execute(
+            "SELECT email FROM users WHERE username = %s", (username,))
         
-        result = self.cursor.fetchone()
+        result = self.cur.fetchone()
 
         if result is not None:
             email = result[0]
             return email
         else:
             return None
+
 
     def get_first_name_by_username(self, username: str):
         """
@@ -103,9 +147,10 @@ class Database:
         returns:
             - The first name for the user with the given username.
         """
-        self.cursor.execute(
-            "SELECT first_name FROM users WHERE username = ?", (username,))
-        return self.cursor.fetchone()
+        self.cur.execute(
+            "SELECT firstname FROM users WHERE username = %s", (username,))
+        return self.cur.fetchone()
+
 
     def get_last_name_by_username(self, username: str):
         """
@@ -117,9 +162,9 @@ class Database:
         returns:
             - The last name for the user with the given username.
         """
-        self.cursor.execute(
-            "SELECT last_name FROM users WHERE username = ?", (username,))
-        return self.cursor.fetchone()
+        self.cur.execute(
+            "SELECT lastname FROM users WHERE username = %s", (username,))
+        return self.cur.fetchone()
     
     # ------- Setter Methods -------
     
@@ -134,9 +179,10 @@ class Database:
         returns:
             - None
         """
-        self.cursor.execute(
-            "UPDATE users SET password_hash = ? WHERE username = ?", (new_password_hash, username))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET password_hash = %s WHERE username = %s", (new_password_hash, username))
+        self.conn.commit()
+        
         
     def set_email(self, username: str, new_email: str):
         """
@@ -149,9 +195,10 @@ class Database:
         returns:
             - None
         """
-        self.cursor.execute(
-            "UPDATE users SET email = ? WHERE username = ?", (new_email, username))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET email = %s WHERE username = %s", (new_email, username))
+        self.conn.commit()
+
 
     def set_first_name(self, username: str, new_first_name: str):
         """
@@ -164,9 +211,10 @@ class Database:
         returns:
             - None
         """
-        self.cursor.execute(
-            "UPDATE users SET first_name = ? WHERE username = ?", (new_first_name, username))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET firstname = %s WHERE username = %s", (new_first_name, username))
+        self.conn.commit()
+
 
     def set_last_name(self, username: str, new_last_name: str):
         """
@@ -179,9 +227,10 @@ class Database:
         returns:
             - None
         """
-        self.cursor.execute(
-            "UPDATE users SET last_name = ? WHERE username = ?", (new_last_name, username))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET lastname = %s WHERE username = %s", (new_last_name, username))
+        self.conn.commit()
+        
         
     def remove_user_from_queues(self, username: str, role: str):
         """
@@ -190,52 +239,52 @@ class Database:
             username (str): _description_
         """
         if (role == "funny"):
-            self.cursor.execute(
-                "DELETE FROM funny_queue WHERE username = ?", (username,))
-            self.connection.commit()
+            self.cur.execute(
+                "DELETE FROM funny_queue WHERE username = %s", (username,))
+            self.conn.commit()
         else:
-            self.cursor.execute(
-                "DELETE FROM serious_queue WHERE username = ?", (username,))
-            self.connection.commit()
+            self.cur.execute(
+                "DELETE FROM serious_queue WHERE username = %s", (username,))
+            self.conn.commit()
+            
             
     def addFunnyWin(self, username: str):
-        self.cursor.execute(
-            "UPDATE users SET funny_wins = funny_wins + 1 WHERE username = ?", (username,))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET funny_wins = funny_wins + 1 WHERE username = %s", (username,))
+        self.conn.commit()
         
     def addFunnyLoss(self, username: str):
-        self.cursor.execute(
-            "UPDATE users SET funny_loss = funny_loss + 1 WHERE username = ?", (username,))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET funny_loss = funny_loss + 1 WHERE username = %s", (username,))
+        self.conn.commit()
         
     def addSeriousWin(self, username: str):
-        self.cursor.execute(
-            "UPDATE users SET serious_wins = serious_wins + 1 WHERE username = ?", (username,))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET serious_wins = serious_wins + 1 WHERE username = %s", (username,))
+        self.conn.commit()
         
     def addSeriousLoss(self, username: str):
-        self.cursor.execute(
-            "UPDATE users SET serious_loss = serious_loss + 1 WHERE username = ?", (username,))
-        self.connection.commit()
+        self.cur.execute(
+            "UPDATE users SET serious_loss = serious_loss + 1 WHERE username = %s", (username,))
+        self.conn.commit()
         
     def getTotalMatches(self, username: str):
-        self.cursor.execute(
-            "SELECT (funny_wins + funny_loss + serious_wins + serious_loss) as total_matches FROM users WHERE username = ?",
+        self.cur.execute(
+            "SELECT (funny_wins + funny_loss + serious_wins + serious_loss) as total_matches FROM users WHERE username = %s",
             (username,))
-        result = self.cursor.fetchone()
+        result = self.cur.fetchone()
 
         if result:
             total_matches = result[0]
             return total_matches
         else:
             return 0
-        
-        
+         
         
     def getFunnyRecord(self, username: str):
-        self.cursor.execute(
-            "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
-        result = self.cursor.fetchone()
+        self.cur.execute(
+            "SELECT funny_wins, funny_loss FROM users WHERE username = %s", (username,))
+        result = self.cur.fetchone()
 
         if result:
             wins, losses = result
@@ -244,10 +293,11 @@ class Database:
         else:
             return "0-0"
     
+    
     def getSeriousRecord(self, username: str):
-        self.cursor.execute(
-            "SELECT serious_wins, serious_loss FROM users WHERE username = ?", (username,))
-        result = self.cursor.fetchone()
+        self.cur.execute(
+            "SELECT serious_wins, serious_loss FROM users WHERE username = %s", (username,))
+        result = self.cur.fetchone()
         
         if result:
             wins, losses = result
@@ -255,27 +305,3 @@ class Database:
             return record
         else:
             return "0-0"
-        
-    def calculateFunnyRatio(self, username: str):
-        self.cursor.execute(
-            "SELECT funny_wins, funny_loss FROM users WHERE username = ?", (username,))
-        result = self.cursor.fetchone()
-        
-        if result:
-            wins, losses = result
-            ratio = (wins / (wins + losses)) * 100
-            return f"{ratio}%"
-        else:
-            return "0%"
-        
-    def calculateSeriousRatio(self, username: str):
-        self.cursor.execute(
-            "SELECT serious_wins, serious_loss FROM users WHERE username = ?", (username,))
-        result = self.cursor.fetchone()
-        
-        if result:
-            wins, losses = result
-            ratio = (wins / (wins + losses)) * 100
-            return f"{ratio}%"
-        else:
-            return "0%"

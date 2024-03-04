@@ -5,13 +5,13 @@ import os
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, join_room, emit
 from database.db import Database
-from authentication.auth_tools import login_pipeline, update_passwords, hash_password
+from authentication.auth_tools import hash_password
 
 eventlet.monkey_patch()
 
 app = Flask(__name__, static_folder='static')
 global db
-db = Database('database/straightface.db')
+db = Database()
 app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 PORT = int(os.environ.get('PORT', 5000))
@@ -79,7 +79,7 @@ def login():
     username = request.form['username']
     password = request.form['password']
     
-    if login_pipeline(username, password):
+    if db.login_pipeline(username, password):
         session["username"] = username
         return render_template('home.html', username=username)
     else:
@@ -118,11 +118,10 @@ def register():
     if any(value == '' for value in [username, password, email, first_name, last_name]):
         return render_template('register.html', errMsg="Please make sure all fields are complete.")
     else:
-        salt, key = hash_password(password)
-        update_passwords(username, key, salt)
-        db.add_new_user(username, key, email, first_name, last_name)
+        password_hash, salt = hash_password(password)
+        db.add_new_user(username, password_hash, salt, email, first_name, last_name)
         
-        if login_pipeline(username, password):
+        if db.login_pipeline(username, password):
             session["username"] = username
             return render_template('home.html', username=username)
         else:

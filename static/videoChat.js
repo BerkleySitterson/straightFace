@@ -228,42 +228,6 @@ socket.on('endRoundSeriousWin', function () { // End round and reset variables
     }
 });
 
-const shareScreen = async () => { // Share screen feature
-    const mediaStream = await getLocalScreenCaptureStream();
-    const screenTrack = mediaStream.getVideoTracks()[0];
-
-    if (screenTrack) {
-        console.log('Replacing video stream with screen track');
-        replaceTrack(screenTrack);
-    }
-};
-
-const getLocalScreenCaptureStream = async () => {
-    try {
-        const constraints = { video: { cursor: 'always' }, audio: false };
-        const screenCaptureStream = await navigator.mediaDevices.getDisplayMedia(constraints);
-    
-        return screenCaptureStream;
-        } catch (error) {
-        console.error('failed to get local screen', error);
-        }
-};
-
-const replaceTrack = (newTrack) => {
-    localStream.removeTrack(localStream.getVideoTracks()[0]);
-    localStream.addTrack(newTrack);
-    const sender = myPeerConnection.getSenders().find(sender =>
-        sender.track.kind === newTrack.kind 
-    );
-    
-    if (!sender) {
-        console.warn('failed to find sender');
-    
-        return;
-    }
-    
-    sender.replaceTrack(newTrack);
-}
 
 document.getElementById("disconnectBtn").addEventListener("click", function() { 
     socket.emit("disconnect_user", room);

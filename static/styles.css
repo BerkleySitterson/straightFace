@@ -22,7 +22,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 12vh;
+    height: 10vh;
     width: 100vw;
     background-color: var(--primary-blue);
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
@@ -538,7 +538,7 @@ video {
     height: 6vh;
     width: 6vw;
     text-align: center;
-    top: -1rem;
+    top: 4.5rem;
 }
 
 #seriousVideo,
@@ -546,7 +546,7 @@ video {
     object-fit: cover;
     border: 3px solid white;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-    width: 49vw; 
+    width: 48vw; 
     height: 59vh;
     background: black;
 }
@@ -573,14 +573,13 @@ video {
 #btn_container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     width: 25vw;
 }
 
 #searchBtn,
 #disconnectBtn,
-#screenShareBtn,
 #homeBtn {
     color: white;
     background: var(--primary-blue);
@@ -601,10 +600,6 @@ video {
 
 #disconnectBtn:hover {
     box-shadow: 0px 4px 30px red;
-}
-
-#screenShareBtn:hover {
-    box-shadow: 0px 4px 30px var(--primary-blue);
 }
 
 #homeBtn:hover {

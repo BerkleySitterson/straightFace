@@ -25,6 +25,17 @@
 </head>
 
 <body>
+
+    <header>
+        <div class="header_logo">
+            <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="90" height="90">
+            <a href="/" id="logo_name">StraightFace</a>
+        </div>
+        <div class="account_btn_container">            
+            <a href="/" class="home_btn"><i class="fa-solid fa-house fa-2xl" style="color: #ffffff;"></i></a>            
+        </div>
+    </header>
+
     <main>
 
     <div id="video_container">
@@ -50,13 +61,25 @@
         <div id="btn_container">
             <button type="button" id="searchBtn">New Match</button>   
             <button type="button" id="disconnectBtn">Forfeit</button>
-            <button type="button" id="screenShareBtn" onclick="shareScreen();">Share Screen</button>
             <a href="/" id="homeBtn" alt="homeButton" style="text-decoration: none;">Leave</a>
         </div>
     </div>
 
     </main>
 
+    <script>
+
+        function rotateLogo() {
+            var logo = document.getElementById('logo');
+            logo.style.animation = 'none';
+            void logo.offsetWidth;
+            logo.style.animation = null; 
+        }
+    
+        setInterval(rotateLogo, 8000);
+          
+
+    </script>
+
 </body>
 
-<script>
