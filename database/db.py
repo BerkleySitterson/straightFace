@@ -230,47 +230,31 @@ class Database:
         self.cur.execute(
             "UPDATE users SET lastname = %s WHERE username = %s", (new_last_name, username))
         self.conn.commit()
-        
-        
-    def remove_user_from_queues(self, username: str, role: str):
-        """
-
-        Args:
-            username (str): _description_
-        """
-        if (role == "funny"):
-            self.cur.execute(
-                "DELETE FROM funny_queue WHERE username = %s", (username,))
-            self.conn.commit()
-        else:
-            self.cur.execute(
-                "DELETE FROM serious_queue WHERE username = %s", (username,))
-            self.conn.commit()
             
             
     def addFunnyWin(self, username: str):
         self.cur.execute(
-            "UPDATE users SET funny_wins = funny_wins + 1 WHERE username = %s", (username,))
+            "UPDATE users SET funnywins = funnywins + 1 WHERE username = %s", (username,))
         self.conn.commit()
         
     def addFunnyLoss(self, username: str):
         self.cur.execute(
-            "UPDATE users SET funny_loss = funny_loss + 1 WHERE username = %s", (username,))
+            "UPDATE users SET funnylosses = funnylosses + 1 WHERE username = %s", (username,))
         self.conn.commit()
         
     def addSeriousWin(self, username: str):
         self.cur.execute(
-            "UPDATE users SET serious_wins = serious_wins + 1 WHERE username = %s", (username,))
+            "UPDATE users SET seriouswins = seriouswins + 1 WHERE username = %s", (username,))
         self.conn.commit()
         
     def addSeriousLoss(self, username: str):
         self.cur.execute(
-            "UPDATE users SET serious_loss = serious_loss + 1 WHERE username = %s", (username,))
+            "UPDATE users SET seriouslosses = seriouslosses + 1 WHERE username = %s", (username,))
         self.conn.commit()
         
     def getTotalMatches(self, username: str):
         self.cur.execute(
-            "SELECT (funny_wins + funny_loss + serious_wins + serious_loss) as total_matches FROM users WHERE username = %s",
+            "SELECT (funnywins + funnylosses + seriouswins + seriouslosses) as total_matches FROM users WHERE username = %s",
             (username,))
         result = self.cur.fetchone()
 
@@ -283,7 +267,7 @@ class Database:
         
     def getFunnyRecord(self, username: str):
         self.cur.execute(
-            "SELECT funny_wins, funny_loss FROM users WHERE username = %s", (username,))
+            "SELECT funnywins, funnylosses FROM users WHERE username = %s", (username,))
         result = self.cur.fetchone()
 
         if result:
@@ -296,7 +280,7 @@ class Database:
     
     def getSeriousRecord(self, username: str):
         self.cur.execute(
-            "SELECT serious_wins, serious_loss FROM users WHERE username = %s", (username,))
+            "SELECT seriouswins, seriouslosses FROM users WHERE username = %s", (username,))
         result = self.cur.fetchone()
         
         if result:
