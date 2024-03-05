@@ -19,6 +19,7 @@ const mediaConstraints = { audio: true, video: true };
 const funnyVideo = document.getElementById("funnyVideo");
 const seriousVideo = document.getElementById("seriousVideo");
 const searchBtn = document.getElementById("searchBtn");
+const forfeitBtn = document.getElementById("disconnectBtn");
 const screenShareBtn = document.getElementById("screenShareBtn");
 
 navigator.mediaDevices.getUserMedia(mediaConstraints) // Playing Video/Audio after user has accepted permissions based on role
@@ -53,9 +54,15 @@ searchBtn.addEventListener("click", () => { // If user has accepted permissions 
     try {
         if (localStream.getVideoTracks().length > 0 && localStream.getAudioTracks().length > 0) {
             searchBtn.disabled = true;
-            document.getElementById("timer").textContent = "";
+            
 
             socket.emit("find_new_player");
+        }
+
+        if (role === "funny") {
+            document.getElementById("seriousUsername").textContent = "Searching for Player...";
+        } else {
+            document.getElementById("funnyUsername").textContent = "Searching for Player...";
         }
     } catch (Exception) {
         console.log('Error: Video or Audio not detected: ' + Exception.toString());
@@ -65,13 +72,13 @@ searchBtn.addEventListener("click", () => { // If user has accepted permissions 
 socket.on("set_round_data", (data) => { // Set round data and display remote username
     if (role === "funny") {
         remoteUsername = data['seriousUsername'];
-        console.log("Role is " + role + " and remote username is " + remoteUsername);
         document.getElementById("seriousUsername").textContent = remoteUsername;
     } else {
         remoteUsername = data['funnyUsername'];
-        console.log("Role is " + role + " and remote username is " + remoteUsername);
         document.getElementById("funnyUsername").textContent = remoteUsername;
     }
+    console.log("Role is " + role + " and remote username is " + remoteUsername);
+    forfeitBtn.disabled = false;
     room = data['room'];
 });
 
@@ -179,7 +186,8 @@ socket.on('endRoundFunnyWin', function () { // End round and reset variables
         myPeerConnection.close();
         tracksReceieved = 0;
         searchBtn.disabled = false;
-        timer.textContent = "1:00";
+        forfeitBtn.disabled = true;
+        timer.textContent = "";
  
         if (role === "funny") {
             console.log("You have won!");
@@ -213,7 +221,8 @@ socket.on('endRoundSeriousWin', function () { // End round and reset variables
         myPeerConnection.close();
         tracksReceieved = 0;
         searchBtn.disabled = false;
-        timer.textContent = "1:00";
+        forfeitBtn.disabled = true;
+        timer.textContent = "";
  
         if (role === "funny") {
             console.log("You have lost!");

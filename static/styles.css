@@ -123,7 +123,7 @@ footer {
     height: 4rem;
     border: none;
     cursor: pointer;
-    margin-top: .2rem;
+    margin-top: .4rem;
     transition: all .5s ease;
     scale: 1.2;
 }
@@ -573,18 +573,18 @@ video {
 #btn_container {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
     width: 25vw;
 }
 
 #searchBtn,
-#disconnectBtn,
-#homeBtn {
+#disconnectBtn {
+    display: flex;
     color: white;
-    background: var(--primary-blue);
-    width: 7rem;
-    height: 3.2rem;
+    background: var(--primary-purple);
+    width: 8rem;
+    height: 2.8rem;
     border: 1px solid white;
     cursor: pointer;
     font-size: 20px;
@@ -592,29 +592,24 @@ video {
     text-align: center;
     justify-content: center;
     align-items: center;
+    border-radius: 8px;
 }
 
-#searchBtn:hover {
-    box-shadow: 0px 4px 30px var(--primary-yellow);
-}
-
+#searchBtn:hover,
 #disconnectBtn:hover {
-    box-shadow: 0px 4px 30px red;
+    box-shadow: 0px 4px 30px var(--primary-blue);
 }
 
-#homeBtn:hover {
-    box-shadow: 0px 4px 30px var(--primary-grey);
-}
-
-#searchBtn:disabled {
-    background-color: #FFD700;
-    color: black;
+#searchBtn:disabled, 
+#disconnectBtn:disabled {
+    background-color: rgba(0, 0, 0, 0.3);
     box-shadow: 0px 4px 30px black;
+    border-color: darkgrey;
+    color: darkgrey;
+    cursor: default;
 }
 
-#searchBtn:disabled:hover {
-    box-shadow: 0px 4px 30px black;
-}
+
 
 .img_lower {
     margin-top: 4px;

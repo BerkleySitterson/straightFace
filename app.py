@@ -158,15 +158,13 @@ def videoChatFunny():
     Returns:
         str: Rendered HTML template for the video chat page.
     """
-    if is_logged_in():
-        username = session["username"]
-    else:
+    if not is_logged_in():
         session["username"] = "Anonymous"
-        username = session["username"]
     
+    username = session["username"] 
     session["role"] = "funny"
     role = session["role"]
-    return render_template('video-chat.html', funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
+    return render_template('video-chat.html', username=username, funnyUsername=username, seriousUsername="Waiting for Player...", role=role)
 
 
 
@@ -182,10 +180,9 @@ def videoChatSerious():
         session["username"] = "Anonymous"
     
     username = session["username"]
-    
     session["role"] = "serious"
     role = session["role"]
-    return render_template('video-chat.html', seriousUsername=username, funnyUsername="Waiting for Player...", role=role)
+    return render_template('video-chat.html', username=username, seriousUsername=username, funnyUsername="Waiting for Player...", role=role)
 
 
 
@@ -215,9 +212,7 @@ def leave_video_chat():
     """
     if is_logged_in():
         username = session["username"]
-        funnyRecord = db.getFunnyRecord(username)
-        seriousRecord = db.getSeriousRecord(username)
-        return render_template('home.html', username=username, funnyWL=funnyRecord, seriousWL=seriousRecord)
+        return render_template('home.html', username=username)
     else:
         return render_template('index.html')
 
@@ -236,6 +231,7 @@ def findNewPlayer():
     username = session["username"]
     role = session["role"]
     sid = request.sid
+    session["sid"] = sid
     
     user = {'username': username, 'sid': sid}
     

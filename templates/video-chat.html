@@ -9,7 +9,8 @@
     <script defer src="../static/models/face-api.min.js"></script>
     <script defer src="../static/videoChat.js"></script>
     <script defer src="../static/webrtcHandler.js"></script>
-    <link rel="shortcut icon" href="#">
+    <link rel="icon" href="static/images/straightFaceLogoOfficial.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="static/images/straightFaceLogoOfficial.svg" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.js"></script>
     <script src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
@@ -28,11 +29,18 @@
 
     <header>
         <div class="header_logo">
-            <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="90" height="90">
+            <img id="logo" src="static/images/straightFaceLogoOfficial.svg" alt="StraightFaceLogo" width="80" height="80">
             <a href="/" id="logo_name">StraightFace</a>
         </div>
-        <div class="account_btn_container">            
-            <a href="/" class="home_btn"><i class="fa-solid fa-house fa-2xl" style="color: #ffffff;"></i></a>            
+        <div class="account_btn_container">
+            <h2 style="color: white; margin-left: 5rem;">{{ username }}</h2>
+            <div class="dropdown">
+                <button id="dropDownBtn" onclick="dropDownMenu()"><i class="fa-solid fa-bars fa-2xl" style="color: #ffffff;"></i></button>
+                <div id="dropDownMenu" class="dropdown-content">
+                    <a href="/" class="dropdown_btn">Home</a>
+                    <a href="/account" class="dropdown_btn">Account</a>
+                </div>
+            </div>         
         </div>
     </header>
 
@@ -57,11 +65,10 @@
     </div>
 
     <div id="util_container">
-        <p id="timer">1:00</p>
+        <p id="timer"></p>
         <div id="btn_container">
             <button type="button" id="searchBtn">New Match</button>   
-            <button type="button" id="disconnectBtn">Forfeit</button>
-            <a href="/" id="homeBtn" alt="homeButton" style="text-decoration: none;">Leave</a>
+            <button type="button" id="disconnectBtn" disabled>Forfeit</button>
         </div>
     </div>
 
