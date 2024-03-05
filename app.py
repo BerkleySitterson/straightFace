@@ -11,7 +11,7 @@ eventlet.monkey_patch()
 
 app = Flask(__name__, static_folder='static')
 global db
-db = Database()
+# db = Database()
 app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 PORT = int(os.environ.get('PORT', 5000))
@@ -358,8 +358,8 @@ def handleTimerComplete(room):
 
 
 
-@socketio.on("disconnect_user")
-def handle_user_disconnect(room):
+@socketio.on("forfeit")
+def handle_user_forfeit(room, remoteUser):
     """
     Handle a user disconnecting from the game round.
 
@@ -369,7 +369,14 @@ def handle_user_disconnect(room):
     Returns:
         None
     """
-    emit("user_left", room=room)
+    if (session["role"] == "funny"):
+        db.addFunnyLoss(session["username"])
+        db.addSeriousWin(remoteUser)
+        emit("endRoundSeriousWin", room=room)
+    else:
+        db.addFunnyWin(remoteUser)
+        db.addSeriousLoss(session["username"])
+        emit("endRoundFunnyWin", room=room)
 
 
 

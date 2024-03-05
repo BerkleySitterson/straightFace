@@ -239,21 +239,5 @@ socket.on('endRoundSeriousWin', function () { // End round and reset variables
 
 
 document.getElementById("disconnectBtn").addEventListener("click", function() { 
-    socket.emit("disconnect_user", room);
-});
-
-
-
-socket.on("user_left", function() { // User has left, reset variables, and close peer connection
-    try {
-        const funnyTracks = funnyVideo.srcObject.getTracks();
-        const seriousTracks = seriousVideo.srcObject.getTracks();
-
-        funnyTracks[0].stop();
-        seriousTracks[0].stop();
-
-        myPeerConnection.close();
-    } catch (e) {
-        console.log("No tracks detected: " + e.toString());
-    }
+    socket.emit("forfeit", room, remoteUsername);
 });
