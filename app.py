@@ -11,7 +11,7 @@ eventlet.monkey_patch()
 
 app = Flask(__name__, static_folder='static')
 global db
-# db = Database()
+db = Database()
 app.config['SECRET_KEY'] = 'secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*", asynch_mode='eventlet')
 PORT = int(os.environ.get('PORT', 5000))
