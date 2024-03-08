@@ -16,15 +16,11 @@ class Database:
     
     def __init__(self) -> None:
         
-        # dbname="straightface_db",
-        # user="Berkley",
-        # host="localhost",
-        # port="5432",
-        
+        # dbname="straightface_db", user="Berkley", host="localhost", port="5432"
         # database_url, sslmode='require'
         
         database_url = os.environ.get("DATABASE_URL")
-        self.conn = psycopg2.connect(database_url, sslmode='require')
+        self.conn = psycopg2.connect(dbname="straightface_db", user="postgres", host="localhost", port="5432")
         self.cur = self.conn.cursor()
         
     # ------- Registration & Authentication -------
@@ -173,6 +169,15 @@ class Database:
             "SELECT lastname FROM users WHERE username = %s", (username,))
         return self.cur.fetchone()
     
+    def getAllFriends(self, current_username):
+    
+        try:
+            self.cur.execute("SELECT friend_username FROM friends WHERE user_username = %s", (current_username,))
+            return self.cur.fetchall()
+        except psycopg2.Error as e:
+            print("Error retrieving friends:", e)
+            return None
+    
     # ------- Setter Methods -------
     
     def set_password_hash(self, username: str, new_password_hash: str):
@@ -237,6 +242,50 @@ class Database:
         self.cur.execute(
             "UPDATE users SET lastname = %s WHERE username = %s", (new_last_name, username))
         self.conn.commit()
+        
+    def addFriend(self, current_username, friend_username):
+        try:
+            # Check if the friend exists in the users table
+            self.cur.execute("SELECT 1 FROM users WHERE username = %s", (friend_username,))
+            if self.cur.fetchone() is None:
+                print("Username not found.")
+                return False
+
+            # Check if the friendship already exists
+            self.cur.execute("SELECT 1 FROM friends WHERE user_username = %s AND friend_username = %s", 
+                              (current_username, friend_username))
+            if self.cur.fetchone() is not None:
+                print("Friendship already exists.")
+                return False
+
+            # Add the friendship
+            self.cur.execute("INSERT INTO friends (user_username, friend_username) VALUES (%s, %s)", 
+                             (current_username, friend_username))
+            self.conn.commit()
+            print("Friend added successfully.")
+            return True
+        except psycopg2.Error as e:
+            print("Error adding friend:", e)
+            return False
+        
+    def removeFriend(self, current_username, friend_username):
+        try:
+            # Check if the friendship exists
+            self.cur.execute("SELECT 1 FROM friends WHERE user_username = %s AND friend_username = %s", 
+                            (current_username, friend_username))
+            if self.cur.fetchone() is None:
+                print("Friendship does not exist.")
+                return False
+
+            # Remove the friendship
+            self.cur.execute("DELETE FROM friends WHERE user_username = %s AND friend_username = %s", 
+                            (current_username, friend_username))
+            self.conn.commit()
+            print("Friend removed successfully.")
+            return True
+        except psycopg2.Error as e:
+            print("Error removing friend:", e)
+            return False
             
             
     def addFunnyWin(self, username: str):

@@ -6,7 +6,7 @@
 }
 
 body, html {
-    background: #7c73e6;
+    background: var(--primary-purple);
     height: 100vh;
     width: 100vw;
     margin: 0;
@@ -32,7 +32,7 @@ main {
     display: flex;
     align-items: center;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-evenly;
     width: 100vw;
     height: 80vh;
     gap: 1rem;
@@ -188,6 +188,7 @@ footer {
     margin-top: 5.5rem;
     box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.8);
     border-radius: 20px;
+    border: 1px solid white;
 }
 
 .queueBtn_container {
@@ -201,31 +202,37 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all .5s ease;
+    transition: all .4s ease;
     color: black;
     padding: 10px 20px;
-    font-weight: bold;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-decoration: none;
-    border-radius: 20px;
+    border-radius: 40px;
     margin: 5px;
-    height: 3rem;
+    height: 2.5rem;
     cursor: pointer;
     width: 40%;
 }
 
-.queue_btn:hover {
-    box-shadow: 0px 4px 30px black;
+#funnyBtn {
+    border: 2px solid var(--primary-yellow);   
+    background: var(--primary-yellow);
+    box-shadow: 0px 6px 20px black;
 }
 
-#funnyBtn {
-    background-color: var(--primary-yellow);
-    box-shadow: 0px 2px 10px var(--primary-yellow);
+#funnyBtn:hover {
+    scale: 1.02;
 }
+
 
 #seriousBtn {
-    background-color: var(--primary-grey);
-    box-shadow: 0px 2px 10px var(--primary-grey);
+    border: 2px solid var(--primary-grey);   
+    background: var(--primary-grey); 
+    box-shadow: 0px 6px 20px black;
+}
+
+#seriousBtn:hover {
+    scale: 1.02;
 }
 
 .emotionIcon {
@@ -487,9 +494,8 @@ label {
 }
 
 input {
-    width: 80%;
+    width: 83%;
     height: 3%;
-    margin: .5rem;
     padding: 12px 20px;
     background-color: white;
     outline: none;
@@ -614,8 +620,6 @@ video {
     cursor: default;
 }
 
-
-
 .img_lower {
     margin-top: 4px;
 }
@@ -626,4 +630,82 @@ video {
     height: 3rem;
     margin-top: 1.3rem;
     margin-right: 1rem;
+}
+
+#friends_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid white;
+    background: var(--primary-blue);
+    color: white;
+    width: 15rem;
+    height: 32rem;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 5.5rem;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.8);
+}
+
+#friends_header {
+    font-size: 2rem;
+    margin-top: 1.4rem;
+    border-bottom: 3px solid white;
+    padding-bottom: 12px;
+    text-align: center;
+}
+
+#friends_logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+#friends_list {
+    overflow-y: auto;
+    height: 18rem;
+    margin-bottom: 2rem;
+}
+
+#friends_list::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+#friends_list::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 6px;
+  }
+  
+#friends_list::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 6px; 
+  }
+
+#add_friend_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#friend_input {
+    position: relative;
+}
+
+.friend {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    margin: 10px;
+}
+
+.remove_friend {
+    background-color: var(--primary-blue);
+    box-shadow: None;
+    border: None;
+}
+
+.remove_friend:hover {
+    cursor: pointer;
 }

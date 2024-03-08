@@ -2,7 +2,7 @@ import eventlet
 import queue
 import os
 
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, jsonify
 from flask_socketio import SocketIO, join_room, emit
 from database.db import Database
 from authentication.auth_tools import hash_password
@@ -126,7 +126,50 @@ def register():
             return render_template('home.html', username=username)
         else:
             return render_template('index.html')
+        
+        
+@app.route('/friends')
+def get_friends():
+    """
+    Get the friends of the current user.
 
+    Returns:
+        str: An array of friends for the current user.
+    """
+    username = session["username"]
+    friends = db.getAllFriends(username)
+    
+    friend_usernames = [friend[0] for friend in friends]
+    print(friend_usernames)
+    return friend_usernames
+
+@app.route('/addFriend', methods=['POST'])
+def add_friend():
+    """
+    Add a friend for the current user.
+
+    Returns:
+        str: An array of friends for the current user.
+    """
+    username = session["username"]
+    friend = request.form.get('username')
+    db.addFriend(username, friend)
+    
+    return jsonify({"message": "Friend added successfully", "success": True})
+
+@app.route('/removeFriend', methods=['POST'])
+def remove_friend():
+    """
+    Add a friend for the current user.
+
+    Returns:
+        str: An array of friends for the current user.
+    """
+    username = session["username"]
+    friend = request.form.get('username')
+    db.removeFriend(username, friend)
+    
+    return jsonify({"message": "Friend added successfully", "success": True})
 
 
 @app.route('/account')

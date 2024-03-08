@@ -10,7 +10,6 @@
     <link rel="icon" href="static/images/straightFaceLogoOfficial.svg" type="image/x-icon">
     <link rel="shortcut icon" href="static/images/straightFaceLogoOfficial.svg" type="image/x-icon">
     <script defer src="https://kit.fontawesome.com/e27ccd9755.js" crossorigin="anonymous"></script>
-    <script defer src="../static/index.js"></script>
     <link defer href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 </head>
 
@@ -55,12 +54,23 @@
             </div>            
         </div>
 
+        <div id="friends_container">
+            <i id="friends_logo" class="fa-solid fa-user-group fa-2xl" style="color: #ffffff;" width="100" height="100"></i>
+            <h1 id="friends_header">Friends</h1>
+            <div id="friends_list"></div>
+            <div id="add_friend_container">
+                <input type="text" id="friend_input" placeholder="Enter Username">
+                <button id="add_friend" onclick="addFriend()">Add Friend</button>
+            </div>
+        </div>
     </main>
 
     <footer>
     </footer> 
     
     <script>
+
+        document.addEventListener('DOMContentLoaded', fetchFriends);
 
         function rotateLogo() {
             var logo = document.getElementById('logo');
@@ -70,7 +80,84 @@
         }
     
         setInterval(rotateLogo, 8000);
-          
+
+        function fetchFriends() {
+            fetch('/friends')
+                .then(response => response.json())
+                .then(data => {
+                    displayFriends(data);
+                })
+                .catch(error => console.error('Error fetching friends:', error));
+        }
+
+        function displayFriends(friends) {
+            const friends_list = document.getElementById('friends_list');
+
+            for (let i = 0; i < friends.length; i++) {
+    
+                const friendDiv = document.createElement('div');
+                friendDiv.classList.add('friend');
+                friendDiv.textContent = friends[i];
+
+                const removeButton = document.createElement('button');
+                removeButton.innerHTML = '<i class="fa-solid fa-user-minus" style="color: #ffffff;"></i>';
+                removeButton.classList.add('remove_friend');
+                removeButton.addEventListener('click', function() { removeFriend(friends[i]); });
+
+                friendDiv.appendChild(removeButton);
+                friends_list.appendChild(friendDiv);
+            }
+        }
+        
+
+        function addFriend() {
+            let username = document.getElementById('friend_input').value;
+            let formData = new FormData();
+            formData.append('username', username);
+
+            let request = new XMLHttpRequest();
+            request.open('POST', '/addFriend');
+            request.onload = function() {
+                try {
+                    console.log('Friend added');
+                    document.getElementById('friend_input').value = '';
+                    friends_list.innerHTML = '';
+                    formData = new FormData();
+                    fetchFriends();
+                } catch (error) {
+                    console.error('Error adding friend:', error);
+                }
+            };
+            request.send(formData);
+        }
+
+        function removeFriend(friend) {
+            let formData = new FormData();
+            formData.append('username', friend);
+
+            let request = new XMLHttpRequest();
+            request.open('POST', '/removeFriend');
+            request.onload = function() {
+                try {
+                    console.log('Friend Removed');
+                    friends_list.innerHTML = '';
+                    formData = new FormData();
+                    fetchFriends();
+                } catch (error) {
+                    console.error('Error removing friend:', error);
+                }
+            };
+            request.send(formData);
+        }
+
+        document.getElementById('friend_input').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                let input = document.getElementById('friend_input').value;
+                if (input !== '') {
+                    addFriend();
+                }
+            }
+        });
 
     </script> 
         
