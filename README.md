@@ -14,6 +14,6 @@
 
 ## URL
 
--**Link**: https://straightface-18bbe9887133.herokuapp.com/ 
+-**Link**: https://straightface.io/
 
 
