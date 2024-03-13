@@ -16,7 +16,7 @@ class Database:
     
     def __init__(self) -> None:
         
-        # dbname="straightface_db", user="Berkley", host="localhost", port="5432"
+        # dbname="straightface_db", user="postgres", host="localhost", port="5432"
         # database_url, sslmode='require'
         
         database_url = os.environ.get("DATABASE_URL")
