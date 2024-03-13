@@ -20,7 +20,7 @@ class Database:
         # database_url, sslmode='require'
         
         database_url = os.environ.get("DATABASE_URL")
-        self.conn = psycopg2.connect(database_url, sslmode='require')
+        self.conn = psycopg2.connect(dbname="straightface_db", user="postgres", host="localhost", port="5432")
         self.cur = self.conn.cursor()
         
     # ------- Registration & Authentication -------

@@ -55,7 +55,7 @@ searchBtn.addEventListener("click", () => { // If user has accepted permissions 
         if (localStream.getVideoTracks().length > 0 && localStream.getAudioTracks().length > 0) {
             searchBtn.disabled = true;
             
-
+            console.log("Searching for player...");
             socket.emit("find_new_player");
         }
 

@@ -277,6 +277,7 @@ def findNewPlayer():
     session["sid"] = sid
     
     user = {'username': username, 'sid': sid}
+    print(f"User { username } is looking for a new player.")
     
     if role == "funny":
         funnyQueue.put(user)

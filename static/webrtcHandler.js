@@ -30,6 +30,7 @@ function sendToServer(msg) {
  * @param {string} data.targetID - The matched user's session ID
  */
 function handlePairing(data) {
+    console.log("Pairing users...");
     myID = data['myID'];
     targetID = data['targetID'];
 
@@ -38,6 +39,7 @@ function handlePairing(data) {
 }
 
 socket.on("users_paired", function(data) {
+    console.log("Users Paired Socket Event");
     handlePairing(data);
 });
 
